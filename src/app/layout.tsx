@@ -14,8 +14,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Eren Kalaycı | Bilgisayar Mühendisi",
+  title: "EREN KALAYCI",
   description: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici Portfolyosu",
+  icons: {
+    icon: '/profil_resmim.jpg',
+  },
 };
 
 export default function RootLayout({

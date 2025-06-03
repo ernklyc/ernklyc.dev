@@ -17,6 +17,21 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'play-lh.googleusercontent.com',
         pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'store-images.s-microsoft.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pbs.twimg.com',
+        pathname: '**',
       }
     ],
   },
