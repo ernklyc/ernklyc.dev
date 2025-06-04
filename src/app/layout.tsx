@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "EREN KALAYCI",
-  description: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici Portfolyosu",
+  description: "Eren KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici Portfolyosu",
   icons: {
     icon: '/profil_resmim.jpg',
   },

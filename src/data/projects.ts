@@ -22,7 +22,7 @@ export const projects = [
     type: "Flutter",
     description: "Bayrak bilgi yarışması uygulaması",
     image: "https://play-lh.googleusercontent.com/1hXjQ_MR1-xFvcn_6g4SDdmC9zC2DISqu8iGM9iqxtFFGgbHHYeS1GdrwmnwXmbMCQ=w240-h480-rw",
-    technologies: ["Flutter", "Dart", "SQLite"],
+    technologies: ["Flutter", "Dart"],
     link: "https://play.google.com/store/apps/details?id=com.flag.quiz.yelbegen.software",
     githubLink: "https://github.com/ernklyc?tab=repositories"
   },
@@ -31,7 +31,7 @@ export const projects = [
     type: "Flutter",
     description: "Yazı Tura oyunu uygulaması",
     image: "https://play-lh.googleusercontent.com/JFzhXgLEHDJFy8cken5RZP6bZHIpDw-6h598akkele4TG7-7jDjWdCFNvZrO-zyDyQ=w240-h480-rw",
-    technologies: ["Flutter", "Dart", "Animation"],
+    technologies: ["Flutter", "Dart"],
     link: "https://play.google.com/store/apps/details?id=com.yelbegen.software",
     githubLink: "https://github.com/ernklyc/yazi_tura"
   },
@@ -76,7 +76,7 @@ export const projects = [
     type: "Flutter",
     description: "Yemek tarifleri uygulaması",
     image: "https://raw.githubusercontent.com/ernklyc/meal/refs/heads/main/assets/images/logo.png",
-    technologies: ["Flutter", "Dart", "State Management"],
+    technologies: ["Flutter", "Dart"],
     link: "https://github.com/ernklyc/meal",
     githubLink: "https://github.com/ernklyc/meal"
   },
@@ -112,7 +112,7 @@ export const projects = [
     type: "Web",
     description: "Attack on Titan verileri için API servisi",
     image: "https://raw.githubusercontent.com/ernklyc/attack-on-titan-wiki-api/refs/heads/master/public/eren.png",
-    technologies: ["Node.js", "Express", "REST API"],
+    technologies: ["Node.js", "REST API"],
     link: "https://attack-on-titan-wiki-api.vercel.app/",
     githubLink: "https://github.com/ernklyc/attack-on-titan-wiki-api"
   }

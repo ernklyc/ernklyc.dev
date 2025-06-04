@@ -1,5 +1,5 @@
 export const profile = {
-  name: "Eren Kalaycı",
+  name: "Eren KALAYCI",
   title: "Bilgisayar Mühendisi & Mobil Uygulama Geliştirici",
   email: "hello@developer.com",
   phone: "+1 (555) 123-4567",

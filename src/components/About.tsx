@@ -52,16 +52,16 @@ export default function About() {
                     className="w-full h-auto object-contain"
                   />
                 </div>
-                <h3 className="text-xl font-bold text-white">Eren Kalaycı</h3>
+                <h3 className="text-xl font-bold text-white">Eren KALAYCI</h3>
                 <p className="text-[#FF4655] text-sm">Bilgisayar Mühendisi & Mobil Uygulama Geliştirici</p>
               </div>
               
               <div className="space-y-4 mb-6 flex-grow">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#1F2731] border border-[#FF4655]/20 flex items-center justify-center flex-shrink-0">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#1F2731] border border-[#FF4655]/20 flex items-center justify-center flex-shrink-0 self-center">
                     <FiGlobe className="text-[#FF4655] w-4 h-4" />
                   </div>
-                  <div>
+                  <div className="flex flex-col justify-center">
                     <p className="text-gray-400 text-xs">Konum</p>
                     <p className="text-white text-sm">Türkiye / Trabzon</p>
                   </div>
