@@ -57,7 +57,7 @@ export default function Skills() {
           className="mb-10 text-center"
         >
           <div className="inline-block">
-            <h2 className="text-xl md:text-3xl font-bold mb-3 text-white relative z-10">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-white relative z-10">
               YETENEKLERİM
             </h2>
             <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent"></div>

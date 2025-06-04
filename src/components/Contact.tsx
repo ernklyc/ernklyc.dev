@@ -35,11 +35,13 @@ export default function Contact() {
           transition={{ duration: 0.5 }}
           className="mb-8 text-center"
         >
-          <h2 className="text-xl md:text-2xl font-bold mb-2 text-white">
-            İLETİŞİME GEÇ
-          </h2>
-          <div className="w-16 h-1 bg-[#FF4655] mx-auto mb-4"></div>
-          <p className="text-gray-300 max-w-xl mx-auto text-xs md:text-sm">
+          <div className="inline-block">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-white relative z-10">
+              İLETİŞİME GEÇ
+            </h2>
+            <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent"></div>
+          </div>
+          <p className="text-gray-300 max-w-xl mx-auto text-xs md:text-sm mt-4">
             Proje teklifleri, iş birliği fırsatları veya herhangi bir sorunuz için benimle iletişime geçmekten çekinmeyin.
           </p>
         </motion.div>

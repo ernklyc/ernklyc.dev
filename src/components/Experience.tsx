@@ -14,12 +14,13 @@ export default function Experience() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="mb-16 text-center"
-        >
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            DENEYİM & EĞİTİM
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-[#FF4655]/80 to-[#FF4655]/20 mx-auto mb-8"></div>
-          <p className="text-gray-300 max-w-2xl mx-auto text-lg">
+        >          <div className="inline-block">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-white relative z-10">
+              DENEYİM & EĞİTİM
+            </h2>
+            <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent"></div>
+          </div>
+          <p className="text-gray-300 max-w-2xl mx-auto text-lg mt-4">
             Profesyonel deneyimlerim ve eğitim geçmişim
           </p>
         </motion.div>
