@@ -63,6 +63,8 @@ export default function Projects() {
               className="group relative bg-white/5 backdrop-blur-xl rounded-3xl overflow-hidden transition-all duration-300 hover:bg-white/10 border border-white/10 hover:border-[#FF4655]/20 shadow-2xl hover:shadow-[#FF4655]/5"
             >
               <div className="relative">
+                <div className="absolute inset-0 bg-black/40 z-10"></div>
+                
                 <Image
                   src={project.image || "https://via.placeholder.com/600"}
                   alt={project.name}
@@ -70,9 +72,9 @@ export default function Projects() {
                   height={350}
                   className="w-full object-cover object-center transition-transform duration-700 group-hover:scale-105 aspect-[16/9]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 opacity-80 group-hover:opacity-70 transition-all duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40 opacity-90 group-hover:opacity-85 transition-all duration-500 z-20"></div>
                 
-                <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-6 md:p-8">
+                <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-6 md:p-8 z-30">
                   <div className="flex justify-between items-start">
                     <span className="px-3 py-1 bg-[#FF4655]/20 text-white/90 text-xs font-medium rounded-full backdrop-blur-md border border-[#FF4655]/30">
                       {project.type}

@@ -5,6 +5,6 @@ export const experience = [
     location: "Trabzon, Türkiye",
     type: "Ofisten",
     period: "Tem 2024 - Ağu 2024",
-    duration: "2 ay"
+    duration: "1 ay"
   }
 ]; 
