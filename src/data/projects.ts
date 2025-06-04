@@ -2,11 +2,11 @@ export const projects = [
   {
     name: "MF Master Online",
     type: "Flutter",
-    description: "Mobil oyun uygulaması",
+    description: "Mobil mayın tarlası oyunu",
     image: "https://play-lh.googleusercontent.com/OlOSGC7_lPpGsGTYUHTag2BPeBHZaoPDjf-JPPeVFfL8RjZJrFqIHKhXJChcRxLQLmrE=w240-h480-rw",
     technologies: ["Flutter", "Dart", "Firebase"],
     link: "https://play.google.com/store/apps/details?id=com.yelbegen.minemaster",
-    githubLink: "https://github.com/ernklyc"
+    githubLink: "https://github.com/ernklyc/minemaster"
   },
   {
     name: "Harry Potter Character Compendium",
@@ -22,16 +22,16 @@ export const projects = [
     type: "Flutter",
     description: "Bayrak bilgi yarışması uygulaması",
     image: "https://play-lh.googleusercontent.com/1hXjQ_MR1-xFvcn_6g4SDdmC9zC2DISqu8iGM9iqxtFFGgbHHYeS1GdrwmnwXmbMCQ=w240-h480-rw",
-    technologies: ["Flutter", "Dart"],
+    technologies: ["Flutter", "Dart", "Mobile Game"],
     link: "https://play.google.com/store/apps/details?id=com.flag.quiz.yelbegen.software",
-    githubLink: "https://github.com/ernklyc?tab=repositories"
+    githubLink: "https://github.com/ernklyc/flag_quiz"
   },
   {
     name: "Yazı Tura",
     type: "Flutter",
     description: "Yazı Tura oyunu uygulaması",
     image: "https://play-lh.googleusercontent.com/JFzhXgLEHDJFy8cken5RZP6bZHIpDw-6h598akkele4TG7-7jDjWdCFNvZrO-zyDyQ=w240-h480-rw",
-    technologies: ["Flutter", "Dart"],
+    technologies: ["Flutter", "Dart", "Animation"],
     link: "https://play.google.com/store/apps/details?id=com.yelbegen.software",
     githubLink: "https://github.com/ernklyc/yazi_tura"
   },
@@ -76,7 +76,7 @@ export const projects = [
     type: "Flutter",
     description: "Yemek tarifleri uygulaması",
     image: "https://raw.githubusercontent.com/ernklyc/meal/refs/heads/main/assets/images/logo.png",
-    technologies: ["Flutter", "Dart"],
+    technologies: ["Flutter", "Dart", "UI/UX"],
     link: "https://github.com/ernklyc/meal",
     githubLink: "https://github.com/ernklyc/meal"
   },
@@ -101,9 +101,9 @@ export const projects = [
   {
     name: "Attack on Titan Wiki",
     type: "Web",
-    description: "Attack on Titan evrenine ait wiki web sitesi ve API",
+    description: "Attack on Titan evrenine ait wiki web sitesi",
     image: "https://pbs.twimg.com/media/F-Fs4wqbQAAhI4r?format=jpg&name=large",
-    technologies: ["React", "Node.js", "API", "Web Development"],
+    technologies: ["React", "Next.js", "Web Development"],
     link: "https://attack-on-titan-web.vercel.app/",
     githubLink: "https://github.com/ernklyc/attack-on-titan-web"
   },
@@ -112,7 +112,7 @@ export const projects = [
     type: "Web",
     description: "Attack on Titan verileri için API servisi",
     image: "https://raw.githubusercontent.com/ernklyc/attack-on-titan-wiki-api/refs/heads/master/public/eren.png",
-    technologies: ["Node.js", "REST API"],
+    technologies: ["Node.js", "Express", "REST API"],
     link: "https://attack-on-titan-wiki-api.vercel.app/",
     githubLink: "https://github.com/ernklyc/attack-on-titan-wiki-api"
   }
