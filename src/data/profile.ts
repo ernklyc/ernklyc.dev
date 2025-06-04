@@ -1,7 +1,7 @@
 export const profile = {
   name: "Eren KALAYCI",
   title: "Bilgisayar Mühendisi & Mobil Uygulama Geliştirici",
-  email: "hello@developer.com",
+  email: "ernklyc@gmail.com",
   phone: "+1 (555) 123-4567",
   location: "İstanbul, Türkiye",
   bio: {
@@ -10,7 +10,7 @@ export const profile = {
   },
   links: {
     github: "https://github.com/ernklyc",
-    linkedin: "https://linkedin.com/in/ernklyc",
+    linkedin: "https://www.linkedin.com/in/erenklyc/",
     twitter: "https://twitter.com/ernklyc",
     instagram: "https://instagram.com/ernklyc",
   },

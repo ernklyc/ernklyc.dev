@@ -72,7 +72,7 @@ export default function Projects() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 opacity-80 group-hover:opacity-70 transition-all duration-500"></div>
                 
-                <div className="absolute inset-0 flex flex-col justify-between p-8">
+                <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-6 md:p-8">
                   <div className="flex justify-between items-start">
                     <span className="px-3 py-1 bg-[#FF4655]/20 text-white/90 text-xs font-medium rounded-full backdrop-blur-md border border-[#FF4655]/30">
                       {project.type}
@@ -80,8 +80,8 @@ export default function Projects() {
                   </div>
                   
                   <div>
-                    <h3 className="text-white font-bold text-2xl mb-3 group-hover:text-[#FF4655]/90 transition-colors duration-300">{project.name}</h3>
-                    <div className="flex flex-wrap gap-2 mb-5">
+                    <h3 className="text-white font-bold text-xl sm:text-2xl mb-2 sm:mb-3 group-hover:text-[#FF4655]/90 transition-colors duration-300">{project.name}</h3>
+                    <div className="flex flex-wrap gap-2 mb-4 sm:mb-5">
                       {project.technologies.map((tech) => (
                         <span
                           key={tech}
@@ -92,7 +92,7 @@ export default function Projects() {
                       ))}
                     </div>
                     
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2 sm:gap-3">
                       {/* WhatsApp IoT Messaging için özel durum */}
                       {project.name === "WhatsApp IoT Messaging" && project.githubLink ? (
                         <>
@@ -100,23 +100,23 @@ export default function Projects() {
                             href={project.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
+                            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-xs sm:text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
                             aria-label={`GitHub repository for ${project.name}`}
                           >
-                            <FiGithub className="w-4 h-4" />
+                            <FiGithub className="w-3 h-3 sm:w-4 sm:h-4" />
                             <span>Mobile App</span>
-                            <FiArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
+                            <FiArrowRight className="w-2 h-2 sm:w-3 sm:h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
                           </a>
                           <a
                             href={project.githubLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
+                            className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-xs sm:text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
                             aria-label={`GitHub repository for ${project.name}`}
                           >
-                            <FiGithub className="w-4 h-4" />
+                            <FiGithub className="w-3 h-3 sm:w-4 sm:h-4" />
                             <span>IoT Device</span>
-                            <FiArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
+                            <FiArrowRight className="w-2 h-2 sm:w-3 sm:h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
                           </a>
                         </>
                       ) : (
@@ -126,12 +126,12 @@ export default function Projects() {
                               href={project.githubLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
+                              className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-xs sm:text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
                               aria-label={`GitHub repository for ${project.name}`}
                             >
-                              <FiGithub className="w-4 h-4" />
+                              <FiGithub className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span>GitHub</span>
-                              <FiArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
+                              <FiArrowRight className="w-2 h-2 sm:w-3 sm:h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
                             </a>
                           )}
                           {project.link.includes('play.google.com') && (
@@ -139,12 +139,12 @@ export default function Projects() {
                               href={project.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
+                              className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-xs sm:text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
                               aria-label={`Google Play Store link for ${project.name}`}
                             >
-                              <FaGooglePlay className="w-4 h-4" />
+                              <FaGooglePlay className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span>Play Store</span>
-                              <FiArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
+                              <FiArrowRight className="w-2 h-2 sm:w-3 sm:h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
                             </a>
                           )}
                           {!project.link.includes('play.google.com') && project.link !== project.githubLink && (
@@ -152,12 +152,12 @@ export default function Projects() {
                               href={project.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
+                              className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#FF4655]/80 hover:bg-[#FF4655] text-white font-medium text-xs sm:text-sm transition-all shadow-lg hover:shadow-[#FF4655]/50 group/btn"
                               aria-label={`Demo or link for ${project.name}`}
                             >
-                              <FiExternalLink className="w-4 h-4" />
+                              <FiExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span>Web Sayfası</span>
-                              <FiArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
+                              <FiArrowRight className="w-2 h-2 sm:w-3 sm:h-3 opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
                             </a>
                           )}
                         </>

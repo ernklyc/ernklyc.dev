@@ -125,12 +125,12 @@ export default function About() {
                 
                 <p className="mb-4 relative">
                   <span className="text-[#FF4655] font-mono text-base absolute -left-4 opacity-60">*</span>
-                  Flutter platformunda Android için mobil uygulamalar ve Unity motoruyla Android ile Masaüstü sistemler için oyunlar geliştirme konusunda deneyime sahibim. Şu anda aktif olarak Flutter ile mobil uygulama geliştirme süreçlerine odaklanmış durumdayım. Ayrıca, modern web teknolojileriyle çeşitli projeler geliştirmekteyim. Projelerimde kullanıcı deneyimini (UX) merkeze alarak, estetik ve yüksek işlevselliğe sahip profesyonel çıktılar sunmaktayım.
+                  Flutter platformunda Android için mobil uygulamalar ve Unity motoruyla Android ile Masaüstü sistemler için oyunlar geliştirme konusunda deneyime sahibim. Şu anda aktif olarak Flutter ile mobil uygulama geliştirme süreçlerine odaklanmış durumdayım. Ayrıca, modern web teknolojileriyle çeşitli projeler geliştirmekteyim. Projelerimde kullanıcı deneyimini ve tasarımını merkeze alarak, estetik ve yüksek işlevselliğe sahip profesyonel çıktılar sunmaktayım.
                 </p>
                 
                 <p className="mb-0 relative">
                   <span className="text-[#FF4655] font-mono text-base absolute -left-4 opacity-60">*</span>
-                  Teknolojik gelişmeleri yakından takip ederek kendimi sürekli geliştirir, yeni yazılım ve framework&apos;lere hızla adapte olurum. Analitik düşünme ve problem çözme becerilerimle teknik yetkinliklerimi birleştirerek, yazılım geliştirme süreçlerine etkin katkı sağlarım. İşbirlikçi bir yaklaşımla ekip çalışmalarında üzerime düşen görevleri titizlikle yerine getirir, ortak hedeflere ulaşmak amacıyla çözüm odaklı ve yapıcı önerilerle ekibe destek olurum; öğrenmeye ve yeniliklere açık bir profesyonel tutum sergilerim.
+                  Teknolojik gelişmeleri yakından takip ederek kendimi sürekli geliştirir, yeni yazılım ve framework&apos;lere hızla adapte olurum. Analitik düşünme ve problem çözme becerilerimle teknik yetkinliklerimi birleştirerek, yazılım geliştirme süreçlerine etkin katkı sağlarım. İşbirlikçi bir yaklaşımla ekip çalışmalarında üzerime düşen görevleri titizlikle yerine getirir, ortak hedeflere ulaşmak amacıyla çözüm odaklı ve yapıcı önerilerle ekibe destek olurum; Öğrenmeyi seven, yenilikleri takip eden ve gelişimi önemseyen bir profesyonel anlayışla hareket ederim.
                 </p>
               </div>
             </div>

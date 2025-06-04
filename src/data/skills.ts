@@ -25,7 +25,7 @@ export const skills = [
     category: "Diller",
     items: [
       "Türkçe (Anadil)",
-      "İngilizce (İleri)"
+      "İngilizce"
     ]
   },
   {

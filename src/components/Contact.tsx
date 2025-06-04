@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FiSend, FiCheck } from "react-icons/fi";
+import { profile } from "@/data/profile";
 
 export default function Contact() {
   const [formStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -18,7 +19,7 @@ export default function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const mailto = `mailto:erenkalayci61@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
+    const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
       `Ad: ${formData.name}\n\nMesaj: ${formData.message}`
     )}`;
     window.location.href = mailto;
