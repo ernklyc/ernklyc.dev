@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FiExternalLink, FiGithub, FiArrowRight, FiChevronRight } from "react-icons/fi";
+import { FiExternalLink, FiGithub, FiArrowRight } from "react-icons/fi";
 import { FaGooglePlay } from "react-icons/fa";
 import { projects } from "@/data/projects";
 import Image from "next/image";
