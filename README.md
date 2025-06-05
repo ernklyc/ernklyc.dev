@@ -62,10 +62,7 @@ Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
     # veya
     # yarn start
     ```
-
-## 📂 Proje Yapısı (Önemli Dosyalar ve Klasörler)
-
-ernklyc-web/├── public/                   # Statik dosyalar (resimler, ikonlar vb.)├── src/│   ├── app/                  # Next.js App Router dosyaları│   │   ├── globals.css       # Global CSS stilleri│   │   ├── layout.tsx        # Ana layout bileşeni│   │   └── page.tsx          # Ana sayfa bileşeni│   ├── components/           # React bileşenleri (Navbar, Hero, About vb.)│   └── data/                 # Portfolyo verilerini içeren TypeScript dosyaları│       ├── profile.ts        # Kişisel profil bilgileri│       ├── projects.ts       # Proje listesi ve detayları│       ├── skills.ts         # Yetenek listesi│       ├── experience.ts     # Deneyim bilgileri│       └── education.ts      # Eğitim bilgileri├── next.config.ts            # Next.js yapılandırma dosyası├── tailwind.config.ts        # (postcss.config.mjs içinde tanımlı) Tailwind CSS yapılandırması├── postcss.config.mjs        # PostCSS yapılandırması (Tailwind CSS için)├── eslint.config.mjs         # ESLint yapılandırması├── package.json              # Proje bağımlılıkları ve scriptleri└── README.md                 # Bu dosya
+    
 ## 🖼️ Resim Konfigürasyonu
 
 `next.config.ts` dosyasında belirtilen `remotePatterns` sayesinde harici kaynaklardan resimler güvenli bir şekilde yüklenebilmektedir. İzin verilen bazı kaynaklar:
@@ -81,14 +78,6 @@ ernklyc-web/├── public/                   # Statik dosyalar (resimler, iko
 * **Global Stiller:** `src/app/globals.css` dosyasında Tailwind CSS importları ve temel HTML elementi stilleri bulunur.
 * **Fontlar:** [Geist Sans ve Geist Mono](https://vercel.com/font) fontları `src/app/layout.tsx` dosyasında tanımlanmış ve kullanılmıştır.
 * **Tema:** Açık ve koyu tema desteği CSS değişkenleri (`--background`, `--foreground`) ile `src/app/globals.css` içinde yönetilmektedir.
-
-## 🤝 Katkıda Bulunma
-
-Katkılarınız her zaman kabulümdür! Lütfen bir pull request açmadan önce issue açarak tartışmaya başlayın.
-
-## 📄 Lisans
-
-Bu proje MIT Lisansı altındadır. Daha fazla bilgi için `LICENSE` dosyasına bakın (Eğer varsa, yoksa bu satırı kaldırın veya uygun bir lisans ekleyin).
 
 ---
 
