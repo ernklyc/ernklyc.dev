@@ -15,7 +15,7 @@ export default function AISupport() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Merhaba! Ben Eren KALAYCI'nın AI asistanıyım. Size nasıl yardımcı olabilirim? Eren'in projeleri, yetenekleri, iş birliği fırsatları hakkında sorularınızı yanıtlayabilirim. 🚀",
+      text: "Merhaba! Ben Eren KALAYCI'nın AI asistanıyım. Size nasıl yardımcı olabilirim? Eren'in projeleri, yetenekleri, iş deneyimleri veya teknoloji konularında sorularınızı yanıtlayabilirim. 🚀",
       isBot: true,
       timestamp: new Date()
     }
