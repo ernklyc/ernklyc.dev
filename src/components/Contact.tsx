@@ -26,7 +26,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-14 bg-gradient-to-br from-[#0F1923] via-[#0F1923] to-[#0A1017] text-white scroll-mt-28">
+    <section id="contact" className="py-14 bg-gradient-to-br from-[#0F1923] via-[#0F1923] to-[#0A1017] text-white scroll-mt-20">
       <div className="w-full flex justify-center items-center px-0 sm:px-0">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -47,18 +47,18 @@ export default function Contact() {
         </motion.div>
       </div>
 
-      <div className="container mx-auto px-4 max-w-5xl">
-        <div className="flex justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-full max-w-lg"
-          >
-            <div className="bg-[#0F1923]/70 backdrop-blur-sm rounded-2xl p-6 border border-[#FF4655]/40 hover:border-[#FF4655] transition-all duration-200 h-full flex flex-col">
-              <h3 className="text-lg md:text-xl font-bold mb-4 text-white">Mesaj Gönder</h3>
-              <form onSubmit={handleSubmit} className="space-y-4 flex-grow flex flex-col">
+      <div className="container mx-auto px-4 max-w-2xl">
+        {/* İletişim Formu - Merkeze Alınmış */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="w-full"
+        >
+          <div className="bg-[#0F1923]/70 backdrop-blur-sm rounded-2xl p-8 border border-[#FF4655]/40 hover:border-[#FF4655] transition-all duration-200">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <input
                     type="text"
@@ -67,60 +67,86 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#1F2731] border border-[#FF4655]/30 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-[#FF4655] transition-all"
+                    className="w-full bg-[#1F2731] border border-[#FF4655]/30 rounded-lg p-4 text-white focus:outline-none focus:border-[#FF4655] transition-all"
                   />
                 </div>
                 <div>
                   <input
-                    type="text"
-                    name="subject"
-                    placeholder="Konu"
-                    value={formData.subject}
-                    onChange={handleChange}
+                    type="email"
+                    name="email"
+                    placeholder="Email Adresiniz"
                     required
-                    className="w-full bg-[#1F2731] border border-[#FF4655]/30 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-[#FF4655] transition-all"
+                    className="w-full bg-[#1F2731] border border-[#FF4655]/30 rounded-lg p-4 text-white focus:outline-none focus:border-[#FF4655] transition-all"
                   />
                 </div>
-                <div className="flex-grow">
-                  <textarea
-                    name="message"
-                    placeholder="Mesajınız"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows={4}
-                    className="w-full bg-[#1F2731] border border-[#FF4655]/30 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-[#FF4655] transition-all resize-none h-full min-h-[100px]"
-                  ></textarea>
-                </div>
-                <button
-                  type="submit"
-                  disabled={formStatus === 'loading'}
-                  className={`w-full bg-gradient-to-r from-[#FF4655] to-[#FF4655]/80 hover:from-[#FF4655]/90 hover:to-[#FF4655] text-white py-3 px-6 rounded-lg font-medium flex items-center justify-center transition-all duration-300 ${formStatus === 'loading' ? 'opacity-70' : ''}`}
+              </div>
+              
+              <div>
+                <input
+                  type="text"
+                  name="subject"
+                  placeholder="Konu"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-[#1F2731] border border-[#FF4655]/30 rounded-lg p-4 text-white focus:outline-none focus:border-[#FF4655] transition-all"
+                />
+              </div>
+              
+              <div>
+                <textarea
+                  name="message"
+                  placeholder="Mesajınız"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  rows={6}
+                  className="w-full bg-[#1F2731] border border-[#FF4655]/30 rounded-lg p-4 text-white focus:outline-none focus:border-[#FF4655] transition-all resize-none"
+                ></textarea>
+              </div>
+              
+              <button
+                type="submit"
+                disabled={formStatus === 'loading'}
+                className={`w-full bg-gradient-to-r from-[#FF4655] to-[#FF4655]/80 hover:from-[#FF4655]/90 hover:to-[#FF4655] text-white py-4 px-6 rounded-lg font-medium flex items-center justify-center transition-all duration-300 transform hover:scale-[1.02] ${formStatus === 'loading' ? 'opacity-70' : ''}`}
+              >
+                {formStatus === 'idle' && (
+                  <>
+                    <FiSend className="mr-2" /> Mesaj Gönder
+                  </>
+                )}
+                {formStatus === 'loading' && (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Gönderiliyor...
+                  </>
+                )}
+                {formStatus === 'success' && (
+                  <>
+                    <FiCheck className="mr-2" /> Gönderildi!
+                  </>
+                )}
+              </button>
+            </form>
+            
+            {/* Alt Bilgi */}
+            <div className="mt-6 pt-6 border-t border-[#FF4655]/20 text-center">
+              <p className="text-gray-400 text-sm">
+                Alternatif olarak{" "}
+                <a 
+                  href={`mailto:${profile.email}`}
+                  className="text-[#FF4655] hover:text-[#FF4655]/80 transition-colors"
                 >
-                  {formStatus === 'idle' && (
-                    <>
-                      <FiSend className="mr-2" /> Gönder
-                    </>
-                  )}
-                  {formStatus === 'loading' && (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Gönderiliyor...
-                    </>
-                  )}
-                  {formStatus === 'success' && (
-                    <>
-                      <FiCheck className="mr-2" /> Gönderildi!
-                    </>
-                  )}
-                </button>
-              </form>
+                  {profile.email}
+                </a>
+                {" "}adresine doğrudan mail gönderebilirsiniz.
+              </p>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

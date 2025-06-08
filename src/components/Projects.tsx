@@ -18,7 +18,7 @@ export default function Projects() {
       );
 
   return (
-    <section id="projects" className="py-20 bg-gradient-to-br from-[#0F1923] via-[#0F1923] to-[#151F2B] text-white scroll-mt-28">
+    <section id="projects" className="py-20 bg-gradient-to-br from-[#0F1923] via-[#0F1923] to-[#151F2B] text-white scroll-mt-20">
       <div className="container mx-auto px-4 max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

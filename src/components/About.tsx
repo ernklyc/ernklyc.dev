@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function About() {
   return (
-    <section id="about" className="py-20 bg-gradient-to-br from-[#0F1923] via-[#151F2B] to-[#0F1923] text-white relative overflow-hidden scroll-mt-28">
+    <section id="about" className="py-20 bg-gradient-to-br from-[#0F1923] via-[#151F2B] to-[#0F1923] text-white relative overflow-hidden scroll-mt-20">
       {/* Dekoratif elementler */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-64 h-64 bg-[#FF4655]/5 rounded-full blur-3xl"></div>

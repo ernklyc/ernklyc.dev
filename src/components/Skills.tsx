@@ -40,7 +40,7 @@ export default function Skills() {
   const activeSkills = skills.find(skill => skill.category === activeTab);
 
   return (
-    <section id="skills" className="py-16 bg-gradient-to-br from-[#151F2B] via-[#0F1923] to-[#0F1923] text-white relative overflow-hidden scroll-mt-28">
+    <section id="skills" className="py-16 bg-gradient-to-br from-[#151F2B] via-[#0F1923] to-[#0F1923] text-white relative overflow-hidden scroll-mt-20">
       {/* Dekoratif elementler */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-10 w-64 h-64 bg-[#FF4655]/5 rounded-full blur-3xl"></div>

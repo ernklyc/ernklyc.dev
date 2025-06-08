@@ -6,7 +6,7 @@ import { education } from "@/data/education";
 
 export default function Experience() {
   return (
-    <section id="experience" className="py-20 bg-gradient-to-br from-[#151F2B] via-[#0F1923] to-[#0F1923] text-white scroll-mt-28">
+    <section id="experience" className="py-20 bg-gradient-to-br from-[#151F2B] via-[#0F1923] to-[#0F1923] text-white scroll-mt-20">
       <div className="container mx-auto px-4 max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
