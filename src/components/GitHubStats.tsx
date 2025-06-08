@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { FiGithub, FiStar, FiGitBranch, FiUsers } from "react-icons/fi";
+import Image from "next/image";
 
 export default function GitHubStats() {
   const username = "ERNKLYC";
@@ -62,11 +63,12 @@ export default function GitHubStats() {
           >
             <h3 className="text-xl font-bold mb-4 text-center">En Çok Kullanılan Diller</h3>
             <div className="space-y-4">
-              <img 
+              <Image 
                 src={`https://github-readme-stats.vercel.app/api/top-langs?username=${username}&show_icons=true&locale=en&layout=compact&theme=github_dark&hide_border=true&bg_color=1F2731&title_color=FF4655&text_color=ffffff`}
                 alt="GitHub Language Stats"
+                width={400}
+                height={200}
                 className="w-full rounded-lg"
-                loading="lazy"
               />
             </div>
           </motion.div>
@@ -82,17 +84,17 @@ export default function GitHubStats() {
         >
           <h3 className="text-2xl font-bold mb-6 text-white">🛠 Teknolojiler & Araçlar</h3>
           <div className="flex flex-wrap justify-center gap-3">
-            <img src="https://img.shields.io/badge/-Flutter-333333?style=flat&logo=flutter" alt="Flutter" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-Dart-333333?style=flat&logo=dart" alt="Dart" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-Unity-333333?style=flat&logo=unity" alt="Unity" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-C%23-333333?style=flat&logo=c-sharp&logoColor=white" alt="C#" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-HTML5-333333?style=flat&logo=html5" alt="HTML5" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-CSS3-333333?style=flat&logo=css3" alt="CSS3" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-JavaScript-333333?style=flat&logo=javascript" alt="JavaScript" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-C-333333?style=flat&logo=c" alt="C" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-Git-333333?style=flat&logo=git" alt="Git" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-Figma-333333?style=flat&logo=figma" alt="Figma" className="rounded hover:scale-105 transition-transform" />
-            <img src="https://img.shields.io/badge/-Photoshop-333333?style=flat&logo=adobe-photoshop" alt="Photoshop" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Flutter-333333?style=flat&logo=flutter" alt="Flutter" width={80} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Dart-333333?style=flat&logo=dart" alt="Dart" width={70} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Unity-333333?style=flat&logo=unity" alt="Unity" width={70} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-C%23-333333?style=flat&logo=c-sharp&logoColor=white" alt="C#" width={60} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-HTML5-333333?style=flat&logo=html5" alt="HTML5" width={80} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-CSS3-333333?style=flat&logo=css3" alt="CSS3" width={70} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-JavaScript-333333?style=flat&logo=javascript" alt="JavaScript" width={100} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-C-333333?style=flat&logo=c" alt="C" width={50} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Git-333333?style=flat&logo=git" alt="Git" width={60} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Figma-333333?style=flat&logo=figma" alt="Figma" width={70} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Photoshop-333333?style=flat&logo=adobe-photoshop" alt="Photoshop" width={100} height={20} className="rounded hover:scale-105 transition-transform" />
           </div>
         </motion.div>
 
@@ -112,7 +114,7 @@ export default function GitHubStats() {
               rel="noopener noreferrer"
               className="inline-block hover:scale-105 transition-transform"
             >
-              <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" alt="LinkedIn" className="rounded" />
+              <Image src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" alt="LinkedIn" width={100} height={20} className="rounded" />
             </a>
             <a
               href="https://ernklyc.github.io/"
@@ -120,7 +122,7 @@ export default function GitHubStats() {
               rel="noopener noreferrer"
               className="inline-block hover:scale-105 transition-transform"
             >
-              <img src="https://img.shields.io/badge/Website-333333?style=flat&logo=google-chrome&logoColor=white" alt="Website" className="rounded" />
+              <Image src="https://img.shields.io/badge/Website-333333?style=flat&logo=google-chrome&logoColor=white" alt="Website" width={100} height={20} className="rounded" />
             </a>
             <a
               href={`https://github.com/${username}`}
@@ -128,7 +130,7 @@ export default function GitHubStats() {
               rel="noopener noreferrer"
               className="inline-block hover:scale-105 transition-transform"
             >
-              <img src="https://img.shields.io/badge/GitHub-333333?style=flat&logo=github&logoColor=white" alt="GitHub" className="rounded" />
+              <Image src="https://img.shields.io/badge/GitHub-333333?style=flat&logo=github&logoColor=white" alt="GitHub" width={100} height={20} className="rounded" />
             </a>
           </div>
         </motion.div>

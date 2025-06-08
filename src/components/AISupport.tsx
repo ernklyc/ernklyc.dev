@@ -68,7 +68,7 @@ export default function AISupport() {
       } else {
         throw new Error(data.error || 'Bir hata oluştu');
       }
-    } catch (error) {
+    } catch {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "Üzgünüm, şu anda bir sorun yaşıyorum. Lütfen daha sonra tekrar deneyin veya doğrudan ernklyc@gmail.com adresinden iletişime geçin.",
