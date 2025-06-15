@@ -94,7 +94,7 @@ export default function Navbar() {
       transition={{ duration: 0.35 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#0F1923]/95 backdrop-blur-md shadow-lg"
+          ? "bg-[#0F1923]/95 backdrop-blur-md"
           : "bg-transparent"
       }`}
     >
@@ -105,20 +105,9 @@ export default function Navbar() {
               key={item.href}
               href={item.href}
               onClick={(e) => handleNavClick(e, item.href)}
-              className={`relative py-2 px-1 font-medium text-xs md:text-sm tracking-wide ${
-                activeSection === item.href.substring(1) 
-                ? "text-[#FF4655]" 
-                : "text-gray-300 hover:text-[#FF4655]"
-              } transition-colors`}
+              className="relative py-2 px-1 font-medium text-xs md:text-sm tracking-wide text-white hover:text-gray-300 transition-colors"
             >
               {item.label}
-              <span 
-                className={`absolute bottom-0 left-0 h-0.5 bg-[#FF4655] transition-all duration-300 ease-in-out ${
-                  activeSection === item.href.substring(1) 
-                  ? "w-full" 
-                  : "w-0 group-hover:w-full"
-                }`}>
-              </span>
             </a>
           ))}
         </div>
@@ -142,18 +131,14 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-[#0F1923]/95 backdrop-blur-md absolute top-full left-0 right-0 shadow-lg z-50"
+            className="md:hidden bg-[#0F1923]/95 backdrop-blur-md absolute top-full left-0 right-0 z-50"
           >
             <div className="container mx-auto py-3 flex flex-col space-y-1 px-3 sm:px-6 items-center">
               {menuItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
-                  className={`py-2 px-3 rounded-lg flex items-center text-sm w-full text-center justify-center ${
-                    activeSection === item.href.substring(1)
-                    ? "text-[#FF4655] bg-[#1F2731]/50" 
-                    : "text-gray-300 hover:bg-[#1F2731]/30"
-                  } transition-colors`}
+                  className="py-2 px-3 rounded-lg flex items-center text-sm w-full text-center justify-center text-white hover:bg-[#1F2731]/30 transition-colors"
                   onClick={(e) => handleNavClick(e, item.href)}
                 >
                   {item.label}

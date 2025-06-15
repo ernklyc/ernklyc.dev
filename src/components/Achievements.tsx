@@ -15,7 +15,7 @@ export default function Achievements() {
           className="mb-16 text-center"
         >
           <div className="inline-block">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-white relative z-10">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x relative z-10">
               SERTİFİKALAR & BAŞARILAR
             </h2>
             <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent"></div>

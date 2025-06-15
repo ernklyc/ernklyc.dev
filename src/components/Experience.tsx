@@ -53,7 +53,7 @@ export default function Experience() {
             transition={{ duration: 0.5 }}
             className="inline-block relative"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
               DENEYİM & EĞİTİM
             </h2>
             <motion.div

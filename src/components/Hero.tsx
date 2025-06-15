@@ -77,7 +77,7 @@ export default function Hero() {
         })}
       </div>
 
-      <div className="container mx-auto px-4 max-w-6xl relative z-10">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl relative z-10">
         <motion.div 
           variants={containerVariants}
           initial="hidden"
@@ -90,7 +90,7 @@ export default function Hero() {
             whileHover={{ scale: 1.05 }}
             className="mb-6 relative group"
           >
-            <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-white/20 p-1 overflow-hidden bg-gradient-to-br from-[#1F2731] to-[#0F1923] shadow-lg">
+            <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-white/20 p-1 overflow-hidden bg-gradient-to-br from-[#1F2731] to-[#0F1923]">
               <Image 
                 src="/profil_resmim.jpg" 
                 alt={profile.name} 
@@ -104,7 +104,7 @@ export default function Hero() {
           {/* Main Title with Gradient */}
           <motion.h1
             variants={itemVariants}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 relative"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 relative"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
               Eren KALAYCI
@@ -137,7 +137,7 @@ export default function Hero() {
           {/* Enhanced Description */}
           <motion.p
             variants={itemVariants}
-            className="max-w-2xl mb-12 text-gray-300 text-center text-base md:text-lg leading-relaxed"
+            className="max-w-2xl mb-8 md:mb-12 text-gray-300 text-center text-sm md:text-base lg:text-lg leading-relaxed px-4 md:px-0"
           >
             Aktif olarak Flutter ile mobil uygulama geliştirme üzerine yoğunlaşmaktayım. Hobi olarak ise Unity ile oyunlar geliştiriyor ve ayrıca modern web siteleri tasarlıyorum. Geliştirdiğim yenilikçi mobil uygulamaları ve oyunları Google Play Store&apos;da yayınlıyorum.
           </motion.p>
@@ -145,7 +145,7 @@ export default function Hero() {
           {/* Social Links with Enhanced Design */}
           <motion.div
             variants={itemVariants}
-            className="flex justify-center space-x-6 mb-8"
+            className="flex flex-wrap justify-center gap-4 md:gap-6 mb-8 px-4 md:px-0"
           >
             <motion.a
               href={profile.links.github}
@@ -233,22 +233,7 @@ export default function Hero() {
         </div>
       </motion.div>
       
-      {/* Custom CSS for gradient animation */}
-      <style jsx>{`
-        @keyframes gradient-x {
-          0%, 100% {
-            background-size: 200% 200%;
-            background-position: left center;
-          }
-          50% {
-            background-size: 200% 200%;
-            background-position: right center;
-          }
-        }
-        .animate-gradient-x {
-          animation: gradient-x 3s ease infinite;
-        }
-      `}</style>
+
     </section>
   );
 } 

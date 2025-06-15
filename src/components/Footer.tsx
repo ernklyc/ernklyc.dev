@@ -58,7 +58,7 @@ export default function Footer() {
         >
           {/* Header */}
           <motion.div variants={itemVariants} className="mb-6">
-            <h2 className="text-2xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white">
+            <h2 className="text-2xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
               EREN KALAYCI
             </h2>
             <p className="text-gray-300 max-w-md text-center text-sm leading-relaxed">

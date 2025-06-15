@@ -23,7 +23,7 @@ export default function GitHubStats() {
           className="text-center mb-12"
         >
           <div className="inline-block">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-white relative z-10">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x relative z-10">
               GITHUB İSTATİSTİKLERİM
             </h2>
             <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent"></div>
@@ -82,7 +82,7 @@ export default function GitHubStats() {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="text-center"
         >
-          <h3 className="text-2xl font-bold mb-6 text-white">🛠 Teknolojiler & Araçlar</h3>
+          <h3 className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">🛠 Teknolojiler & Araçlar</h3>
           <div className="flex flex-wrap justify-center gap-3">
             <Image src="https://img.shields.io/badge/-Flutter-333333?style=flat&logo=flutter" alt="Flutter" width={80} height={20} className="rounded hover:scale-105 transition-transform" />
             <Image src="https://img.shields.io/badge/-Dart-333333?style=flat&logo=dart" alt="Dart" width={70} height={20} className="rounded hover:scale-105 transition-transform" />

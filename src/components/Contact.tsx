@@ -43,14 +43,7 @@ export default function Contact() {
           className="mb-16 text-center"
         >
           <div className="inline-block relative">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="absolute -inset-4 bg-gradient-to-r from-[#FF4655]/20 via-transparent to-[#FF4655]/20 rounded-lg blur-xl"
-            ></motion.div>
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-[#FF4655] relative z-10">
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
               İLETİŞİME GEÇ
             </h2>
             <motion.div 
@@ -60,7 +53,6 @@ export default function Contact() {
               transition={{ duration: 0.8, delay: 0.5 }}
               className="h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent animate-pulse"></div>
             </motion.div>
           </div>
           <motion.p 
@@ -82,7 +74,7 @@ export default function Contact() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="max-w-2xl mx-auto"
         >
-          <div className="bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/60 to-[#0F1923]/90 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-[#FF4655]/30 hover:border-[#FF4655]/50 transition-all duration-500 shadow-2xl relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/60 to-[#0F1923]/90 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-[#FF4655]/30 hover:border-[#FF4655]/50 transition-all duration-500 relative overflow-hidden group">
             {/* Enhanced Glow Effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#FF4655]/0 via-[#FF4655]/5 to-[#FF4655]/10 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none"></div>
             

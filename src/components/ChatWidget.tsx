@@ -22,6 +22,7 @@ export default function ChatWidget() {
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [responseIndex, setResponseIndex] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -56,18 +57,19 @@ export default function ChatWidget() {
         "LinkedIn veya email yoluyla da iletişime geçebilirsiniz."
       ];
 
-      const randomResponse = adminResponses[Math.floor(Math.random() * adminResponses.length)];
+      const currentResponse = adminResponses[responseIndex % adminResponses.length];
+      setResponseIndex(prev => prev + 1);
       
       const adminMessage: Message = {
         id: Date.now() + 1,
-        text: randomResponse,
+        text: currentResponse,
         sender: 'admin',
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, adminMessage]);
       setIsTyping(false);
-    }, 1500 + Math.random() * 1000);
+    }, 2000);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -86,31 +88,37 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* Chat Toggle Button */}
+      {/* Enhanced Chat Toggle Button */}
       <motion.button
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-[#FF4655] to-[#FF4655]/80 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300"
+        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] text-white p-3 md:p-4 rounded-full transition-all duration-300 border-2 border-white/10"
         aria-label="Open chat"
       >
-        {isOpen ? (
-          <FiX className="w-6 h-6" />
-        ) : (
-          <FiMessageCircle className="w-6 h-6" />
-        )}
+        <motion.div
+          animate={isOpen ? { rotate: 180 } : { rotate: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {isOpen ? (
+            <FiX className="w-5 h-5 md:w-6 md:h-6" />
+          ) : (
+            <FiMessageCircle className="w-5 h-5 md:w-6 md:h-6" />
+          )}
+        </motion.div>
         {!isOpen && (
           <motion.div
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full"
+            className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"
           />
         )}
+
       </motion.button>
 
-      {/* Chat Window */}
+      {/* Enhanced Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -118,100 +126,139 @@ export default function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="fixed bottom-24 right-6 z-40 w-80 sm:w-96 h-[500px] bg-white dark:bg-[#1F2731] rounded-2xl shadow-2xl border border-gray-200 dark:border-[#FF4655]/20 overflow-hidden"
+            className="fixed bottom-16 right-2 left-2 md:bottom-24 md:right-6 md:left-auto z-40 w-auto md:w-80 lg:w-96 h-[70vh] md:h-[500px] bg-gradient-to-br from-[#1F2731] via-[#1A252F] to-[#0F1923] rounded-2xl border border-[#FF4655]/30 overflow-hidden backdrop-blur-xl"
           >
-            {/* Chat Header */}
-            <div className="bg-gradient-to-r from-[#FF4655] to-[#FF4655]/80 text-white p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                  <FiUser className="w-5 h-5" />
-                </div>
+            {/* Enhanced Chat Header */}
+            <div className="bg-gradient-to-r from-[#FF4655] via-[#FF6B7A] to-[#FF4655] text-white p-3 md:p-4 flex items-center justify-between relative overflow-hidden">
+              <div className="flex items-center gap-3 relative z-10">
+                <motion.div 
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/30"
+                >
+                  <FiUser className="w-4 h-4 md:w-5 md:h-5" />
+                </motion.div>
                 <div>
-                  <h3 className="font-semibold">Eren Kılıç</h3>
-                  <div className="flex items-center gap-1 text-xs text-white/80">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span>Çevrimiçi</span>
+                  <h3 className="font-bold text-sm md:text-base">Eren KALAYCI</h3>
+                  <div className="flex items-center gap-1 text-xs text-white/90">
+                    <motion.div 
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="w-2 h-2 bg-green-400 rounded-full"
+                    ></motion.div>
+                    <span className="font-medium">Aktif • Genellikle hızlı yanıtlar</span>
                   </div>
                 </div>
               </div>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsOpen(false)}
+                className="p-2 hover:bg-white/10 rounded-full transition-colors relative z-10"
+              >
+                <FiX className="w-4 h-4 md:w-5 md:h-5" />
+              </motion.button>
             </div>
 
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 h-80">
-              {messages.map((message) => (
-                <div
+            {/* Enhanced Messages Area */}
+            <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4 bg-gradient-to-b from-[#0F1923]/50 to-[#1F2731]/30">
+              {messages.map((message, index) => (
+                <motion.div
                   key={message.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
                   className={`flex ${
                     message.sender === 'user' ? 'justify-end' : 'justify-start'
                   }`}
                 >
                   <div
-                    className={`max-w-[80%] p-3 rounded-2xl ${
+                    className={`max-w-[85%] md:max-w-[80%] p-3 md:p-4 rounded-2xl ${
                       message.sender === 'user'
-                        ? 'bg-[#FF4655] text-white rounded-br-none'
-                        : 'bg-gray-100 dark:bg-[#0F1923] text-gray-800 dark:text-white rounded-bl-none'
+                        ? 'bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] text-white rounded-br-md border border-[#FF4655]/20'
+                        : 'bg-gradient-to-r from-[#2A3441] to-[#1F2731] text-white rounded-bl-md border border-[#FF4655]/10'
                     }`}
                   >
-                    <p className="text-sm">{message.text}</p>
-                    <div className={`flex items-center gap-1 mt-1 text-xs ${
+                    <p className="text-sm md:text-base leading-relaxed">{message.text}</p>
+                    <div className={`flex items-center gap-1 mt-2 text-xs ${
                       message.sender === 'user' 
-                        ? 'text-white/70' 
-                        : 'text-gray-500 dark:text-gray-400'
+                        ? 'text-white/80' 
+                        : 'text-gray-300'
                     }`}>
                       <FiClock className="w-3 h-3" />
                       <span>{formatTime(message.timestamp)}</span>
+                      {message.sender === 'user' && (
+                        <span className="ml-auto">✓✓</span>
+                      )}
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
 
-              {/* Typing Indicator */}
+              {/* Enhanced Typing Indicator */}
               {isTyping && (
-                <div className="flex justify-start">
-                  <div className="bg-gray-100 dark:bg-[#0F1923] p-3 rounded-2xl rounded-bl-none">
-                    <div className="flex gap-1">
-                      <motion.div
-                        animate={{ opacity: [0.4, 1, 0.4] }}
-                        transition={{ duration: 1, repeat: Infinity, delay: 0 }}
-                        className="w-2 h-2 bg-gray-400 rounded-full"
-                      />
-                      <motion.div
-                        animate={{ opacity: [0.4, 1, 0.4] }}
-                        transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
-                        className="w-2 h-2 bg-gray-400 rounded-full"
-                      />
-                      <motion.div
-                        animate={{ opacity: [0.4, 1, 0.4] }}
-                        transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
-                        className="w-2 h-2 bg-gray-400 rounded-full"
-                      />
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-start"
+                >
+                  <div className="bg-gradient-to-r from-[#2A3441] to-[#1F2731] p-3 md:p-4 rounded-2xl rounded-bl-md border border-[#FF4655]/10">
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1">
+                        <motion.div
+                          animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0 }}
+                          className="w-2 h-2 bg-[#FF4655] rounded-full"
+                        />
+                        <motion.div
+                          animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
+                          className="w-2 h-2 bg-[#FF4655] rounded-full"
+                        />
+                        <motion.div
+                          animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.2, 1] }}
+                          transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+                          className="w-2 h-2 bg-[#FF4655] rounded-full"
+                        />
+                      </div>
+                      <span className="text-xs text-gray-300 ml-2">Eren yazıyor...</span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               )}
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area */}
-            <div className="p-4 border-t border-gray-200 dark:border-[#FF4655]/20">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Mesajınızı yazın..."
-                  className="flex-1 p-3 border border-gray-300 dark:border-[#FF4655]/20 rounded-full bg-gray-50 dark:bg-[#0F1923] text-gray-800 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#FF4655] text-sm"
-                />
+            {/* Enhanced Input Area */}
+            <div className="p-3 md:p-4 border-t border-[#FF4655]/20 bg-gradient-to-r from-[#1F2731]/80 to-[#2A3441]/80 backdrop-blur-sm">
+              <div className="flex gap-2 md:gap-3">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Mesajınızı yazın..."
+                    className="w-full p-3 md:p-4 border border-[#FF4655]/30 rounded-2xl bg-[#0F1923]/80 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF4655]/50 focus:border-[#FF4655] text-sm md:text-base transition-all duration-300 backdrop-blur-sm"
+                  />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-[#FF4655]/5 to-transparent opacity-0 focus-within:opacity-100 transition-opacity pointer-events-none"></div>
+                </div>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={sendMessage}
                   disabled={inputMessage.trim() === ""}
-                  className="bg-[#FF4655] text-white p-3 rounded-full hover:bg-[#FF4655]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] text-white p-3 md:p-4 rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 border border-[#FF4655]/20"
                 >
-                  <FiSend className="w-4 h-4" />
+                  <FiSend className="w-4 h-4 md:w-5 md:h-5" />
                 </motion.button>
+              </div>
+              <div className="flex items-center justify-between mt-2 text-xs text-gray-400">
+                <span>💡 Projelerim hakkında soru sorabilirsiniz</span>
+                <span className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  Çevrimiçi
+                </span>
               </div>
             </div>
           </motion.div>
