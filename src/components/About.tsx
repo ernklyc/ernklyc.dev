@@ -1,137 +1,171 @@
 "use client";
 import { motion } from "framer-motion";
-import { FiGlobe, FiGithub, FiLinkedin } from "react-icons/fi";
-import { profile } from "@/data/profile";
+import { FiGlobe } from "react-icons/fi";
 import Image from "next/image";
 
 export default function About() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+
+
   return (
-    <section id="about" className="py-20 bg-gradient-to-br from-[#0F1923] via-[#151F2B] to-[#0F1923] text-white relative overflow-hidden scroll-mt-20">
-      {/* Dekoratif elementler */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-[#FF4655]/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#FF4655]/5 rounded-full blur-3xl"></div>
+    <section id="about" className="py-12 bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white relative overflow-hidden scroll-mt-20">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF4655]/10 rounded-full blur-3xl animate-pulse opacity-60"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000 opacity-50"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-500 opacity-40"></div>
       </div>
       
-      <div className="container mx-auto px-4 max-w-6xl relative">
+      <div className="container mx-auto px-4 max-w-7xl relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
           className="mb-12 text-center"
         >
-          <div className="inline-block">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-white relative z-10">
+          <motion.div variants={itemVariants} className="inline-block relative">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="absolute -inset-4 bg-gradient-to-r from-[#FF4655]/20 via-transparent to-[#FF4655]/20 rounded-lg blur-xl"
+            ></motion.div>
+            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-[#FF4655] relative z-10">
               HAKKIMDA
             </h2>
-            <div className="w-full h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent"></div>
-          </div>
+            <motion.div 
+              initial={{ width: 0 }}
+              whileInView={{ width: "100%" }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent animate-pulse"></div>
+            </motion.div>
+          </motion.div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-stretch">
-          {/* Sol Taraf - Kişisel Bilgiler */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch mb-8">
+          {/* Sol Taraf - Penguen Karakteri ve Bilgiler */}
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="md:col-span-2"
           >
-            <div className="bg-[#1F2731]/50 backdrop-blur-sm rounded-2xl p-6 border border-[#FF4655]/30 hover:border-[#FF4655]/60 transition-all duration-200 shadow-xl relative overflow-hidden group h-full flex flex-col">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent opacity-30"></div>
-              
-              <div className="flex flex-col items-center mb-6">
-                <div className="w-full h-auto rounded-t-2xl overflow-hidden mb-4">
-                  <Image 
-                    src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2xteHR5bGdleXIwejF5YzRlcXRvenc5dml6bXZnNHJ0ZnE3YXp1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1vlBgKjXEz1jTtsuiH/giphy.gif" 
-                    alt="Hakkımda Kapak Gif"
-                    width={400}
-                    height={300}
-                    unoptimized={true}
-                    className="w-full h-auto object-contain"
-                  />
-                </div>
-                <h3 className="text-xl font-bold text-white">Eren KALAYCI</h3>
-                <p className="text-[#FF4655] text-sm">Bilgisayar Mühendisi & Mobil Uygulama Geliştirici</p>
-              </div>
-              
-              <div className="space-y-4 mb-6 flex-grow">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#1F2731] border border-[#FF4655]/20 flex items-center justify-center flex-shrink-0 self-center">
-                    <FiGlobe className="text-[#FF4655] w-4 h-4" />
+            <div className="bg-gradient-to-br from-[#2A3441] via-[#1F2731] to-[#151F2B] rounded-2xl p-6 border border-[#FF4655]/20 relative overflow-hidden group h-full">
+              <div className="relative z-10 flex flex-col items-center justify-center text-center space-y-4 h-full">
+                {/* Penguen GIF - Daha küçük boyut */}
+                <motion.div 
+                  whileHover={{ scale: 1.05 }}
+                  className="relative"
+                >
+                  <div className="w-64 h-64 mx-auto rounded-2xl overflow-hidden border border-[#FF4655]/10">
+                    <Image 
+                      src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2xteHR5bGdleXIwejF5YzRlcXRvenc5dml6bXZnNHJ0ZnE3YXp1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1vlBgKjXEz1jTtsuiH/giphy.gif" 
+                      alt="Penguen Animasyonu"
+                      width={256}
+                      height={256}
+                      unoptimized={true}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div className="flex flex-col justify-center">
-                    <p className="text-gray-400 text-xs">Konum</p>
-                    <p className="text-white text-sm">Türkiye / Trabzon</p>
-                  </div>
+                </motion.div>
+
+                {/* Bilgiler */}
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-bold text-white">Eren KALAYCI</h3>
+                  <p className="text-[#FF4655] text-sm font-semibold">Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi</p>
                 </div>
-              </div>
-              
-              <div className="flex gap-3 justify-center mt-auto">
-                <a 
-                  href={profile.links.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#1F2731] hover:bg-[#FF4655] p-2 rounded-lg transition-all duration-300 flex items-center gap-2 text-xs"
+
+                {/* Konum Bilgisi - Yeni minimal tasarım */}
+                <motion.div 
+                  whileHover={{ scale: 1.02 }}
+                  className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-[#1F2731]/60 border border-[#FF4655]/20 backdrop-blur-sm"
                 >
-                  <FiGithub className="w-4 h-4" />
-                  <span>GitHub</span>
-                </a>
-                <a 
-                  href={profile.links.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#1F2731] hover:bg-[#FF4655] p-2 rounded-lg transition-all duration-300 flex items-center gap-2 text-xs"
-                >
-                  <FiLinkedin className="w-4 h-4" />
-                  <span>LinkedIn</span>
-                </a>
-                <a 
-                  href="https://play.google.com/store/apps/dev?id=6576291249346115918"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#1F2731] hover:bg-[#FF4655] p-2 rounded-lg transition-all duration-300 flex items-center gap-2 text-xs"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 512 512" fill="white">
-                    <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.6 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z" />
-                  </svg>
-                  <span>Google Play Store</span>
-                </a>
+                  <FiGlobe className="text-[#FF4655] w-4 h-4" />
+                  <span className="text-white text-sm font-medium">Türkiye, Trabzon</span>
+                </motion.div>
               </div>
             </div>
           </motion.div>
           
-          {/* Sağ Taraf - Özgeçmiş */}
+          {/* Sağ Taraf - Detaylı Açıklama */}
           <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="md:col-span-3"
           >
-            <div className="bg-[#1F2731]/30 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-[#FF4655]/30 hover:border-[#FF4655]/60 transition-all duration-200 shadow-xl relative overflow-hidden h-full flex flex-col">
-              <h3 className="text-xl font-bold mb-6 text-white flex items-center">
-                <span className="text-[#FF4655] mr-2">&lt;</span>
-                Merhaba, Ben Eren
-                <span className="text-[#FF4655] ml-2">/&gt;</span>
-              </h3>
+            <div className="bg-gradient-to-br from-[#2A3441] via-[#1F2731] to-[#151F2B] rounded-2xl p-6 border border-[#FF4655]/20 shadow-xl relative overflow-hidden group h-full">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#FF4655]/0 via-[#FF4655]/5 to-[#FF4655]/10 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none"></div>
               
-              <div className="prose prose-sm md:prose-base text-gray-300 max-w-none flex-grow">
-                <p className="mb-4 relative">
-                  <span className="text-[#FF4655] font-mono text-base absolute -left-4 opacity-60">*</span>
-                  Dijital dünyada yenilikçi çözümler üreten bir yazılım geliştiricisiyim. İleriye dönük projeleri ve özgün fikirleri hayata geçirerek, kullanıcılar için değer yaratan uygulamalar, oyunlar ve web çözümleri geliştirmeye odaklanıyorum. Temel motivasyonum, belirlenen hedeflere ulaşarak etkili ve ölçülebilir sonuçlar elde etmektir.
-                </p>
+              <div className="relative z-10 h-full flex flex-col">
+                <motion.h3 
+                  whileHover={{ x: 5 }}
+                  className="text-xl font-bold mb-6 text-white flex items-center"
+                >
+                  <span className="text-[#FF4655] mr-2 text-2xl">&lt;</span>
+                  Merhaba, Ben Eren
+                  <span className="text-[#FF4655] ml-2 text-2xl">/&gt;</span>
+                </motion.h3>
                 
-                <p className="mb-4 relative">
-                  <span className="text-[#FF4655] font-mono text-base absolute -left-4 opacity-60">*</span>
-                  Flutter platformunda Android için mobil uygulamalar ve Unity motoruyla Android ile Masaüstü sistemler için oyunlar geliştirme konusunda deneyime sahibim. Şu anda aktif olarak Flutter ile mobil uygulama geliştirme süreçlerine odaklanmış durumdayım. Ayrıca, modern web teknolojileriyle çeşitli projeler geliştirmekteyim. Projelerimde kullanıcı deneyimini ve tasarımını merkeze alarak, estetik ve yüksek işlevselliğe sahip profesyonel çıktılar sunmaktayım.
-                </p>
-                
-                <p className="mb-0 relative">
-                  <span className="text-[#FF4655] font-mono text-base absolute -left-4 opacity-60">*</span>
-                  Teknolojik gelişmeleri yakından takip ederek kendimi sürekli geliştirir, yeni yazılım ve framework&apos;lere hızla adapte olurum. Analitik düşünme ve problem çözme becerilerimle teknik yetkinliklerimi birleştirerek, yazılım geliştirme süreçlerine etkin katkı sağlarım. İşbirlikçi bir yaklaşımla ekip çalışmalarında üzerime düşen görevleri titizlikle yerine getirir, ortak hedeflere ulaşmak amacıyla çözüm odaklı ve yapıcı önerilerle ekibe destek olurum; Öğrenmeyi seven, yenilikleri takip eden ve gelişimi önemseyen bir profesyonel anlayışla hareket ederim.
-                </p>
+                <div className="space-y-4 text-gray-300 leading-relaxed flex-grow">
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    className="relative pl-4 border-l-2 border-[#FF4655]/30 hover:border-[#FF4655]/60 transition-colors duration-300"
+                  >
+                    <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#FF4655] rounded-full shadow-lg"></div>
+                    <p className="text-sm">
+                      Dijital dünyada yenilikçi çözümler üreten bir yazılım geliştiricisiyim. İleriye dönük projeleri ve özgün fikirleri hayata geçirerek, kullanıcılar için değer yaratan uygulamalar, oyunlar ve web çözümleri geliştirmeye odaklanıyorum. Temel motivasyonum, belirlenen hedeflere ulaşarak etkili ve ölçülebilir sonuçlar elde etmektir.
+                    </p>
+                  </motion.div>
+                  
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    className="relative pl-4 border-l-2 border-[#FF4655]/30 hover:border-[#FF4655]/60 transition-colors duration-300"
+                  >
+                    <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#FF4655] rounded-full shadow-lg"></div>
+                    <p className="text-sm">
+                      <span className="text-[#FF4655] font-semibold">Flutter</span> platformunda Android için mobil uygulamalar ve{" "}
+                      <span className="text-[#FF4655] font-semibold">Unity</span> motoruyla Android ile Masaüstü sistemler için oyunlar geliştirme konusunda deneyime sahibim. Şu anda aktif olarak Flutter ile mobil uygulama geliştirme süreçlerine odaklanmış durumdayım. Ayrıca, modern web teknolojileriyle çeşitli projeler geliştirmekteyim. Projelerimde kullanıcı deneyimini ve tasarımını merkeze alarak, estetik ve yüksek işlevselliğe sahip profesyonel çıktılar sunmaktayım.
+                    </p>
+                  </motion.div>
+                  
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    className="relative pl-4 border-l-2 border-[#FF4655]/30 hover:border-[#FF4655]/60 transition-colors duration-300"
+                  >
+                    <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#FF4655] rounded-full shadow-lg"></div>
+                    <p className="text-sm">
+                      Teknolojik gelişmeleri yakından takip ederek kendimi sürekli geliştirir, yeni yazılım ve framework&apos;lere hızla adapte olurum. Analitik düşünme ve problem çözme becerilerimle teknik yetkinliklerimi birleştirerek, yazılım geliştirme süreçlerine etkin katkı sağlarım. İşbirlikçi bir yaklaşımla ekip çalışmalarında üzerime düşen görevleri titizlikle yerine getirir, ortak hedeflere ulaşmak amacıyla çözüm odaklı ve yapıcı önerilerle ekibe destek olurum; Öğrenmeyi seven, yenilikleri takip eden ve gelişimi önemseyen bir profesyonel anlayışla hareket ederim.
+                    </p>
+                  </motion.div>
+                </div>
               </div>
             </div>
           </motion.div>

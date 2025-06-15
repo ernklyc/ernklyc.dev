@@ -33,7 +33,7 @@ export default function Achievements() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group bg-[#1F2731]/50 backdrop-blur-sm rounded-2xl p-6 border border-[#FF4655]/20 hover:border-[#FF4655]/60 transition-all duration-300 hover:shadow-xl hover:shadow-[#FF4655]/10"
+              className="group bg-[#1F2731]/50 backdrop-blur-sm rounded-2xl p-6 border border-[#FF4655]/20 hover:border-[#FF4655]/60 transition-all duration-300"
             >
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 rounded-lg bg-[#FF4655]/10 flex items-center justify-center mr-4">

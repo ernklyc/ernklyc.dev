@@ -1,88 +1,114 @@
-# Eren Kalaycı - Portfolyo Sitesi
+# 🚀 Eren KALAYCI - Portfolio Website
 
-Bu proje, Eren Kalaycı'nın kişisel portfolyo web sitesidir. Proje, Eren'in becerilerini, deneyimlerini ve projelerini sergilemek amacıyla oluşturulmuştur.
+Modern ve responsive kişisel portfolio websitesi. Next.js, TypeScript, Tailwind CSS ve Framer Motion ile geliştirilmiştir.
 
-## ✨ Öne Çıkan Özellikler
+## ✨ Özellikler
 
-* **Modern Tasarım:** Tailwind CSS ve Framer Motion kullanılarak oluşturulmuş şık ve kullanıcı dostu arayüz.
-* **Hızlı Performans:** Next.js sayesinde sunucu tarafında render (SSR) ve statik site oluşturma (SSG) yetenekleri ile yüksek performans.
-* **Tam Duyarlılık (Responsive):** Farklı ekran boyutlarına uyum sağlayan tasarım.
-* **Kolay Güncellenebilir İçerik:** `src/data` klasörü altındaki TypeScript dosyaları (`profile.ts`, `projects.ts`, `skills.ts`, `experience.ts`, `education.ts`) üzerinden kolayca içerik yönetimi.
-* **SEO Dostu:** Next.js'in SEO optimizasyonlarına uygun yapısı.
+- **Modern Tasarım**: Gradient arka planlar, animasyonlar ve premium UI/UX
+- **Responsive**: Tüm cihazlarda mükemmel görünüm
+- **Performance**: Optimized build ve lazy loading
+- **Animasyonlar**: Framer Motion ile smooth animasyonlar
+- **Dark Theme**: Profesyonel koyu tema
+- **SEO Optimized**: Meta tags ve structured data
 
-## 🛠️ Kullanılan Teknolojiler
+## 🛠️ Teknolojiler
 
-* **Framework:** [Next.js](https://nextjs.org/)
-* **Dil:** [TypeScript](https://www.typescriptlang.org/)
-* **UI Kütüphanesi:** [React](https://reactjs.org/)
-* **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-* **Animasyon:** [Framer Motion](https://www.framer.com/motion/)
-* **Linting:** [ESLint](https://eslint.org/) (Next.js core-web-vitals ve TypeScript kuralları ile)
-* **Paket Yöneticisi:** npm (veya yarn, projenize göre belirtin)
+- **Framework**: Next.js 15.3.3
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **Animations**: Framer Motion
+- **Icons**: React Icons
+- **Deployment**: Vercel Ready
 
-## 🚀 Kurulum ve Başlatma
+## 📦 Kurulum
 
-Projeyi yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
+```bash
+# Repository'yi klonlayın
+git clone https://github.com/ernklyc/portfolio-website.git
 
-1.  **Depoyu Klonlayın:**
-    ```bash
-    git clone [https://github.com/ernklyc/ernklyc-web.git](https://github.com/ernklyc/ernklyc-web.git)
-    cd ernklyc-web
-    ```
+# Proje dizinine gidin
+cd portfolio-website
 
-2.  **Bağımlılıkları Yükleyin:**
-    Projenin `package.json` dosyasında belirtilen paket yöneticisine göre (npm veya yarn) komutu çalıştırın.
-    ```bash
-    npm install
-    # veya
-    # yarn install
-    ```
+# Bağımlılıkları yükleyin
+npm install
 
-3.  **Geliştirme Sunucusunu Başlatın:**
-    `package.json` dosyasındaki `dev` script'i Turbopack ile geliştirme sunucusunu başlatır.
-    ```bash
-    npm run dev
-    # veya
-    # yarn dev
-    ```
-    Tarayıcınızda `http://localhost:3000` adresini açarak siteyi görüntüleyebilirsiniz.
+# Development server'ı başlatın
+npm run dev
+```
 
-4.  **Build İşlemi:**
-    Projenin üretim build'ini oluşturmak için:
-    ```bash
-    npm run build
-    # veya
-    # yarn build
-    ```
+## 🚀 Deployment
 
-5.  **Üretim Sunucusunu Başlatma:**
-    Oluşturulan build'i çalıştırmak için:
-    ```bash
-    npm run start
-    # veya
-    # yarn start
-    ```
-    
-## 🖼️ Resim Konfigürasyonu
+```bash
+# Production build oluşturun
+npm run build
 
-`next.config.ts` dosyasında belirtilen `remotePatterns` sayesinde harici kaynaklardan resimler güvenli bir şekilde yüklenebilmektedir. İzin verilen bazı kaynaklar:
-* `media1.giphy.com`
-* `via.placeholder.com`
-* `play-lh.googleusercontent.com`
-* `raw.githubusercontent.com`
-* `store-images.s-microsoft.com`
-* `pbs.twimg.com`
+# Production server'ı başlatın
+npm start
+```
 
-## 🎨 Styling ve Fontlar
+## 📁 Proje Yapısı
 
-* **Global Stiller:** `src/app/globals.css` dosyasında Tailwind CSS importları ve temel HTML elementi stilleri bulunur.
-* **Fontlar:** [Geist Sans ve Geist Mono](https://vercel.com/font) fontları `src/app/layout.tsx` dosyasında tanımlanmış ve kullanılmıştır.
-* **Tema:** Açık ve koyu tema desteği CSS değişkenleri (`--background`, `--foreground`) ile `src/app/globals.css` içinde yönetilmektedir.
+```
+src/
+├── app/                 # Next.js App Router
+├── components/          # React bileşenleri
+│   ├── About.tsx       # Hakkımda bölümü
+│   ├── Contact.tsx     # İletişim formu
+│   ├── Experience.tsx  # Deneyim & Eğitim
+│   ├── Footer.tsx      # Footer bileşeni
+│   ├── Hero.tsx        # Ana sayfa hero
+│   ├── Projects.tsx    # Projeler showcase
+│   └── Skills.tsx      # Yetenekler
+├── data/               # Statik veri dosyaları
+└── styles/             # Global stiller
+```
+
+## 🎨 Özelleştirme
+
+### Renk Teması
+Ana renk: `#FF4655` (Kırmızı accent)
+Arka plan: Gradient dark theme
+
+### Animasyonlar
+- Scroll-triggered animations
+- Hover effects
+- Loading animations
+- Smooth transitions
+
+## 📱 Responsive Breakpoints
+
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: > 1024px
+
+## 🔧 Geliştirme
+
+```bash
+# Development mode
+npm run dev
+
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
+
+# Build
+npm run build
+```
+
+## 📄 Lisans
+
+Bu proje MIT lisansı altında lisanslanmıştır.
+
+## 👨‍💻 Geliştirici
+
+**Eren KALAYCI**
+- 🌐 Website: [ernklyc.dev](https://ernklyc.dev)
+- 📧 Email: erenkalayci.dev@gmail.com
+- 💼 LinkedIn: [eren-kalayci](https://linkedin.com/in/eren-kalayci)
+- 🐱 GitHub: [ernklyc](https://github.com/ernklyc)
 
 ---
 
-Eren Kalaycı ile İletişime Geçin:
-
-* **E-posta:** [ernklyc@gmail.com](mailto:ernklyc@gmail.com)
-* **GitHub:** [ernklyc](https://github.com/ernklyc)
-* **LinkedIn:** [erenklyc](https://www.linkedin.com/in/erenklyc/)
+⭐ Bu projeyi beğendiyseniz yıldız vermeyi unutmayın!

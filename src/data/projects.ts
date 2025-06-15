@@ -1,5 +1,14 @@
 export const projects = [
   {
+    name: "Görüntü İşleme Uygulaması",
+    type: "C#",
+    description: "C# kullanarak geliştirdiğim bilgisayarlı görme projesi. Kenar algılama, filtreleme ve görüntü işleme algoritmalarını içerir.",
+    image: "https://raw.githubusercontent.com/ernklyc/image_processing/refs/heads/main/bilgisayarli_gorme/a.png",
+    technologies: ["C#", "Computer Vision", "Image Processing", "Sobel Edge Detection"],
+    link: "https://github.com/ernklyc/image_processing",
+    githubLink: "https://github.com/ernklyc/image_processing"
+  },
+  {
     name: "MF Master Online",
     type: "Flutter",
     description: "Mobil mayın tarlası oyunu",
