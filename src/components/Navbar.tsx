@@ -6,14 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("");
+
   const [showNavbar, setShowNavbar] = useState(true);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
-    // İlk render'da activeSection'ı "home" olarak ayarla
-    setActiveSection("home");
-    
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       // Navbar arka planı
@@ -25,20 +22,7 @@ export default function Navbar() {
       } else {
         setShowNavbar(true); // yukarı kaydırınca göster
       }
-      lastScrollY.current = currentScrollY;      // Aktif bölümü belirleme
-      const sections = ["home", "about", "skills", "experience", "projects", "contact"];
-      const scrollPosition = window.scrollY + 100;
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const offsetTop = element.offsetTop;
-          const offsetHeight = element.offsetHeight;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
+      lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll);
