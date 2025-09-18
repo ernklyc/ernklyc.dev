@@ -163,9 +163,10 @@ export default function Footer() {
         >
           <p className="text-gray-400 text-xs flex items-center justify-center gap-2">
             <span>&copy; {year ?? ''} Eren KALAYCI.</span>
+            <a href="/privacy-policy" className="text-gray-300 hover:text-white hover:underline">HP Character Wiki Gizlilik Politikası</a>
           </p>
         </motion.div>
       </div>
     </footer>
   );
-} 
+}
