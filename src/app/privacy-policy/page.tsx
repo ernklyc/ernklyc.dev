@@ -17,7 +17,7 @@ export default function PrivacyPolicyPage() {
           <p className="text-sm text-gray-300 mb-8">Effective Date: September 18, 2025</p>
 
           <p className="mb-6 text-gray-200">
-            This Privacy Policy explains how <strong>Yelbegen Software</strong> ("we", "us", or "our"), the developer of the <strong>HP Character Wiki</strong> ("Application"), collects, uses, and protects your information.
+            This Privacy Policy explains how <strong>Yelbegen Software</strong> (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), the developer of the <strong>HP Character Wiki</strong> (&quot;Application&quot;), collects, uses, and protects your information.
           </p>
           <p className="mb-8 text-gray-200">By using our Application, you agree to the practices described below.</p>
 
