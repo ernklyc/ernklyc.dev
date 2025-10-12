@@ -161,9 +161,11 @@ export default function Footer() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="pt-6 border-t border-[#FF4655]/20 text-center"
         >
-          <p className="text-gray-400 text-xs flex items-center justify-center gap-2">
+          <p className="text-gray-400 text-xs flex items-center justify-center gap-2 flex-wrap">
             <span>&copy; {year ?? ''} Eren KALAYCI.</span>
             <a href="/privacy-policy" className="text-gray-300 hover:text-white hover:underline">HP Character Wiki Gizlilik Politikası</a>
+            <span className="text-gray-500">|</span>
+            <a href="/movie-face-ai-privacy" className="text-gray-300 hover:text-white hover:underline">Movie Face AI Gizlilik Politikası</a>
           </p>
         </motion.div>
       </div>
