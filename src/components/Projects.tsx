@@ -1,13 +1,14 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { FiExternalLink, FiGithub } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiExternalLink, FiGithub, FiX } from "react-icons/fi";
 import { FaGooglePlay } from "react-icons/fa";
 import { projects } from "@/data/projects";
 import Image from "next/image";
 
 export default function Projects() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
   const categories = ["all", "Web", "Flutter", "Unity", "IoT", "C#"];
 
   const filteredProjects = activeFilter === "all"
@@ -150,9 +151,12 @@ export default function Projects() {
                     </span>
                   ))}
                   {project.technologies.length > 2 && (
-                    <span className="px-3 py-1.5 bg-gradient-to-r from-[#2A3441]/80 to-[#1F2731]/80 text-gray-400 text-xs font-semibold rounded-lg border border-gray-600/30">
+                    <button
+                      onClick={() => setSelectedProject(project)}
+                      className="px-3 py-1 bg-gradient-to-r from-[#2A3441]/80 to-[#1F2731]/80 text-[#FF4655] text-xs font-semibold rounded-lg border border-[#FF4655]/30 hover:border-[#FF4655] hover:bg-[#FF4655]/10 transition-all cursor-pointer hover:scale-105"
+                    >
                       +{project.technologies.length - 2}
-                    </span>
+                    </button>
                   )}
                 </div>
                 
@@ -251,6 +255,68 @@ export default function Projects() {
           </motion.div>
         )}
       </div>
+
+      {/* Technology Details Popup */}
+      <AnimatePresence mode="wait">
+        {selectedProject && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setSelectedProject(null)}
+            className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-gradient-to-br from-[#1F2731]/95 to-[#151F2B]/95 backdrop-blur-xl rounded-3xl p-8 max-w-lg w-full border-2 border-[#FF4655]/20 shadow-[0_0_50px_rgba(255,70,85,0.15)] relative overflow-hidden"
+            >
+              {/* Decorative gradient overlay */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[#FF4655]/10 to-transparent rounded-full blur-3xl -z-10" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-[#FF4655]/5 to-transparent rounded-full blur-2xl -z-10" />
+              
+              <div className="flex items-start justify-between mb-6 relative">
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-white mb-2 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    {selectedProject.name}
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">{selectedProject.description}</p>
+                </div>
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="ml-4 text-gray-400 hover:text-white transition-all p-2.5 hover:bg-[#FF4655]/10 rounded-xl hover:rotate-90 duration-300 border border-transparent hover:border-[#FF4655]/30"
+                >
+                  <FiX className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="border-t border-[#FF4655]/20 pt-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-1 h-5 bg-gradient-to-b from-[#FF4655] to-[#FF4655]/50 rounded-full" />
+                  <h4 className="text-base font-bold text-white">Technologies</h4>
+                </div>
+                <div className="flex flex-wrap gap-2.5">
+                  {selectedProject.technologies.map((tech, index) => (
+                    <motion.span
+                      key={tech}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.03, duration: 0.2 }}
+                      className="px-4 py-2 bg-gradient-to-r from-[#2A3441] to-[#1F2731] text-[#FF4655] text-sm font-semibold rounded-xl border border-[#FF4655]/30 hover:border-[#FF4655] hover:shadow-[0_0_20px_rgba(255,70,85,0.3)] transition-all hover:scale-105"
+                    >
+                      {tech}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 } 

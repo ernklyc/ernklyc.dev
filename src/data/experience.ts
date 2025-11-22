@@ -1,9 +1,9 @@
 export const experience = [
   {
-    title: "Flutter Developer",
+    title: "Flutter Developer Intern",
     company: "Daynex Yazılım A.Ş.",
     location: "Trabzon, Türkiye",
-    type: "Ofisten · Stajyer",
+    type: "Ofisten",
     period: "Tem 2025 - Ağu 2025",
     duration: "2 ay"
   },

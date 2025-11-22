@@ -10,11 +10,17 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="min-h-screen bg-[#0F1923] text-white">
-      <section className="px-4 sm:px-6 md:px-8 pt-28 pb-16">
-        <div className="mx-auto w-full max-w-3xl">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4">HP Character Wiki Gizlilik Politikası</h1>
-          <p className="text-sm text-gray-300 mb-8">Effective Date: September 18, 2025</p>
+    <main className="min-h-screen bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white py-20 px-4">
+      <section className="container mx-auto max-w-4xl">
+        <div className="bg-[#1F2731]/60 backdrop-blur-sm rounded-2xl p-8 border border-[#2A3441]/50 shadow-2xl">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white">
+              HP CHARACTER WIKI PRIVACY POLICY
+            </h1>
+            <p className="text-gray-400">Effective Date: September 18, 2025</p>
+          </div>
+
+          <div className="prose prose-invert max-w-none space-y-6">
 
           <p className="mb-6 text-gray-200">
             This Privacy Policy explains how <strong>Yelbegen Software</strong> (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), the developer of the <strong>HP Character Wiki</strong> (&quot;Application&quot;), collects, uses, and protects your information.
@@ -161,10 +167,12 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
 
-          <div className="flex items-center justify-between text-sm text-gray-400">
-            <Link href="/" className="hover:text-white hover:underline">← Ana Sayfa</Link>
-            <span>HP Character Wiki</span>
+          <div className="mt-12 pt-6 border-t border-[#2A3441]/50 text-center">
+            <Link href="/" className="text-gray-400 hover:text-[#FF4655] text-sm transition-colors">
+              ← Back to Home
+            </Link>
           </div>
+        </div>
         </div>
       </section>
     </main>

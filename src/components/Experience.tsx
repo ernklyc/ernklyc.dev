@@ -75,104 +75,86 @@ export default function Experience() {
           </motion.p>
         </motion.div>
 
+        {/* Deneyim ve Eğitim - Yatay Timeline */}
         <motion.div
-          variants={containerVariants}
+          variants={itemVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+          className="relative"
         >
-          {/* Deneyim Bölümü */}
-          <motion.div variants={itemVariants} className="group">
-            <div className="bg-gradient-to-br from-[#1F2731]/60 to-[#151F2B]/60 backdrop-blur-sm rounded-2xl p-6 border border-[#FF4655]/20 hover:border-[#FF4655]/40 transition-all duration-500 h-full group-hover:scale-[1.02]">
-              <div className="flex items-center mb-6">
-                <div className="p-3 rounded-xl bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] mr-4 group-hover:scale-110 transition-transform duration-300">
-                  <FiBriefcase className="text-white w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white">Profesyonel Deneyim</h3>
-                  <p className="text-gray-400 text-sm">Kariyer Yolculuğum</p>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                {experience.map((item, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="relative pl-6 border-l-2 border-[#FF4655]/30 pb-6 last:pb-0 group/item"
-                  >
-                    <motion.div 
-                      className="absolute w-3 h-3 bg-[#FF4655] rounded-full -left-[7px] top-1 group-hover/item:scale-125 transition-transform duration-300"
-                      whileHover={{ scale: 1.5 }}
-                    />
-                    
-                    <h4 className="text-base font-semibold text-white mb-1 group-hover/item:text-[#FF4655] transition-colors duration-300">
+          {/* Horizontal timeline line */}
+          <div className="absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[#FF4655]/30 to-transparent hidden md:block" />
+          
+          <div className="flex flex-col md:flex-row gap-6 md:gap-6 items-stretch">
+            {/* Deneyim Kartları */}
+            {experience.map((item, index) => (
+              <motion.div
+                key={`exp-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="flex-1 group/item"
+              >
+                <div className="bg-gradient-to-br from-[#1F2731]/80 to-[#151F2B]/80 backdrop-blur-sm rounded-2xl p-6 border border-[#FF4655]/20 hover:border-[#FF4655]/50 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,70,85,0.2)] relative h-full">
+                  {/* Top dot with icon */}
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-10 bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] rounded-full border-4 border-[#151F2B] group-hover/item:scale-110 transition-transform duration-300 flex items-center justify-center">
+                    <FiBriefcase className="text-white w-4 h-4" />
+                  </div>
+                  
+                  <div className="text-center pt-4">
+                    <h4 className="text-base font-bold text-white mb-2 group-hover/item:text-[#FF4655] transition-colors duration-300">
                       {item.title}
                     </h4>
-                    <p className="text-[#FF4655] font-medium mb-2 text-sm">{item.company}</p>
+                    <p className="text-[#FF4655] font-semibold mb-3 text-sm">{item.company}</p>
                     
-                    <div className="flex flex-col gap-1 text-xs text-gray-400">
-                      <span className="flex items-center gap-1">
+                    <div className="space-y-1.5 text-xs text-gray-400">
+                      <div className="flex items-center justify-center gap-1">
                         <FiCalendar className="w-3 h-3" />
-                        {item.period} · {item.duration}
-                      </span>
-                      <span className="flex items-center gap-1">
+                        <span>{item.period}</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-1">
                         <FiMapPin className="w-3 h-3" />
-                        {item.location} · {item.type}
-                      </span>
+                        <span>{item.location}</span>
+                      </div>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
 
-          {/* Eğitim Bölümü */}
-          <motion.div variants={itemVariants} className="group">
-            <div className="bg-gradient-to-br from-[#1F2731]/60 to-[#151F2B]/60 backdrop-blur-sm rounded-2xl p-6 border border-[#FF4655]/20 hover:border-[#FF4655]/40 transition-all duration-500 h-full group-hover:scale-[1.02]">
-              <div className="flex items-center mb-6">
-                <div className="p-3 rounded-xl bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] mr-4 group-hover:scale-110 transition-transform duration-300">
-                  <FaGraduationCap className="text-white w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white">Akademik Geçmiş</h3>
-                  <p className="text-gray-400 text-sm">Eğitim Hayatım</p>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                {education.map((item, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="relative pl-6 border-l-2 border-[#FF4655]/30 pb-6 last:pb-0 group/item"
-                  >
-                    <motion.div 
-                      className="absolute w-3 h-3 bg-[#FF4655] rounded-full -left-[7px] top-1 group-hover/item:scale-125 transition-transform duration-300"
-                      whileHover={{ scale: 1.5 }}
-                    />
-                    
-                    <h4 className="text-base font-semibold text-white mb-1 group-hover/item:text-[#FF4655] transition-colors duration-300">
+            {/* Eğitim Kartları */}
+            {education.map((item, index) => (
+              <motion.div
+                key={`edu-${index}`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: (experience.length + index) * 0.1 }}
+                className="flex-1 group/item"
+              >
+                <div className="bg-gradient-to-br from-[#1F2731]/80 to-[#151F2B]/80 backdrop-blur-sm rounded-2xl p-6 border border-[#FF4655]/20 hover:border-[#FF4655]/50 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,70,85,0.2)] relative h-full">
+                  {/* Top dot with icon */}
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-10 bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] rounded-full border-4 border-[#151F2B] group-hover/item:scale-110 transition-transform duration-300 flex items-center justify-center">
+                    <FaGraduationCap className="text-white w-4 h-4" />
+                  </div>
+                  
+                  <div className="text-center pt-4">
+                    <h4 className="text-base font-bold text-white mb-2 group-hover/item:text-[#FF4655] transition-colors duration-300">
                       {item.institution}
                     </h4>
-                    <p className="text-[#FF4655] font-medium mb-2 text-sm">{item.degree}</p>
+                    <p className="text-[#FF4655] font-semibold mb-3 text-sm">{item.degree}</p>
                     
-                    <div className="flex items-center gap-1 text-xs text-gray-400">
+                    <div className="flex items-center justify-center gap-1 text-xs text-gray-400">
                       <FiCalendar className="w-3 h-3" />
-                      {item.years}
+                      <span>{item.years}</span>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>

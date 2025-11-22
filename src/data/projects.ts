@@ -72,15 +72,6 @@ export const projects = [
     githubLink: ""
   },
   {
-    name: "Brain Update",
-    type: "Flutter",
-    description: "Beyin gelişimi uygulaması",
-    image: "https://raw.githubusercontent.com/ernklyc/brain-update/refs/heads/main/assets/logo.png",
-    technologies: ["Flutter", "Dart", "Firebase"],
-    link: "https://github.com/ernklyc/brain-update",
-    githubLink: "https://github.com/ernklyc/brain-update"
-  },
-  {
     name: "Meal App",
     type: "Flutter",
     description: "Yemek tarifleri uygulaması",
@@ -114,6 +105,6 @@ export const projects = [
     image: "https://play-lh.googleusercontent.com/MlmxEMJl8T0vCylJPRGnKhQWsbxYdkI-BuJHiBU1CC6IDoDtTbu32x7ctQ4LPv_E11queTB6Ph1EQzOp6-3TFg=w240-h480-rw",
     technologies: ["Flutter", "Dart", "API", "Quiz Game"],
     link: "https://play.google.com/store/apps/details?id=com.ek.hpcharacterwiki",
-    githubLink: "https://github.com/ernklyc/hp-character-wiki"
+    githubLink: ""
   }
 ]; 

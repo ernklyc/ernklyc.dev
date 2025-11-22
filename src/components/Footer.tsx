@@ -155,22 +155,50 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="pt-6 border-t border-[#FF4655]/20 text-center"
+          className="pt-8 border-t border-[#FF4655]/20"
         >
-          <div className="text-gray-400 text-xs space-y-2">
-            <p className="flex items-center justify-center gap-2 flex-wrap">
-              <span>&copy; {year} Eren KALAYCI.</span>
-            </p>
-            <p className="flex items-center justify-center gap-2 flex-wrap">
-              <a href="/privacy-policy" className="text-gray-300 hover:text-white hover:underline">HP Character Wiki Privacy Policy</a>
-              <span className="text-gray-500">|</span>
-              <a href="/movie-face-ai-privacy" className="text-gray-300 hover:text-white hover:underline">Movie Face AI Privacy Policy</a>
-            </p>
-            <p className="flex items-center justify-center gap-2 flex-wrap">
-              <a href="/link-manager-privacy" className="text-gray-300 hover:text-white hover:underline">Link Manager Privacy Policy</a>
-              <span className="text-gray-500">|</span>
-              <a href="/link-manager-terms" className="text-gray-300 hover:text-white hover:underline">Link Manager Terms of Service</a>
-            </p>
+          {/* Copyright */}
+          <div className="text-center mb-6">
+            <p className="text-gray-400 text-sm">&copy; {year} Eren KALAYCI. All rights reserved.</p>
+          </div>
+
+          {/* Legal Links */}
+          <div className="text-center">
+            <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
+              <a
+                href="/privacy-policy"
+                className="text-gray-400 hover:text-[#FF4655] transition-colors"
+              >
+                HP Character Wiki Privacy
+              </a>
+              
+              <span className="text-gray-600">|</span>
+              
+              <a
+                href="/movie-face-ai-privacy"
+                className="text-gray-400 hover:text-[#FF4655] transition-colors"
+              >
+                Movie Face AI Privacy
+              </a>
+              
+              <span className="text-gray-600">|</span>
+              
+              <a
+                href="/link-manager-privacy"
+                className="text-gray-400 hover:text-[#FF4655] transition-colors"
+              >
+                Link Manager Privacy
+              </a>
+              
+              <span className="text-gray-600">|</span>
+              
+              <a
+                href="/link-manager-terms"
+                className="text-gray-400 hover:text-[#FF4655] transition-colors"
+              >
+                Link Manager Terms
+              </a>
+            </div>
           </div>
         </motion.div>
       </div>
