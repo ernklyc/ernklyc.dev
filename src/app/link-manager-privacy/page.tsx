@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Link Manager - Gizlilik Politikası | Eren Kalaycı",
-  description: "Link Manager mobil uygulaması gizlilik politikası ve kişisel verilerin korunması hakkında bilgiler.",
+  title: "Link Manager - Privacy Policy | Eren Kalaycı",
+  description: "Link Manager mobile application privacy policy and personal data protection information.",
 };
 
 export default function LinkManagerPrivacyPage() {
@@ -12,274 +12,222 @@ export default function LinkManagerPrivacyPage() {
         <div className="bg-[#1F2731]/60 backdrop-blur-sm rounded-2xl p-8 border border-[#2A3441]/50 shadow-2xl">
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white">
-              LINK MANAGER GİZLİLİK POLİTİKASI
+              LINK MANAGER PRIVACY POLICY
             </h1>
-            <p className="text-gray-400">Son Güncelleme: 2025</p>
+            <p className="text-gray-400">Last Updated: 2025</p>
             <a 
               href="https://play.google.com/store/apps/details?id=com.link.manager&hl=tr"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block mt-4 text-[#FF4655] hover:text-[#FF6B7A] transition-colors"
             >
-              Play Store&apos;da Görüntüle →
+              View on Play Store →
             </a>
           </div>
 
           <div className="prose prose-invert max-w-none space-y-6">
             <p className="text-gray-300 leading-relaxed">
-              Bu Gizlilik Politikası, Link Manager mobil uygulamasının (&quot;Uygulama&quot;) kişisel verilerinizi nasıl topladığını, kullandığını, sakladığını ve paylaştığını açıklar. Uygulamayı kullanarak bu politikayı kabul etmiş sayılırsınız.
+              This Privacy Policy explains how the Link Manager mobile application (&quot;Application&quot;) collects, uses, stores, and shares your personal data. By using the Application, you agree to this policy.
             </p>
 
             <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">1. VERİ SORUMLUSU</h2>
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">1. DATA CONTROLLER</h2>
               <p className="text-gray-300 leading-relaxed">
-                Link Manager uygulaması, verilerinizin sorumlusudur. Bu politika, uygulamanın veri işleme faaliyetlerini açıklar.
+                Link Manager application is the controller of your data. This policy explains the data processing activities of the application.
               </p>
             </section>
 
             <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">2. TOPLANAN VERİLER</h2>
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">2. DATA COLLECTED</h2>
               
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">2.1. Kullanıcı İçeriği</h3>
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">2.1. User Content</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Eklediğiniz web bağlantıları (URL&apos;ler)</li>
-                <li>Bağlantı başlıkları ve kategorileri</li>
-                <li>Favori işaretlemeleri</li>
-                <li>Kullanıcı tercihleri ve ayarları</li>
+                <li>Web links (URLs) you add</li>
+                <li>Link titles and categories</li>
+                <li>Favorite bookmarks</li>
+                <li>User preferences and settings</li>
               </ul>
 
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">2.2. Cihaz Bilgileri</h3>
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">2.2. Device Information</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Cihaz Kimliği (Device ID): Abonelik durumunuzu kontrol etmek ve premium özelliklere erişiminizi yönetmek için kullanılır. Bu bilgi sadece uygulama içi premium durumu kontrolü için kullanılır ve üçüncü taraflarla paylaşılmaz.</li>
-                <li>Cihaz modeli ve işletim sistemi bilgileri</li>
-                <li>Uygulama sürümü</li>
+                <li>Device ID: Used to verify your subscription status and manage access to premium features.</li>
+                <li>Device model and operating system information</li>
+                <li>Application version</li>
               </ul>
 
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">2.3. Kullanım Verileri</h3>
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">2.3. Usage Data</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Uygulama içi etkileşimler ve kullanım istatistikleri</li>
-                <li>Hata raporları ve çökme bilgileri (Crashlytics)</li>
-                <li>Performans metrikleri</li>
+                <li>In-app interactions and usage statistics</li>
+                <li>Error reports and crash information (Crashlytics)</li>
+                <li>Performance metrics</li>
               </ul>
 
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">2.4. Abonelik Bilgileri</h3>
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">2.4. Subscription Information</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Abonelik durumu ve geçmişi (RevenueCat üzerinden)</li>
-                <li>Satın alma işlemleri (Google Play Store / Apple App Store üzerinden işlenir)</li>
+                <li>Subscription status and history (via RevenueCat)</li>
+                <li>Purchase transactions (processed through Google Play Store / Apple App Store)</li>
               </ul>
             </section>
 
             <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">3. VERİ TOPLAMA YÖNTEMLERİ</h2>
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">3. DATA COLLECTION METHODS</h2>
               
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">3.1. Doğrudan Toplama</h3>
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">3.1. Direct Collection</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Uygulamayı kullanırken girdiğiniz bilgiler</li>
-                <li>Uygulama ayarları ve tercihleri</li>
+                <li>Information you enter while using the application</li>
+                <li>Application settings and preferences</li>
               </ul>
 
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">3.2. Otomatik Toplama</h3>
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">3.2. Automatic Collection</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Firebase Analytics: Uygulama kullanım istatistikleri ve analitik veriler</li>
-                <li>Firebase Crashlytics: Hata raporları ve uygulama çökme bilgileri</li>
-                <li>RevenueCat: Abonelik durumu ve satın alma işlemleri</li>
+                <li>Firebase Analytics: Application usage statistics</li>
+                <li>Firebase Crashlytics: Error reports and crash information</li>
+                <li>RevenueCat: Subscription status and purchase transactions</li>
               </ul>
             </section>
 
             <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">4. VERİ KULLANIM AMAÇLARI</h2>
-              <p className="text-gray-300 leading-relaxed mb-4">
-                Topladığımız verileri aşağıdaki amaçlarla kullanırız:
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">4. PURPOSE OF DATA USE</h2>
+              
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">4.1. Service Provision</h3>
+              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li>To perform the basic functions of the application</li>
+                <li>To store and organize your links</li>
+                <li>To manage access to premium features</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">4.2. Subscription Management</h3>
+              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li>To verify premium subscription status</li>
+                <li>To authenticate subscription using Device ID</li>
+                <li>To process purchase transactions</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">4.3. Application Improvement</h3>
+              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li>To detect and fix errors</li>
+                <li>To analyze application performance</li>
+                <li>To improve user experience</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">4.4. Security</h3>
+              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li>To ensure application security</li>
+                <li>To prevent unauthorized access</li>
+                <li>Fraud detection</li>
+              </ul>
+            </section>
+
+            <section className="mt-8">
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">5. DATA SHARING</h2>
+              
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">5.1. Third-Party Service Providers</h3>
+              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li>Google Firebase: Analytics and Crashlytics</li>
+                <li>RevenueCat: Subscription management</li>
+                <li>Google Play Store / Apple App Store: Purchase transactions</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">5.2. Legal Requirements</h3>
+              <p className="text-gray-300 leading-relaxed">
+                Your data may be shared due to legal obligations, court orders, or legal processes.
               </p>
+            </section>
 
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">4.1. Hizmet Sağlama</h3>
+            <section className="mt-8">
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">6. DATA SECURITY</h2>
+              
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">6.1. Security Measures</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Uygulamanın temel işlevlerini yerine getirmek</li>
-                <li>Bağlantılarınızı saklamak ve organize etmek</li>
-                <li>Premium özelliklere erişiminizi yönetmek</li>
+                <li>Data is protected with encryption technologies</li>
+                <li>Secure server infrastructure is used</li>
+                <li>Regular security audits are conducted</li>
               </ul>
 
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">4.2. Abonelik Yönetimi</h3>
+              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">6.2. Data Retention</h3>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Premium abonelik durumunuzu kontrol etmek</li>
-                <li>Cihaz ID&apos;si kullanarak abonelik doğrulaması yapmak</li>
-                <li>Satın alma işlemlerini işlemek</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">4.3. Uygulama İyileştirme</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Hataları tespit etmek ve düzeltmek (Crashlytics)</li>
-                <li>Uygulama performansını analiz etmek (Firebase Analytics)</li>
-                <li>Kullanıcı deneyimini geliştirmek</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">4.4. Güvenlik</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Uygulama güvenliğini sağlamak</li>
-                <li>Yetkisiz erişimleri önlemek</li>
-                <li>Dolandırıcılık tespiti</li>
+                <li>Data is stored during the service provision period</li>
+                <li>When you delete your account, data will be deleted within 30 days</li>
+                <li>Some data may be retained longer due to legal obligations</li>
               </ul>
             </section>
 
             <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">5. VERİ PAYLAŞIMI</h2>
-              
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">5.1. Üçüncü Taraf Hizmet Sağlayıcılar</h3>
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">7. DEVICE ID USAGE</h2>
+              <p className="text-gray-300 leading-relaxed mb-3">Device ID is used only for:</p>
+              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
+                <li>Verifying premium subscription status</li>
+                <li>Providing access to premium features</li>
+                <li>Preventing subscription violations</li>
+                <li>Not shared with third parties</li>
+                <li>Not used for advertising or marketing</li>
+              </ul>
+            </section>
+
+            <section className="mt-8">
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">8. USER RIGHTS</h2>
               <p className="text-gray-300 leading-relaxed mb-3">
-                Verileriniz aşağıdaki hizmet sağlayıcılarla paylaşılabilir:
+                Under GDPR and similar data protection laws, you have the following rights:
               </p>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Google Firebase (Analytics ve Crashlytics): Kullanım istatistikleri ve hata raporları</li>
-                <li>RevenueCat: Abonelik yönetimi ve satın alma işlemleri</li>
-                <li>Google Play Store / Apple App Store: Satın alma işlemleri (abonelik bilgileri)</li>
+                <li>Right to information about collected data</li>
+                <li>Right of access to your personal data</li>
+                <li>Right to rectification of incorrect data</li>
+                <li>Right to erasure of your data</li>
+                <li>Right to object to data processing</li>
               </ul>
+              <p className="text-gray-300 leading-relaxed mt-4">
+                To exercise your rights, contact us at: <a href="mailto:privacy@linkmanager.app" className="text-[#FF4655] hover:underline">privacy@linkmanager.app</a>
+              </p>
+            </section>
 
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">5.2. Yasal Zorunluluklar</h3>
+            <section className="mt-8">
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">9. CHILDREN&apos;S PRIVACY</h2>
               <p className="text-gray-300 leading-relaxed">
-                Yasal yükümlülüklerimiz gereği, mahkeme kararı veya yasal süreçler kapsamında verileriniz paylaşılabilir.
+                Link Manager does not knowingly collect data from children under 13. If we become aware that data from a child under 13 has been collected, we will delete it immediately.
               </p>
+            </section>
 
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">5.3. İş Ortaklıkları</h3>
+            <section className="mt-8">
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">10. COOKIES AND SIMILAR TECHNOLOGIES</h2>
               <p className="text-gray-300 leading-relaxed">
-                Verileriniz, gizlilik standartlarımıza uygun iş ortaklarımızla paylaşılabilir, ancak bu durumda siz bilgilendirilirsiniz.
+                The application uses Firebase Analytics and Crashlytics for usage statistics and error reports.
               </p>
             </section>
 
             <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">6. VERİ GÜVENLİĞİ</h2>
-              
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">6.1. Güvenlik Önlemleri</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Verileriniz şifreleme teknolojileri ile korunur</li>
-                <li>Güvenli sunucu altyapısı kullanılır</li>
-                <li>Düzenli güvenlik denetimleri yapılır</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">6.2. Veri Saklama</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Verileriniz, hizmet sağlama süresince saklanır</li>
-                <li>Hesabınızı sildiğinizde, verileriniz 30 gün içinde silinir</li>
-                <li>Yasal yükümlülükler gereği bazı veriler daha uzun süre saklanabilir</li>
-              </ul>
-            </section>
-
-            <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">7. CİHAZ KİMLİĞİ (DEVICE ID) KULLANIMI</h2>
-              
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">7.1. Cihaz kimliği, yalnızca aşağıdaki amaçlarla kullanılır:</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Premium abonelik durumunuzu doğrulamak</li>
-                <li>Aynı cihazda premium özelliklere erişiminizi sağlamak</li>
-                <li>Abonelik ihlallerini önlemek</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">7.2. Cihaz kimliği:</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Üçüncü taraflarla paylaşılmaz</li>
-                <li>Reklam veya pazarlama amaçlı kullanılmaz</li>
-                <li>Sadece uygulama içi premium durumu kontrolü için kullanılır</li>
-              </ul>
-            </section>
-
-            <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">8. KULLANICI HAKLARI</h2>
-              <p className="text-gray-300 leading-relaxed mb-4">
-                KVKK (Kişisel Verilerin Korunması Kanunu) kapsamında aşağıdaki haklara sahipsiniz:
-              </p>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">8.1. Bilgi Edinme Hakkı</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Hangi verilerinizin toplandığını öğrenebilirsiniz</li>
-                <li>Verilerinizin nasıl kullanıldığını öğrenebilirsiniz</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">8.2. Erişim Hakkı</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Kişisel verilerinize erişim talep edebilirsiniz</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">8.3. Düzeltme Hakkı</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Yanlış veya eksik verilerinizin düzeltilmesini talep edebilirsiniz</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">8.4. Silme Hakkı</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Verilerinizin silinmesini talep edebilirsiniz (yasal yükümlülükler saklı kalmak kaydıyla)</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">8.5. İtiraz Hakkı</h3>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Verilerinizin işlenmesine itiraz edebilirsiniz</li>
-              </ul>
-
-              <h3 className="text-xl font-semibold mb-3 text-gray-100 mt-6">8.6. Haklarınızı Kullanma</h3>
-              <p className="text-gray-300 leading-relaxed mb-3">
-                Haklarınızı kullanmak için bizimle iletişime geçebilirsiniz:
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>E-posta: privacy@linkmanager.app</li>
-                <li>Play Store: <a href="https://play.google.com/store/apps/details?id=com.link.manager&hl=tr" target="_blank" rel="noopener noreferrer" className="text-[#FF4655] hover:underline">https://play.google.com/store/apps/details?id=com.link.manager&hl=tr</a></li>
-              </ul>
-            </section>
-
-            <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">9. ÇOCUKLARIN GİZLİLİĞİ</h2>
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">11. INTERNATIONAL DATA TRANSFER</h2>
               <p className="text-gray-300 leading-relaxed">
-                Link Manager, 13 yaş altındaki çocuklardan bilerek veri toplamaz. 13 yaş altındaki bir çocuğun verilerinin toplandığını fark edersek, derhal sileriz.
+                Your data may be stored on service providers&apos; servers in the USA and other countries with appropriate security measures.
               </p>
             </section>
 
             <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">10. ÇEREZLER VE BENZERİ TEKNOLOJİLER</h2>
-              <p className="text-gray-300 leading-relaxed">
-                Uygulama, Firebase Analytics ve Crashlytics gibi analitik araçlar kullanır. Bu araçlar, kullanım istatistikleri ve hata raporları toplar.
-              </p>
-            </section>
-
-            <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">11. ULUSLARARASI VERİ TRANSFERİ</h2>
-              <p className="text-gray-300 leading-relaxed">
-                Verileriniz, hizmet sağlayıcılarımızın sunucularında (ABD ve diğer ülkeler) saklanabilir. Bu transferler, uygun güvenlik önlemleri ile yapılır.
-              </p>
-            </section>
-
-            <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">12. POLİTİKA DEĞİŞİKLİKLERİ</h2>
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">12. POLICY CHANGES</h2>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Bu Gizlilik Politikasını herhangi bir zamanda güncelleyebiliriz.</li>
-                <li>Önemli değişiklikler durumunda, uygulama içi bildirim veya e-posta ile bilgilendirileceksiniz.</li>
-                <li>Değişikliklerden sonra uygulamayı kullanmaya devam etmeniz, güncellenmiş politikayı kabul ettiğiniz anlamına gelir.</li>
+                <li>We may update this Privacy Policy at any time</li>
+                <li>You will be notified of significant changes</li>
+                <li>Continued use means acceptance of updated policy</li>
               </ul>
             </section>
 
             <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">13. İLETİŞİM</h2>
-              <p className="text-gray-300 leading-relaxed mb-3">
-                Gizlilik ile ilgili sorularınız veya talepleriniz için:
-              </p>
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">13. CONTACT</h2>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>E-posta: privacy@linkmanager.app</li>
-                <li>Play Store: <a href="https://play.google.com/store/apps/details?id=com.link.manager&hl=tr" target="_blank" rel="noopener noreferrer" className="text-[#FF4655] hover:underline">https://play.google.com/store/apps/details?id=com.link.manager&hl=tr</a></li>
+                <li>Email: <a href="mailto:privacy@linkmanager.app" className="text-[#FF4655] hover:underline">privacy@linkmanager.app</a></li>
+                <li>Play Store: <a href="https://play.google.com/store/apps/details?id=com.link.manager&hl=tr" target="_blank" rel="noopener noreferrer" className="text-[#FF4655] hover:underline">Link Manager</a></li>
               </ul>
             </section>
 
             <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">14. YASAL UYGULANABİLİRLİK</h2>
+              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">14. CONSENT</h2>
               <p className="text-gray-300 leading-relaxed">
-                Bu Gizlilik Politikası, Türkiye Cumhuriyeti&apos;nin Kişisel Verilerin Korunması Kanunu (KVKK) ve ilgili mevzuatına uygun olarak hazırlanmıştır.
-              </p>
-            </section>
-
-            <section className="mt-8">
-              <h2 className="text-2xl font-bold mb-4 text-[#FF4655]">15. ONAY</h2>
-              <p className="text-gray-300 leading-relaxed">
-                Uygulamayı kullanarak, bu Gizlilik Politikasını okuduğunuzu, anladığınızı ve kabul ettiğinizi onaylarsınız.
+                By using the application, you confirm that you have read, understood, and accepted this Privacy Policy.
               </p>
             </section>
 
             <div className="mt-12 pt-6 border-t border-[#2A3441]/50 text-center text-gray-400 text-sm">
-              <p>&copy; 2025 Link Manager. Tüm hakları saklıdır.</p>
+              <p>&copy; 2025 Link Manager. All rights reserved.</p>
             </div>
           </div>
         </div>

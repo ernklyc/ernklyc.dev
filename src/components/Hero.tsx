@@ -139,7 +139,7 @@ export default function Hero() {
             variants={itemVariants}
             className="max-w-2xl mb-8 md:mb-12 text-gray-300 text-center text-sm md:text-base lg:text-lg leading-relaxed px-4 md:px-0"
           >
-            Aktif olarak Flutter ile mobil uygulama geliştirme üzerine yoğunlaşmaktayım. Hobi olarak ise Unity ile oyunlar geliştiriyor ve ayrıca modern web siteleri tasarlıyorum. Geliştirdiğim yenilikçi mobil uygulamaları ve oyunları Google Play Store&apos;da yayınlıyorum.
+            Aktif olarak Flutter ile mobil uygulama geliştirme üzerine yoğunlaşmaktayım. Hobi olarak ise Unity ile oyunlar geliştiriyor ve modern web siteleri tasarlıyorum. Geliştirdiğim mobil uygulamaları, oyunları ve web sitelerini yayınlıyorum.
           </motion.p>
           
           {/* Social Links with Enhanced Design */}

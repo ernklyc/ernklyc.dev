@@ -108,21 +108,12 @@ export const projects = [
     githubLink: "https://github.com/ernklyc/raspberry_pi_pico_w_callmebot_api_whatsapp_messaging/tree/main"
   },
   {
-    name: "Attack on Titan Wiki",
-    type: "Web",
-    description: "Attack on Titan evrenine ait wiki web sitesi",
-    image: "https://pbs.twimg.com/media/F-Fs4wqbQAAhI4r?format=jpg&name=large",
-    technologies: ["React", "Next.js", "Web Development"],
-    link: "https://attack-on-titan-web.vercel.app/",
-    githubLink: "https://github.com/ernklyc/attack-on-titan-web"
-  },
-  {
-    name: "Attack on Titan API",
-    type: "Web",
-    description: "Attack on Titan verileri için API servisi",
-    image: "https://raw.githubusercontent.com/ernklyc/attack-on-titan-wiki-api/refs/heads/master/public/eren.png",
-    technologies: ["Node.js", "Express", "REST API"],
-    link: "https://attack-on-titan-wiki-api.vercel.app/",
-    githubLink: "https://github.com/ernklyc/attack-on-titan-wiki-api"
+    name: "HP Character Wiki",
+    type: "Flutter",
+    description: "Harry Potter karakterleri ansiklopedisi ve quiz uygulaması",
+    image: "https://play-lh.googleusercontent.com/MlmxEMJl8T0vCylJPRGnKhQWsbxYdkI-BuJHiBU1CC6IDoDtTbu32x7ctQ4LPv_E11queTB6Ph1EQzOp6-3TFg=w240-h480-rw",
+    technologies: ["Flutter", "Dart", "API", "Quiz Game"],
+    link: "https://play.google.com/store/apps/details?id=com.ek.hpcharacterwiki",
+    githubLink: "https://github.com/ernklyc/hp-character-wiki"
   }
 ]; 

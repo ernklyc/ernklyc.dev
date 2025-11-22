@@ -10,6 +10,8 @@ Modern ve responsive kişisel portfolio websitesi. Next.js, TypeScript, Tailwind
 - **Animasyonlar**: Framer Motion ile smooth animasyonlar
 - **Dark Theme**: Profesyonel koyu tema
 - **SEO Optimized**: Meta tags ve structured data
+- **AI Chat Widget**: OpenAI entegrasyonu ile akıllı sohbet asistanı
+- **Gizlilik Politikaları**: HP Character Wiki, Movie Face AI ve Link Manager uygulamaları için gizlilik politikası sayfaları
 
 ## 🛠️ Teknolojiler
 
@@ -24,13 +26,17 @@ Modern ve responsive kişisel portfolio websitesi. Next.js, TypeScript, Tailwind
 
 ```bash
 # Repository'yi klonlayın
-git clone https://github.com/ernklyc/portfolio-website.git
+git clone https://github.com/ernklyc/ernklyc-web.git
 
 # Proje dizinine gidin
-cd portfolio-website
+cd ernklyc-web
 
 # Bağımlılıkları yükleyin
 npm install
+
+# Environment variables oluşturun
+# .env.local dosyası oluşturun ve OpenAI API key ekleyin
+# OPENAI_API_KEY=your_api_key_here
 
 # Development server'ı başlatın
 npm run dev
@@ -50,17 +56,39 @@ npm start
 
 ```
 src/
-├── app/                 # Next.js App Router
-├── components/          # React bileşenleri
-│   ├── About.tsx       # Hakkımda bölümü
-│   ├── Contact.tsx     # İletişim formu
-│   ├── Experience.tsx  # Deneyim & Eğitim
-│   ├── Footer.tsx      # Footer bileşeni
-│   ├── Hero.tsx        # Ana sayfa hero
-│   ├── Projects.tsx    # Projeler showcase
-│   └── Skills.tsx      # Yetenekler
-├── data/               # Statik veri dosyaları
-└── styles/             # Global stiller
+├── app/                     # Next.js App Router
+│   ├── api/
+│   │   └── chat/           # AI Chat API endpoint
+│   ├── privacy-policy/     # HP Character Wiki gizlilik politikası
+│   ├── movie-face-ai-privacy/  # Movie Face AI gizlilik politikası
+│   ├── link-manager-privacy/   # Link Manager gizlilik politikası
+│   └── link-manager-terms/     # Link Manager kullanım şartları
+├── components/              # React bileşenleri
+│   ├── About.tsx           # Hakkımda bölümü
+│   ├── Achievements.tsx    # Başarılar
+│   ├── AISupport.tsx       # AI Chat Widget
+│   ├── Analytics.tsx       # GitHub Stats
+│   ├── Blog.tsx            # Blog bölümü
+│   ├── ChatWidget.tsx      # Chat arayüzü
+│   ├── Contact.tsx         # İletişim formu
+│   ├── Experience.tsx      # Deneyim & Eğitim
+│   ├── Footer.tsx          # Footer bileşeni
+│   ├── GitHubStats.tsx     # GitHub istatistikleri
+│   ├── Hero.tsx            # Ana sayfa hero
+│   ├── Loading.tsx         # Loading animasyonu
+│   ├── Navbar.tsx          # Navigation bar
+│   ├── Projects.tsx        # Projeler showcase
+│   ├── Skills.tsx          # Yetenekler
+│   ├── Testimonials.tsx    # Referanslar
+│   └── ThemeToggle.tsx     # Tema değiştirici
+├── data/                   # Statik veri dosyaları
+│   ├── achievements.ts
+│   ├── education.ts
+│   ├── experience.ts
+│   ├── profile.ts
+│   ├── projects.ts
+│   └── skills.ts
+└── styles/                 # Global stiller
 ```
 
 ## 🎨 Özelleştirme
@@ -104,10 +132,20 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 ## 👨‍💻 Geliştirici
 
 **Eren KALAYCI**
-- 🌐 Website: [ernklyc.dev](https://ernklyc.dev)
-- 📧 Email: erenkalayci.dev@gmail.com
-- 💼 LinkedIn: [eren-kalayci](https://linkedin.com/in/eren-kalayci)
+- 🌐 Website: [ernklyc.vercel.app](https://ernklyc.vercel.app)
+- 📧 Email: ernklyc@gmail.com
+- 💼 LinkedIn: [erenklyc](https://linkedin.com/in/erenklyc)
 - 🐱 GitHub: [ernklyc](https://github.com/ernklyc)
+- 📱 Play Store: [Developer Page](https://play.google.com/store/apps/dev?id=6576291249346115918)
+
+## 🎮 Yayınlanan Uygulamalar
+
+- **HP Character Wiki**: Harry Potter karakterleri ansiklopedisi ([Play Store](https://play.google.com/store/apps/details?id=com.ek.hpcharacterwiki))
+- **Link Manager**: Link yönetimi uygulaması ([Play Store](https://play.google.com/store/apps/details?id=com.link.manager))
+- **Movie Face AI**: AI destekli yüz eşleştirme oyunu
+- **MF Master Online**: Mayın tarlası oyunu
+- **Flag Quiz**: Bayrak bilgi yarışması
+- Ve daha fazlası...
 
 ---
 

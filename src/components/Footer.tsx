@@ -162,14 +162,14 @@ export default function Footer() {
               <span>&copy; {year} Eren KALAYCI.</span>
             </p>
             <p className="flex items-center justify-center gap-2 flex-wrap">
-              <a href="/privacy-policy" className="text-gray-300 hover:text-white hover:underline">HP Character Wiki Gizlilik Politikası</a>
+              <a href="/privacy-policy" className="text-gray-300 hover:text-white hover:underline">HP Character Wiki Privacy Policy</a>
               <span className="text-gray-500">|</span>
-              <a href="/movie-face-ai-privacy" className="text-gray-300 hover:text-white hover:underline">Movie Face AI Gizlilik Politikası</a>
+              <a href="/movie-face-ai-privacy" className="text-gray-300 hover:text-white hover:underline">Movie Face AI Privacy Policy</a>
             </p>
             <p className="flex items-center justify-center gap-2 flex-wrap">
-              <a href="/link-manager-privacy" className="text-gray-300 hover:text-white hover:underline">Link Manager Gizlilik Politikası</a>
+              <a href="/link-manager-privacy" className="text-gray-300 hover:text-white hover:underline">Link Manager Privacy Policy</a>
               <span className="text-gray-500">|</span>
-              <a href="/link-manager-terms" className="text-gray-300 hover:text-white hover:underline">Link Manager Kullanım Şartları</a>
+              <a href="/link-manager-terms" className="text-gray-300 hover:text-white hover:underline">Link Manager Terms of Service</a>
             </p>
           </div>
         </motion.div>
