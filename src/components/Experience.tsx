@@ -6,17 +6,6 @@ import { experience } from "@/data/experience";
 import { education } from "@/data/education";
 
 export default function Experience() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.2
-      }
-    }
-  };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
