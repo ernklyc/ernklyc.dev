@@ -2,16 +2,10 @@
 import { motion } from "framer-motion";
 import { FiGithub, FiLinkedin, FiMail, FiArrowUp } from "react-icons/fi";
 import { profile } from "@/data/profile";
-import { useEffect, useState } from "react";
 import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript, SiFramer } from "react-icons/si";
 
 export default function Footer() {
-  const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const year = new Date().getFullYear();
 
   const scrollToTop = () => {
     window.scrollTo({
