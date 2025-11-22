@@ -80,8 +80,8 @@ export default function RootLayout({
   const bodyClasses = `${geistSans.variable} ${geistMono.variable} antialiased bg-[#0F1923] text-white min-h-screen`;
   
   return (
-    <html lang="tr" className="scroll-smooth">
-      <body className={bodyClasses}>
+    <html lang="tr" className="scroll-smooth" suppressHydrationWarning>
+      <body className={bodyClasses} suppressHydrationWarning>
         <Navbar />
         {children}
         <AISupport />

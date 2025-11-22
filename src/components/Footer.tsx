@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript, SiFramer } from "react-icons/si";
 
 export default function Footer() {
-  const [year, setYear] = useState<number | null>(null);
+  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [mounted, setMounted] = useState(false);
+  
   useEffect(() => {
-    setYear(new Date().getFullYear());
+    setMounted(true);
   }, []);
 
   const scrollToTop = () => {
@@ -161,12 +163,21 @@ export default function Footer() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="pt-6 border-t border-[#FF4655]/20 text-center"
         >
-          <p className="text-gray-400 text-xs flex items-center justify-center gap-2 flex-wrap">
-            <span>&copy; {year ?? ''} Eren KALAYCI.</span>
-            <a href="/privacy-policy" className="text-gray-300 hover:text-white hover:underline">HP Character Wiki Gizlilik Politikası</a>
-            <span className="text-gray-500">|</span>
-            <a href="/movie-face-ai-privacy" className="text-gray-300 hover:text-white hover:underline">Movie Face AI Gizlilik Politikası</a>
-          </p>
+          <div className="text-gray-400 text-xs space-y-2">
+            <p className="flex items-center justify-center gap-2 flex-wrap">
+              <span>&copy; {year} Eren KALAYCI.</span>
+            </p>
+            <p className="flex items-center justify-center gap-2 flex-wrap">
+              <a href="/privacy-policy" className="text-gray-300 hover:text-white hover:underline">HP Character Wiki Gizlilik Politikası</a>
+              <span className="text-gray-500">|</span>
+              <a href="/movie-face-ai-privacy" className="text-gray-300 hover:text-white hover:underline">Movie Face AI Gizlilik Politikası</a>
+            </p>
+            <p className="flex items-center justify-center gap-2 flex-wrap">
+              <a href="/link-manager-privacy" className="text-gray-300 hover:text-white hover:underline">Link Manager Gizlilik Politikası</a>
+              <span className="text-gray-500">|</span>
+              <a href="/link-manager-terms" className="text-gray-300 hover:text-white hover:underline">Link Manager Kullanım Şartları</a>
+            </p>
+          </div>
         </motion.div>
       </div>
     </footer>
