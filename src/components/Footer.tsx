@@ -55,10 +55,10 @@ export default function Footer() {
           {/* Header */}
           <motion.div variants={itemVariants} className="mb-6">
             <h2 className="text-2xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              EREN KALAYCI
+              Eren Kalaycı
             </h2>
             <p className="text-gray-300 max-w-md text-center text-sm leading-relaxed">
-              Flutter, Unity ve web teknolojilerinde uzmanlaşmış Bilgisayar Mühendisi & Mobil Uygulama Geliştirici.
+              Bilgisayar Mühendisi & Mobil Uygulama Geliştirici
             </p>
           </motion.div>
           
@@ -159,7 +159,7 @@ export default function Footer() {
         >
           {/* Copyright */}
           <div className="text-center mb-6">
-            <p className="text-gray-400 text-sm">&copy; {year} Eren KALAYCI. All rights reserved.</p>
+            <p className="text-gray-400 text-sm">&copy; {year} Eren Kalaycı. All rights reserved.</p>
           </div>
 
           {/* Legal Links */}

@@ -115,9 +115,10 @@ export default function Projects() {
               <div className="relative h-36 overflow-hidden">
                 <Image
                   src={project.image || "https://via.placeholder.com/400x240"}
-                  alt={project.name}
+                  alt={`${project.name} proje görseli - ${project.description.substring(0, 50)}`}
                   width={400}
                   height={240}
+                  loading="lazy"
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                   style={{ objectFit: "cover" }}
                 />

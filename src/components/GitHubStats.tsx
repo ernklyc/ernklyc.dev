@@ -65,9 +65,10 @@ export default function GitHubStats() {
             <div className="space-y-4">
               <Image 
                 src={`https://github-readme-stats.vercel.app/api/top-langs?username=${username}&show_icons=true&locale=en&layout=compact&theme=github_dark&hide_border=true&bg_color=1F2731&title_color=FF4655&text_color=ffffff`}
-                alt="GitHub Language Stats"
+                alt="GitHub dil istatistikleri - En çok kullanılan programlama dilleri"
                 width={400}
                 height={200}
+                loading="lazy"
                 className="w-full rounded-lg"
               />
             </div>
@@ -84,17 +85,17 @@ export default function GitHubStats() {
         >
           <h3 className="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">🛠 Teknolojiler & Araçlar</h3>
           <div className="flex flex-wrap justify-center gap-3">
-            <Image src="https://img.shields.io/badge/-Flutter-333333?style=flat&logo=flutter" alt="Flutter" width={80} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-Dart-333333?style=flat&logo=dart" alt="Dart" width={70} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-Unity-333333?style=flat&logo=unity" alt="Unity" width={70} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-C%23-333333?style=flat&logo=c-sharp&logoColor=white" alt="C#" width={60} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-HTML5-333333?style=flat&logo=html5" alt="HTML5" width={80} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-CSS3-333333?style=flat&logo=css3" alt="CSS3" width={70} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-JavaScript-333333?style=flat&logo=javascript" alt="JavaScript" width={100} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-C-333333?style=flat&logo=c" alt="C" width={50} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-Git-333333?style=flat&logo=git" alt="Git" width={60} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-Figma-333333?style=flat&logo=figma" alt="Figma" width={70} height={20} className="rounded hover:scale-105 transition-transform" />
-            <Image src="https://img.shields.io/badge/-Photoshop-333333?style=flat&logo=adobe-photoshop" alt="Photoshop" width={100} height={20} className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Flutter-333333?style=flat&logo=flutter" alt="Flutter teknoloji rozeti" width={80} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Dart-333333?style=flat&logo=dart" alt="Dart teknoloji rozeti" width={70} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Unity-333333?style=flat&logo=unity" alt="Unity teknoloji rozeti" width={70} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-C%23-333333?style=flat&logo=c-sharp&logoColor=white" alt="C# teknoloji rozeti" width={60} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-HTML5-333333?style=flat&logo=html5" alt="HTML5 teknoloji rozeti" width={80} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-CSS3-333333?style=flat&logo=css3" alt="CSS3 teknoloji rozeti" width={70} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-JavaScript-333333?style=flat&logo=javascript" alt="JavaScript teknoloji rozeti" width={100} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-C-333333?style=flat&logo=c" alt="C programlama dili rozeti" width={50} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Git-333333?style=flat&logo=git" alt="Git versiyon kontrol sistemi rozeti" width={60} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Figma-333333?style=flat&logo=figma" alt="Figma tasarım aracı rozeti" width={70} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
+            <Image src="https://img.shields.io/badge/-Photoshop-333333?style=flat&logo=adobe-photoshop" alt="Adobe Photoshop rozeti" width={100} height={20} loading="lazy" className="rounded hover:scale-105 transition-transform" />
           </div>
         </motion.div>
 
@@ -114,23 +115,25 @@ export default function GitHubStats() {
               rel="noopener noreferrer"
               className="inline-block hover:scale-105 transition-transform"
             >
-              <Image src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" alt="LinkedIn" width={100} height={20} className="rounded" />
+              <Image src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" alt="LinkedIn profil bağlantısı" width={100} height={20} loading="lazy" className="rounded" />
             </a>
             <a
               href="https://ernklyc.github.io/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block hover:scale-105 transition-transform"
+              aria-label="Kişisel web sitesi"
             >
-              <Image src="https://img.shields.io/badge/Website-333333?style=flat&logo=google-chrome&logoColor=white" alt="Website" width={100} height={20} className="rounded" />
+              <Image src="https://img.shields.io/badge/Website-333333?style=flat&logo=google-chrome&logoColor=white" alt="Kişisel web sitesi bağlantısı" width={100} height={20} loading="lazy" className="rounded" />
             </a>
             <a
               href={`https://github.com/${username}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block hover:scale-105 transition-transform"
+              aria-label="GitHub profil sayfası"
             >
-              <Image src="https://img.shields.io/badge/GitHub-333333?style=flat&logo=github&logoColor=white" alt="GitHub" width={100} height={20} className="rounded" />
+              <Image src="https://img.shields.io/badge/GitHub-333333?style=flat&logo=github&logoColor=white" alt="GitHub profil bağlantısı" width={100} height={20} loading="lazy" className="rounded" />
             </a>
           </div>
         </motion.div>

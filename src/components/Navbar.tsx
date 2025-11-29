@@ -85,11 +85,13 @@ export default function Navbar() {
       <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 md:py-4 max-w-6xl flex justify-center items-center">
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-6 lg:space-x-8 justify-center w-full">
-          {menuItems.map((item) => (            <a
+          {menuItems.map((item) => (
+            <a
               key={item.href}
               href={item.href}
               onClick={(e) => handleNavClick(e, item.href)}
-              className="relative py-2 px-1 font-medium text-xs md:text-sm tracking-wide text-white hover:text-gray-300 transition-colors"
+              className="py-2 px-1 font-medium text-xs md:text-sm tracking-wide text-white hover:text-[#FF4655] transition-colors focus:outline-none"
+              aria-label={`${item.label} bölümüne git`}
             >
               {item.label}
             </a>
@@ -122,8 +124,9 @@ export default function Navbar() {
                 <a
                   key={item.href}
                   href={item.href}
-                  className="py-2 px-3 rounded-lg flex items-center text-sm w-full text-center justify-center text-white hover:bg-[#1F2731]/30 transition-colors"
+                  className="py-2 px-3 rounded-lg flex items-center text-sm w-full text-center justify-center text-white hover:text-[#FF4655] hover:bg-[#1F2731]/30 transition-colors focus:outline-none"
                   onClick={(e) => handleNavClick(e, item.href)}
+                  aria-label={`${item.label} bölümüne git`}
                 >
                   {item.label}
                 </a>

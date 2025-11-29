@@ -3,29 +3,35 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import AISupport from "@/components/AISupport";
+import StructuredData from "@/components/StructuredData";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial'],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: 'swap',
+  preload: false,
+  fallback: ['monospace'],
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "EREN KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici",
-    template: "%s | EREN KALAYCI"
+    default: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici | Portfolio",
+    template: "%s | Eren Kalaycı"
   },
-  description: "Flutter, React ve Unity uzmanı Eren KALAYCI'nin portfolyosu. Mobil uygulama geliştirme, web geliştirme ve oyun geliştirme projeleri.",
-  keywords: ["Flutter", "React", "Unity", "Mobil Uygulama", "Web Geliştirme", "Bilgisayar Mühendisi", "Portfolio"],
-  authors: [{ name: "Eren KALAYCI" }],
-  creator: "Eren KALAYCI",
-  publisher: "Eren KALAYCI",
+  description: "Eren Kalaycı - Flutter, React ve Unity uzmanı bilgisayar mühendisi. Mobil uygulama geliştirme, web geliştirme ve oyun geliştirme projeleri. Eren Kalaycı'nın portfolyosu ve projeleri.",
+  keywords: ["Eren Kalaycı", "Eren KALAYCI", "eren kalaycı", "Flutter", "React", "Unity", "Mobil Uygulama", "Web Geliştirme", "Bilgisayar Mühendisi", "Portfolio", "Mobil Uygulama Geliştirici", "Eren Kalaycı portfolio"],
+  authors: [{ name: "Eren Kalaycı" }],
+  creator: "Eren Kalaycı",
+  publisher: "Eren Kalaycı",
   metadataBase: new URL('https://ernklyc.vercel.app'),
   alternates: {
     canonical: '/',
@@ -34,22 +40,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'tr_TR',
     url: 'https://ernklyc.vercel.app',
-    title: 'EREN KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
-    description: 'Flutter, React ve Unity uzmanı Eren KALAYCI\'nin portfolyosu. Mobil uygulama geliştirme, web geliştirme ve oyun geliştirme projeleri.',
-    siteName: 'EREN KALAYCI Portfolio',
+    title: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
+    description: 'Eren Kalaycı - Flutter, React ve Unity uzmanı bilgisayar mühendisi. Mobil uygulama geliştirme, web geliştirme ve oyun geliştirme projeleri.',
+    siteName: 'Eren Kalaycı Portfolio',
     images: [
       {
         url: '/profil_resmim.jpg',
         width: 1200,
         height: 630,
-        alt: 'Eren KALAYCI Portfolio',
+        alt: 'Eren Kalaycı - Bilgisayar Mühendisi Portfolio',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EREN KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
-    description: 'Flutter, React ve Unity uzmanı Eren KALAYCI\'nin portfolyosu.',
+    title: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
+    description: 'Eren Kalaycı - Flutter, React ve Unity uzmanı bilgisayar mühendisi. Portfolio ve projeler.',
     images: ['/profil_resmim.jpg'],
     creator: '@ernklyc',
   },
@@ -82,9 +88,12 @@ export default function RootLayout({
   return (
     <html lang="tr" className="scroll-smooth" suppressHydrationWarning>
       <body className={bodyClasses} suppressHydrationWarning>
-        <Navbar />
-        {children}
-        <AISupport />
+        <StructuredData />
+        <ErrorBoundary>
+          <Navbar />
+          {children}
+          <AISupport />
+        </ErrorBoundary>
       </body>
     </html>
   );

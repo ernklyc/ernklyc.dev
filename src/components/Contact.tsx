@@ -1,28 +1,96 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FiSend, FiCheck } from "react-icons/fi";
+import { FiSend, FiCheck, FiAlertCircle } from "react-icons/fi";
 import { profile } from "@/data/profile";
 
+interface FormErrors {
+  name?: string;
+  subject?: string;
+  message?: string;
+}
+
 export default function Contact() {
-  const [formStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [formData, setFormData] = useState({
     name: '',
     subject: '',
     message: ''
   });
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'Ad alanı zorunludur';
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Ad en az 2 karakter olmalıdır';
+    } else if (formData.name.trim().length > 50) {
+      newErrors.name = 'Ad en fazla 50 karakter olabilir';
+    }
+
+    // Subject validation
+    if (!formData.subject.trim()) {
+      newErrors.subject = 'Konu alanı zorunludur';
+    } else if (formData.subject.trim().length < 3) {
+      newErrors.subject = 'Konu en az 3 karakter olmalıdır';
+    } else if (formData.subject.trim().length > 100) {
+      newErrors.subject = 'Konu en fazla 100 karakter olabilir';
+    }
+
+    // Message validation
+    if (!formData.message.trim()) {
+      newErrors.message = 'Mesaj alanı zorunludur';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Mesaj en az 10 karakter olmalıdır';
+    } else if (formData.message.trim().length > 1000) {
+      newErrors.message = 'Mesaj en fazla 1000 karakter olabilir';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name as keyof FormErrors]) {
+      setErrors(prev => ({ ...prev, [name]: undefined }));
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
-      `Ad: ${formData.name}\n\nMesaj: ${formData.message}`
-    )}`;
-    window.location.href = mailto;
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setFormStatus('loading');
+    
+    try {
+      const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
+        `Ad: ${formData.name}\n\nMesaj: ${formData.message}`
+      )}`;
+      
+      // Simulate async operation
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      window.location.href = mailto;
+      setFormStatus('success');
+      
+      // Reset form after success
+      setTimeout(() => {
+        setFormData({ name: '', subject: '', message: '' });
+        setFormStatus('idle');
+      }, 2000);
+    } catch (error) {
+      setFormStatus('error');
+      console.error('Form submission error:', error);
+    }
   };
 
   return (
@@ -84,32 +152,64 @@ export default function Contact() {
                   whileHover={{ scale: 1.02 }}
                   className="space-y-2"
                 >
-                  <label className="text-sm font-semibold text-gray-300 block">Adınız</label>
+                  <label htmlFor="name" className="text-sm font-semibold text-gray-300 block">
+                    Adınız <span className="text-[#FF4655]">*</span>
+                  </label>
                   <input
+                    id="name"
                     type="text"
                     name="name"
                     placeholder="Adınızı girin"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#1F2731]/60 backdrop-blur-sm border border-[#2A3441]/60 rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:border-[#FF4655]/60 focus:ring-2 focus:ring-[#FF4655]/20 transition-all duration-300 hover:border-[#FF4655]/40"
+                    aria-required="true"
+                    aria-invalid={!!errors.name}
+                    aria-describedby={errors.name ? "name-error" : undefined}
+                    className={`w-full bg-[#1F2731]/60 backdrop-blur-sm border rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-300 ${
+                      errors.name
+                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#2A3441]/60 hover:border-[#FF4655]/40 focus:border-[#FF4655]/60 focus:ring-[#FF4655]/20'
+                    }`}
                   />
+                  {errors.name && (
+                    <p id="name-error" className="text-red-400 text-xs flex items-center gap-1" role="alert">
+                      <FiAlertCircle className="w-3 h-3" />
+                      {errors.name}
+                    </p>
+                  )}
                 </motion.div>
                 
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   className="space-y-2"
                 >
-                  <label className="text-sm font-semibold text-gray-300 block">Konu</label>
+                  <label htmlFor="subject" className="text-sm font-semibold text-gray-300 block">
+                    Konu <span className="text-[#FF4655]">*</span>
+                  </label>
                   <input
+                    id="subject"
                     type="text"
                     name="subject"
                     placeholder="Mesaj konusu"
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full bg-[#1F2731]/60 backdrop-blur-sm border border-[#2A3441]/60 rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:border-[#FF4655]/60 focus:ring-2 focus:ring-[#FF4655]/20 transition-all duration-300 hover:border-[#FF4655]/40"
+                    aria-required="true"
+                    aria-invalid={!!errors.subject}
+                    aria-describedby={errors.subject ? "subject-error" : undefined}
+                    className={`w-full bg-[#1F2731]/60 backdrop-blur-sm border rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-300 ${
+                      errors.subject
+                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                        : 'border-[#2A3441]/60 hover:border-[#FF4655]/40 focus:border-[#FF4655]/60 focus:ring-[#FF4655]/20'
+                    }`}
                   />
+                  {errors.subject && (
+                    <p id="subject-error" className="text-red-400 text-xs flex items-center gap-1" role="alert">
+                      <FiAlertCircle className="w-3 h-3" />
+                      {errors.subject}
+                    </p>
+                  )}
                 </motion.div>
               </div>
               
@@ -117,24 +217,54 @@ export default function Contact() {
                 whileHover={{ scale: 1.01 }}
                 className="space-y-2"
               >
-                <label className="text-sm font-semibold text-gray-300 block">Mesajınız</label>
+                <label htmlFor="message" className="text-sm font-semibold text-gray-300 block">
+                  Mesajınız <span className="text-[#FF4655]">*</span>
+                  <span className="text-xs text-gray-400 ml-2">
+                    ({formData.message.length}/1000)
+                  </span>
+                </label>
                 <textarea
+                  id="message"
                   name="message"
                   placeholder="Mesajınızı detaylı bir şekilde yazın..."
                   value={formData.message}
                   onChange={handleChange}
                   required
                   rows={6}
-                  className="w-full bg-[#1F2731]/60 backdrop-blur-sm border border-[#2A3441]/60 rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:border-[#FF4655]/60 focus:ring-2 focus:ring-[#FF4655]/20 transition-all duration-300 resize-none hover:border-[#FF4655]/40"
+                  maxLength={1000}
+                  aria-required="true"
+                  aria-invalid={!!errors.message}
+                  aria-describedby={errors.message ? "message-error" : undefined}
+                  className={`w-full bg-[#1F2731]/60 backdrop-blur-sm border rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-300 resize-none ${
+                    errors.message
+                      ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                      : 'border-[#2A3441]/60 hover:border-[#FF4655]/40 focus:border-[#FF4655]/60 focus:ring-[#FF4655]/20'
+                  }`}
                 ></textarea>
+                {errors.message && (
+                  <p id="message-error" className="text-red-400 text-xs flex items-center gap-1" role="alert">
+                    <FiAlertCircle className="w-3 h-3" />
+                    {errors.message}
+                  </p>
+                )}
               </motion.div>
               
+              {formStatus === 'error' && (
+                <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-4 text-red-400 text-sm flex items-center gap-2" role="alert">
+                  <FiAlertCircle className="w-5 h-5" />
+                  <span>Bir hata oluştu. Lütfen tekrar deneyin.</span>
+                </div>
+              )}
+
               <motion.button
                 type="submit"
-                disabled={formStatus === 'loading'}
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className={`w-full bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] hover:from-[#FF4655]/90 hover:to-[#FF6B7A]/90 text-white py-4 px-8 rounded-xl font-semibold text-lg flex items-center justify-center transition-all duration-500 transform ${formStatus === 'loading' ? 'opacity-70' : ''}`}
+                disabled={formStatus === 'loading' || formStatus === 'success'}
+                aria-label="Mesaj gönder"
+                whileHover={formStatus === 'idle' ? { scale: 1.02, y: -2 } : {}}
+                whileTap={formStatus === 'idle' ? { scale: 0.98 } : {}}
+                className={`w-full bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] hover:from-[#FF4655]/90 hover:to-[#FF6B7A]/90 text-white py-4 px-8 rounded-xl font-semibold text-lg flex items-center justify-center transition-all duration-500 transform ${
+                  formStatus === 'loading' || formStatus === 'success' ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
               >
                 {formStatus === 'idle' && (
                   <>

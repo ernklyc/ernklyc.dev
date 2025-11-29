@@ -21,9 +21,6 @@ const Contact = dynamic(() => import("@/components/Contact"), {
 const Footer = dynamic(() => import("@/components/Footer"), { 
   loading: () => <div className="h-32 bg-[#151F2B] animate-pulse" />
 });
-const ChatWidget = dynamic(() => import("@/components/ChatWidget"), { 
-  ssr: false 
-});
 
 export default function Home() {
   return (
@@ -35,7 +32,6 @@ export default function Home() {
       <Projects />
       <Contact />
       <Footer />
-      <ChatWidget />
     </main>
   );
 }

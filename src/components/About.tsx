@@ -79,9 +79,10 @@ export default function About() {
                   <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-2xl overflow-hidden border border-[#FF4655]/10">
                     <Image 
                       src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2xteHR5bGdleXIwejF5YzRlcXRvenc5dml6bXZnNHJ0ZnE3YXp1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1vlBgKjXEz1jTtsuiH/giphy.gif" 
-                      alt="Penguen Animasyonu"
+                      alt="Eren Kalaycı - Penguen karakter animasyonu"
                       width={256}
                       height={256}
+                      loading="lazy"
                       unoptimized={true}
                       className="w-full h-full object-cover"
                     />
@@ -90,7 +91,7 @@ export default function About() {
 
                 {/* Bilgiler */}
                 <div className="text-center space-y-2">
-                  <h3 className="text-lg md:text-xl font-bold text-white">Eren KALAYCI</h3>
+                  <h3 className="text-lg md:text-xl font-bold text-white">Eren Kalaycı</h3>
                   <p className="text-[#FF4655] text-xs md:text-sm font-semibold px-2">Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi</p>
                 </div>
 
@@ -122,7 +123,7 @@ export default function About() {
                   className="text-xl font-bold mb-6 text-white flex items-center"
                 >
                   <span className="text-[#FF4655] mr-2 text-2xl">&lt;</span>
-                  Merhaba, Ben Eren
+                  Merhaba, Ben Eren Kalaycı
                   <span className="text-[#FF4655] ml-2 text-2xl">/&gt;</span>
                 </motion.h3>
                 

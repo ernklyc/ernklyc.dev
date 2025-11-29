@@ -93,9 +93,12 @@ export default function Hero() {
             <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-white/20 p-1 overflow-hidden bg-gradient-to-br from-[#1F2731] to-[#0F1923]">
               <Image 
                 src="/profil_resmim.jpg" 
-                alt={profile.name} 
+                alt="Eren Kalaycı - Bilgisayar Mühendisi ve Mobil Uygulama Geliştirici"
                 width={128}
                 height={128}
+                priority
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQADAD8J8XG4Y5I7q0SOHYG2FH7YckHLZ2JBLfJZwH8P9n//2Q=="
                 className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-110"
               />
             </div>
@@ -139,7 +142,7 @@ export default function Hero() {
             variants={itemVariants}
             className="max-w-2xl mb-8 md:mb-12 text-gray-300 text-center text-sm md:text-base lg:text-lg leading-relaxed px-4 md:px-0"
           >
-            Aktif olarak Flutter ile mobil uygulama geliştirme üzerine yoğunlaşmaktayım. Hobi olarak ise Unity ile oyunlar geliştiriyor ve modern web siteleri tasarlıyorum. Geliştirdiğim mobil uygulamaları, oyunları ve web sitelerini yayınlıyorum.
+            Merhaba, ben <strong className="text-white">Eren Kalaycı</strong>. Aktif olarak Flutter ile mobil uygulama geliştirme üzerine yoğunlaşmaktayım. Hobi olarak ise Unity ile oyunlar geliştiriyor ve modern web siteleri tasarlıyorum. Eren Kalaycı olarak geliştirdiğim mobil uygulamaları, oyunları ve web sitelerini yayınlıyorum.
           </motion.p>
           
           {/* Social Links with Enhanced Design */}
