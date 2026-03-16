@@ -62,11 +62,6 @@ export const metadata: Metadata = {
     images: ['/og-default.png'],
     creator: '@ernklycdev',
   },
-  icons: {
-    icon: '/icon',
-    shortcut: '/icon',
-    apple: '/apple-touch-icon.png',
-  },
   robots: {
     index: true,
     follow: true,
