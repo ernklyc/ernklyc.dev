@@ -12,47 +12,47 @@ export default function PrivacyPolicyPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white py-20 px-4">
       <section className="container mx-auto max-w-4xl">
-        <div className="bg-[#1F2731]/60 backdrop-blur-sm rounded-2xl p-8 border border-[#2A3441]/50 shadow-2xl">
+        <div className="bg-[#1F2731]/60 backdrop-blur-sm rounded-2xl p-8 border border-white/10 shadow-2xl">
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white">
               HP CHARACTER WIKI PRIVACY POLICY
             </h1>
-            <p className="text-gray-400">Effective Date: September 18, 2025</p>
+            <p className="text-gray-400 text-sm">Effective Date: September 18, 2025</p>
           </div>
 
           <div className="prose prose-invert max-w-none space-y-6">
 
-          <p className="mb-6 text-gray-200">
+          <p className="mb-6 text-gray-300 leading-relaxed">
             This Privacy Policy explains how <strong>Yelbegen Software</strong> (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), the developer of the <strong>HP Character Wiki</strong> (&quot;Application&quot;), collects, uses, and protects your information.
           </p>
-          <p className="mb-8 text-gray-200">By using our Application, you agree to the practices described below.</p>
+          <p className="mb-8 text-gray-300 leading-relaxed">By using our Application, you agree to the practices described below.</p>
 
-          <hr className="border-[#FF4655]/30 mb-8" />
+          <hr className="border-white/10 mb-8" />
 
-          <h2 className="text-2xl font-semibold mb-4">1. Information We Collect</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-white">1. Information We Collect</h2>
 
-          <h3 className="text-xl font-semibold mb-2">1.1 Personally Identifiable Information (PII)</h3>
-          <p className="mb-6 text-gray-200">
+          <h3 className="text-xl font-semibold mb-2 text-gray-100">1.1 Personally Identifiable Information (PII)</h3>
+          <p className="mb-6 text-gray-300 leading-relaxed">
             We do <strong>not</strong> collect or process any personally identifiable information such as your name, email address, phone number, or location.
           </p>
 
-          <h3 className="text-xl font-semibold mb-2">1.2 User-Generated Data (Stored Locally)</h3>
-          <ul className="list-disc list-inside mb-6 text-gray-200 space-y-1">
+          <h3 className="text-xl font-semibold mb-2 text-gray-100">1.2 User-Generated Data (Stored Locally)</h3>
+          <ul className="list-disc list-inside mb-6 text-gray-300 space-y-1">
             <li>
               <strong>Favorites</strong>: When you mark characters or spells as favorites, only their IDs are saved on your device.
             </li>
             <li>This data does not leave your device and is not sent to our servers.</li>
           </ul>
 
-          <h3 className="text-xl font-semibold mb-2">1.3 Non-Personal / Technical Data</h3>
-          <ul className="list-disc list-inside mb-6 text-gray-200 space-y-1">
+          <h3 className="text-xl font-semibold mb-2 text-gray-100">1.3 Non-Personal / Technical Data</h3>
+          <ul className="list-disc list-inside mb-6 text-gray-300 space-y-1">
             <li>
               The Application retrieves content from the public API {" "}
               <a
                 href="https://hp-api.onrender.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#FF6B7A] hover:underline"
+                className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors"
               >
                 https://hp-api.onrender.com
               </a>
@@ -67,7 +67,7 @@ export default function PrivacyPolicyPage() {
                 href="https://policies.google.com/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#FF6B7A] hover:underline"
+                className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors"
               >
                 https://policies.google.com/privacy
               </a>
@@ -75,20 +75,20 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
 
-          <hr className="border-[#FF4655]/30 mb-8" />
+          <hr className="border-white/10 mb-8" />
 
-          <h2 className="text-2xl font-semibold mb-4">2. How We Use Information</h2>
-          <p className="mb-2 text-gray-200">We use information only to:</p>
-          <ul className="list-disc list-inside mb-6 text-gray-200 space-y-1">
+          <h2 className="text-2xl font-semibold mb-4 text-white">2. How We Use Information</h2>
+          <p className="mb-2 text-gray-300 leading-relaxed">We use information only to:</p>
+          <ul className="list-disc list-inside mb-6 text-gray-300 space-y-1">
             <li>Display your favorites within the Application (data remains local).</li>
             <li>Present public Harry Potter content retrieved from the external API.</li>
           </ul>
-          <p className="mb-8 text-gray-200">We do not use your information for advertising, profiling, or analytics.</p>
+          <p className="mb-8 text-gray-300 leading-relaxed">We do not use your information for advertising, profiling, or analytics.</p>
 
-          <hr className="border-[#FF4655]/30 mb-8" />
+          <hr className="border-white/10 mb-8" />
 
-          <h2 className="text-2xl font-semibold mb-4">3. Data Sharing and Third Parties</h2>
-          <ul className="list-disc list-inside mb-6 text-gray-200 space-y-1">
+          <h2 className="text-2xl font-semibold mb-4 text-white">3. Data Sharing and Third Parties</h2>
+          <ul className="list-disc list-inside mb-6 text-gray-300 space-y-1">
             <li>We do not collect, sell, or share personal data with third parties.</li>
             <li>
               Third-party services used:
@@ -103,31 +103,31 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
 
-          <hr className="border-[#FF4655]/30 mb-8" />
+          <hr className="border-white/10 mb-8" />
 
-          <h2 className="text-2xl font-semibold mb-4">4. Data Security</h2>
-          <ul className="list-disc list-inside mb-6 text-gray-200 space-y-1">
+          <h2 className="text-2xl font-semibold mb-4 text-white">4. Data Security</h2>
+          <ul className="list-disc list-inside mb-6 text-gray-300 space-y-1">
             <li>
               Your favorites list is stored securely on your device using the operating system’s local storage mechanisms (SharedPreferences).
             </li>
             <li>We do not maintain any servers that process or store your personal data.</li>
           </ul>
 
-          <hr className="border-[#FF4655]/30 mb-8" />
+          <hr className="border-white/10 mb-8" />
 
-          <h2 className="text-2xl font-semibold mb-4">5. Children’s Privacy</h2>
-          <p className="mb-2 text-gray-200">Our Application is intended for general audiences.</p>
-          <ul className="list-disc list-inside mb-6 text-gray-200 space-y-1">
+          <h2 className="text-2xl font-semibold mb-4 text-white">5. Children’s Privacy</h2>
+          <p className="mb-2 text-gray-300 leading-relaxed">Our Application is intended for general audiences.</p>
+          <ul className="list-disc list-inside mb-6 text-gray-300 space-y-1">
             <li>We do not knowingly collect personal information from children under 13.</li>
             <li>
               If you are a parent or guardian and believe your child has provided personal information, please contact us and we will take appropriate steps.
             </li>
           </ul>
 
-          <hr className="border-[#FF4655]/30 mb-8" />
+          <hr className="border-white/10 mb-8" />
 
-          <h2 className="text-2xl font-semibold mb-4">6. GDPR and CCPA Rights</h2>
-          <ul className="list-disc list-inside mb-6 text-gray-200 space-y-2">
+          <h2 className="text-2xl font-semibold mb-4 text-white">6. GDPR and CCPA Rights</h2>
+          <ul className="list-disc list-inside mb-6 text-gray-300 space-y-2">
             <li>
               <strong>European Union (GDPR)</strong>: You have the right to request access, correction, or deletion of your data. In our case, all user data is stored locally on your device, and you can delete it directly by clearing the Application’s data from your device settings.
             </li>
@@ -136,23 +136,23 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
 
-          <hr className="border-[#FF4655]/30 mb-8" />
+          <hr className="border-white/10 mb-8" />
 
-          <h2 className="text-2xl font-semibold mb-4">7. Changes to This Privacy Policy</h2>
-          <p className="mb-6 text-gray-200">
+          <h2 className="text-2xl font-semibold mb-4 text-white">7. Changes to This Privacy Policy</h2>
+          <p className="mb-6 text-gray-300 leading-relaxed">
             We may update this Privacy Policy from time to time. Changes will become effective once published on this page. Please check periodically for updates.
           </p>
 
-          <hr className="border-[#FF4655]/30 mb-8" />
+          <hr className="border-white/10 mb-8" />
 
-          <h2 className="text-2xl font-semibold mb-4">8. Contact Us</h2>
-          <p className="mb-2 text-gray-200">If you have any questions or concerns about this Privacy Policy, please contact us:</p>
-          <ul className="list-disc list-inside mb-10 text-gray-200 space-y-1">
+          <h2 className="text-2xl font-semibold mb-4 text-white">8. Contact Us</h2>
+          <p className="mb-2 text-gray-300 leading-relaxed">If you have any questions or concerns about this Privacy Policy, please contact us:</p>
+          <ul className="list-disc list-inside mb-10 text-gray-300 space-y-1">
             <li>
               <strong>Developer</strong>: Yelbegen Software
             </li>
             <li>
-              <strong>Email</strong>: <a href="mailto:yelbegensoftware@gmail.com" className="text-[#FF6B7A] hover:underline">yelbegensoftware@gmail.com</a>
+              <strong>Email</strong>: <a href="mailto:yelbegensoftware@gmail.com" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">yelbegensoftware@gmail.com</a>
             </li>
             <li>
               <strong>Website</strong>: {" "}
@@ -160,20 +160,20 @@ export default function PrivacyPolicyPage() {
                 href="https://ernklyc.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#FF6B7A] hover:underline"
+                className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors"
               >
                 https://ernklyc.dev
               </a>
             </li>
           </ul>
 
-          <div className="mt-12 pt-6 border-t border-[#2A3441]/50 text-center">
-            <Link href="/" className="text-gray-400 hover:text-[#FF4655] text-sm transition-colors">
-              ← Back to Home
+          <div className="mt-12 pt-6 border-t border-white/10 text-center">
+            <Link href="/" className="text-gray-400 hover:text-white text-sm transition-colors">
+              ← Ana Sayfaya Dön
             </Link>
           </div>
         </div>
-        </div>
+      </div>
       </section>
     </main>
   );

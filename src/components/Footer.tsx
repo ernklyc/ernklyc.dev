@@ -37,7 +37,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white border-t border-[#FF4655]/20 relative overflow-hidden">
+    <footer className="bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white border-t border-white/10 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-[#FF4655]/5 rounded-full blur-3xl"></div>
@@ -70,7 +70,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-[#2A3441]/50 hover:border-[#FF4655]/40 backdrop-blur-sm"
+              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/20 backdrop-blur-sm"
               aria-label="GitHub"
             >
               <FiGithub className="w-5 h-5 text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" />
@@ -81,7 +81,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-[#2A3441]/50 hover:border-[#FF4655]/40 backdrop-blur-sm"
+              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/20 backdrop-blur-sm"
               aria-label="LinkedIn"
             >
               <FiLinkedin className="w-5 h-5 text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" />
@@ -90,7 +90,7 @@ export default function Footer() {
               href={`mailto:${profile.email}`}
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-[#2A3441]/50 hover:border-[#FF4655]/40 backdrop-blur-sm"
+              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/20 backdrop-blur-sm"
               aria-label="Email"
             >
               <FiMail className="w-5 h-5 text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" />
@@ -101,7 +101,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-[#2A3441]/50 hover:border-[#FF4655]/40 backdrop-blur-sm"
+              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/20 backdrop-blur-sm"
               aria-label="Google Play Store"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512" className="text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" fill="currentColor">
@@ -127,7 +127,7 @@ export default function Footer() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ scale: 1.05, y: -1 }}
-                  className="flex items-center gap-1.5 bg-[#1F2731]/40 hover:bg-[#FF4655]/10 py-1.5 px-2.5 rounded-lg transition-all duration-300 border border-[#2A3441]/30 hover:border-[#FF4655]/30"
+                  className="flex items-center gap-1.5 bg-[#1F2731]/40 hover:bg-[#FF4655]/10 py-1.5 px-2.5 rounded-lg transition-all duration-300 border border-white/10 hover:border-white/20"
                 >
                   <tech.icon className={`${tech.color} w-3.5 h-3.5`} />
                   <span className="text-gray-300 text-xs font-medium">{tech.name}</span>
@@ -155,47 +155,26 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="pt-8 border-t border-[#FF4655]/20"
+          className="pt-8 border-t border-white/10"
         >
-          {/* Copyright */}
-          <div className="text-center mb-6">
-            <p className="text-gray-400 text-sm">&copy; {year} Eren Kalaycı. All rights reserved.</p>
-          </div>
-
-          {/* Legal Links */}
-          <div className="text-center">
-            <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
-              <a
-                href="/privacy-policy"
-                className="text-gray-400 hover:text-[#FF4655] transition-colors"
-              >
+          {/* Copyright + Legal Links - tek blok, tutarlı tip */}
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-4 text-sm text-gray-400">
+            <p className="text-center sm:text-left">&copy; {year} Eren Kalaycı. All rights reserved.</p>
+            <span className="hidden sm:inline text-white/20" aria-hidden="true">|</span>
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+              <a href="/privacy-policy" className="hover:text-white transition-colors">
                 HP Character Wiki Privacy
               </a>
-              
-              <span className="text-gray-600">|</span>
-              
-              <a
-                href="/movie-face-ai-privacy"
-                className="text-gray-400 hover:text-[#FF4655] transition-colors"
-              >
+              <span className="text-white/20" aria-hidden="true">|</span>
+              <a href="/movie-face-ai-privacy" className="hover:text-white transition-colors">
                 Movie Face AI Privacy
               </a>
-              
-              <span className="text-gray-600">|</span>
-              
-              <a
-                href="/link-manager-privacy"
-                className="text-gray-400 hover:text-[#FF4655] transition-colors"
-              >
+              <span className="text-white/20" aria-hidden="true">|</span>
+              <a href="/link-manager-privacy" className="hover:text-white transition-colors">
                 Link Manager Privacy
               </a>
-              
-              <span className="text-gray-600">|</span>
-              
-              <a
-                href="/link-manager-terms"
-                className="text-gray-400 hover:text-[#FF4655] transition-colors"
-              >
+              <span className="text-white/20" aria-hidden="true">|</span>
+              <a href="/link-manager-terms" className="hover:text-white transition-colors">
                 Link Manager Terms
               </a>
             </div>

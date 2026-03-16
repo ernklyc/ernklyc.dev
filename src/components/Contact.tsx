@@ -142,7 +142,7 @@ export default function Contact() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="max-w-2xl mx-auto"
         >
-          <div className="bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/60 to-[#0F1923]/90 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-[#FF4655]/30 hover:border-[#FF4655]/50 transition-all duration-500 relative overflow-hidden group">
+          <div className="bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/60 to-[#0F1923]/90 backdrop-blur-xl rounded-3xl p-8 md:p-10 border border-white/10 hover:border-white/20 transition-all duration-500 relative overflow-hidden group">
             {/* Enhanced Glow Effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#FF4655]/0 via-[#FF4655]/5 to-[#FF4655]/10 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none"></div>
             
@@ -169,7 +169,7 @@ export default function Contact() {
                     className={`w-full bg-[#1F2731]/60 backdrop-blur-sm border rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-300 ${
                       errors.name
                         ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#2A3441]/60 hover:border-[#FF4655]/40 focus:border-[#FF4655]/60 focus:ring-[#FF4655]/20'
+                        : 'border-[#2A3441]/60 hover:border-white/20 focus:border-white/30 focus:ring-white/20'
                     }`}
                   />
                   {errors.name && (
@@ -201,7 +201,7 @@ export default function Contact() {
                     className={`w-full bg-[#1F2731]/60 backdrop-blur-sm border rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-300 ${
                       errors.subject
                         ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
-                        : 'border-[#2A3441]/60 hover:border-[#FF4655]/40 focus:border-[#FF4655]/60 focus:ring-[#FF4655]/20'
+                        : 'border-[#2A3441]/60 hover:border-white/20 focus:border-white/30 focus:ring-white/20'
                     }`}
                   />
                   {errors.subject && (
@@ -238,7 +238,7 @@ export default function Contact() {
                   className={`w-full bg-[#1F2731]/60 backdrop-blur-sm border rounded-xl p-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 transition-all duration-300 resize-none ${
                     errors.message
                       ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
-                      : 'border-[#2A3441]/60 hover:border-[#FF4655]/40 focus:border-[#FF4655]/60 focus:ring-[#FF4655]/20'
+                      : 'border-[#2A3441]/60 hover:border-white/20 focus:border-white/30 focus:ring-white/20'
                   }`}
                 ></textarea>
                 {errors.message && (

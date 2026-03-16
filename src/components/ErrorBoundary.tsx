@@ -60,6 +60,7 @@ export class ErrorBoundary extends React.Component<
             <button
               onClick={this.handleReset}
               className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] hover:from-[#FF4655]/90 hover:to-[#FF6B7A]/90 text-white px-6 py-3 rounded-xl font-semibold transition-all"
+              aria-label="Tekrar dene"
             >
               <FiRefreshCw className="w-5 h-5" />
               Tekrar Dene

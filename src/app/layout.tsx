@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import AISupport from "@/components/AISupport";
+// import AISupport from "@/components/AISupport"; // şu an görünür değil
 import StructuredData from "@/components/StructuredData";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
@@ -75,6 +75,9 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  verification: {
+    google: 'b7Ch3dbsWpPIhfY61o6V7ewNxUfOxZWf4-P3g73Yjkk',
+  },
 };
 
 export default function RootLayout({
@@ -92,7 +95,7 @@ export default function RootLayout({
         <ErrorBoundary>
           <Navbar />
           {children}
-          <AISupport />
+          {/* <AISupport /> */}
         </ErrorBoundary>
       </body>
     </html>

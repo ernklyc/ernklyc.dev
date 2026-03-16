@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { FiMail, FiGithub, FiLinkedin } from "react-icons/fi";
+import { FiMail, FiGithub, FiLinkedin, FiDownload } from "react-icons/fi";
 import { profile } from "@/data/profile";
 import Image from "next/image";
 
@@ -37,11 +37,9 @@ export default function Hero() {
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white">
-      {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-[#FF4655]/20 rounded-full blur-3xl animate-pulse opacity-60"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/15 rounded-full blur-3xl animate-pulse delay-1000 opacity-50"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-500 opacity-40"></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF4655]/10 rounded-full blur-3xl opacity-60"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-50"></div>
         
         {/* Floating Particles */}
         {[...Array(20)].map((_, i) => {
@@ -197,6 +195,21 @@ export default function Hero() {
                 <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.6 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z" />
               </svg>
             </motion.a>
+            {profile.links.cv && (
+              <motion.a
+                href={profile.links.cv}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative flex items-center gap-2 p-4 bg-[#1F2731]/30 backdrop-blur-sm border border-white/10 hover:border-[#FF4655]/50 rounded-2xl transition-all duration-300"
+                aria-label="CV İndir"
+              >
+                <FiDownload className="w-6 h-6 text-white group-hover:text-[#FF4655] transition-colors duration-300 shrink-0" />
+                <span className="text-sm font-medium text-white group-hover:text-[#FF4655] transition-colors duration-300 hidden sm:inline">CV İndir</span>
+              </motion.a>
+            )}
           </motion.div>
           
         </motion.div>

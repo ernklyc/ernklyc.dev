@@ -10,7 +10,7 @@ Modern ve responsive kişisel portfolio websitesi. Next.js, TypeScript, Tailwind
 - **Animasyonlar**: Framer Motion ile smooth animasyonlar
 - **Dark Theme**: Profesyonel koyu tema
 - **SEO Optimized**: Meta tags ve structured data
-- **AI Chat Widget**: OpenAI entegrasyonu ile akıllı sohbet asistanı
+- **AI Chat Widget**: Google Generative AI (Gemini) entegrasyonu ile akıllı sohbet asistanı
 - **Gizlilik Politikaları**: HP Character Wiki, Movie Face AI ve Link Manager uygulamaları için gizlilik politikası sayfaları
 
 ## 🛠️ Teknolojiler
@@ -35,8 +35,9 @@ cd ernklyc-web
 npm install
 
 # Environment variables oluşturun
-# .env.local dosyası oluşturun ve OpenAI API key ekleyin
-# OPENAI_API_KEY=your_api_key_here
+# .env.local dosyası oluşturun (bkz. .env.example)
+# GOOGLE_API_KEY=your_google_ai_api_key_here   # AI Chat için (Gemini)
+# GITHUB_TOKEN=your_github_token_here          # Opsiyonel; GitHub repo listesi için rate limit artırır
 
 # Development server'ı başlatın
 npm run dev
@@ -79,8 +80,7 @@ src/
 │   ├── Navbar.tsx          # Navigation bar
 │   ├── Projects.tsx        # Projeler showcase
 │   ├── Skills.tsx          # Yetenekler
-│   ├── Testimonials.tsx    # Referanslar
-│   └── ThemeToggle.tsx     # Tema değiştirici
+│   └── Testimonials.tsx    # Referanslar
 ├── data/                   # Statik veri dosyaları
 │   ├── achievements.ts
 │   ├── education.ts

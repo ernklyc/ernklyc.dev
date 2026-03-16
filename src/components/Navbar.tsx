@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { profile } from "@/data/profile";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -69,6 +70,7 @@ export default function Navbar() {
     { label: "Deneyim", href: "#experience" },
     { label: "Projeler", href: "#projects" },
     { label: "İletişim", href: "#contact" },
+    ...(profile.links.cv ? [{ label: "CV İndir", href: profile.links.cv, isDownload: true as const }] : []),
   ];
 
   return (
@@ -89,9 +91,10 @@ export default function Navbar() {
             <a
               key={item.href}
               href={item.href}
-              onClick={(e) => handleNavClick(e, item.href)}
+              download={"isDownload" in item && item.isDownload ? true : undefined}
+              onClick={"isDownload" in item && item.isDownload ? undefined : (e) => handleNavClick(e, item.href)}
               className="py-2 px-1 font-medium text-xs md:text-sm tracking-wide text-white hover:text-[#FF4655] transition-colors focus:outline-none"
-              aria-label={`${item.label} bölümüne git`}
+              aria-label={"isDownload" in item && item.isDownload ? "CV indir" : `${item.label} bölümüne git`}
             >
               {item.label}
             </a>
@@ -124,9 +127,10 @@ export default function Navbar() {
                 <a
                   key={item.href}
                   href={item.href}
+                  download={"isDownload" in item && item.isDownload ? true : undefined}
                   className="py-2 px-3 rounded-lg flex items-center text-sm w-full text-center justify-center text-white hover:text-[#FF4655] hover:bg-[#1F2731]/30 transition-colors focus:outline-none"
-                  onClick={(e) => handleNavClick(e, item.href)}
-                  aria-label={`${item.label} bölümüne git`}
+                  onClick={"isDownload" in item && item.isDownload ? () => setIsMenuOpen(false) : (e) => handleNavClick(e, item.href)}
+                  aria-label={"isDownload" in item && item.isDownload ? "CV indir" : `${item.label} bölümüne git`}
                 >
                   {item.label}
                 </a>

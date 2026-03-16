@@ -30,14 +30,11 @@ export default function About() {
 
 
   return (
-    <section id="about" className="py-12 bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white relative overflow-hidden scroll-mt-20">
-      {/* Animated Background Elements */}
+    <section id="about" className="py-16 bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white relative overflow-hidden scroll-mt-20">
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF4655]/10 rounded-full blur-3xl animate-pulse opacity-60"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000 opacity-50"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-500 opacity-40"></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF4655]/10 rounded-full blur-3xl opacity-60"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-50"></div>
       </div>
-      
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl relative z-10">
         <motion.div
           variants={containerVariants}
@@ -50,14 +47,13 @@ export default function About() {
             <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
               HAKKIMDA
             </h2>
-            <motion.div 
+            <motion.div
               initial={{ width: 0 }}
               whileInView={{ width: "100%" }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent relative"
-            >
-            </motion.div>
+              className="h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent mx-auto"
+            />
           </motion.div>
         </motion.div>
 
@@ -69,14 +65,14 @@ export default function About() {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <div className="bg-gradient-to-br from-[#2A3441] via-[#1F2731] to-[#151F2B] rounded-2xl p-4 md:p-6 border border-[#FF4655]/20 relative overflow-hidden group h-full">
+            <div className="bg-gradient-to-br from-[#2A3441] via-[#1F2731] to-[#151F2B] rounded-2xl p-4 md:p-6 border border-white/10 relative overflow-hidden group h-full">
               <div className="relative z-10 flex flex-col items-center justify-center text-center space-y-3 md:space-y-4 h-full">
                 {/* Penguen GIF - Daha küçük boyut */}
                 <motion.div 
                   whileHover={{ scale: 1.05 }}
                   className="relative"
                 >
-                  <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-2xl overflow-hidden border border-[#FF4655]/10">
+                  <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-2xl overflow-hidden border border-white/10">
                     <Image 
                       src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2xteHR5bGdleXIwejF5YzRlcXRvenc5dml6bXZnNHJ0ZnE3YXp1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1vlBgKjXEz1jTtsuiH/giphy.gif" 
                       alt="Eren Kalaycı - Penguen karakter animasyonu"
@@ -98,7 +94,7 @@ export default function About() {
                 {/* Konum Bilgisi - Yeni minimal tasarım */}
                 <motion.div 
                   whileHover={{ scale: 1.02 }}
-                  className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-[#1F2731]/60 border border-[#FF4655]/20 backdrop-blur-sm"
+                  className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-[#1F2731]/60 border border-white/10 backdrop-blur-sm"
                 >
                   <FiGlobe className="text-[#FF4655] w-4 h-4" />
                   <span className="text-white text-sm font-medium">Türkiye, Trabzon</span>
@@ -114,7 +110,7 @@ export default function About() {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <div className="bg-gradient-to-br from-[#2A3441] via-[#1F2731] to-[#151F2B] rounded-2xl p-4 md:p-6 border border-[#FF4655]/20 relative overflow-hidden group h-full">
+            <div className="bg-gradient-to-br from-[#2A3441] via-[#1F2731] to-[#151F2B] rounded-2xl p-4 md:p-6 border border-white/10 relative overflow-hidden group h-full">
               <div className="absolute inset-0 bg-gradient-to-br from-[#FF4655]/0 via-[#FF4655]/5 to-[#FF4655]/10 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none"></div>
               
               <div className="relative z-10 h-full flex flex-col">
@@ -130,7 +126,7 @@ export default function About() {
                 <div className="space-y-4 text-gray-300 leading-relaxed flex-grow">
                   <motion.div
                     whileHover={{ x: 5 }}
-                    className="relative pl-4 border-l-2 border-[#FF4655]/30 hover:border-[#FF4655]/60 transition-colors duration-300"
+                    className="relative pl-4 border-l-2 border-white/20 hover:border-white/40 transition-colors duration-300"
                   >
                     <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#FF4655] rounded-full"></div>
                     <p className="text-sm">
@@ -140,7 +136,7 @@ export default function About() {
                   
                   <motion.div
                     whileHover={{ x: 5 }}
-                    className="relative pl-4 border-l-2 border-[#FF4655]/30 hover:border-[#FF4655]/60 transition-colors duration-300"
+                    className="relative pl-4 border-l-2 border-white/20 hover:border-white/40 transition-colors duration-300"
                   >
                     <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#FF4655] rounded-full"></div>
                     <p className="text-sm">
@@ -151,7 +147,7 @@ export default function About() {
                   
                   <motion.div
                     whileHover={{ x: 5 }}
-                    className="relative pl-4 border-l-2 border-[#FF4655]/30 hover:border-[#FF4655]/60 transition-colors duration-300"
+                    className="relative pl-4 border-l-2 border-white/20 hover:border-white/40 transition-colors duration-300"
                   >
                     <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#FF4655] rounded-full"></div>
                     <p className="text-sm">
