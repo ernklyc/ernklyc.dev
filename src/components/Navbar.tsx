@@ -2,11 +2,15 @@
 import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname, useRouter } from "next/navigation";
 import { profile } from "@/data/profile";
 import { useLocale } from "@/contexts/LocaleContext";
 
 export default function Navbar() {
-  const { locale, setLocale, t } = useLocale();
+  const { locale, setLocale, t, isTransitioning, isNavigating } = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+  const navActive = isTransitioning || isNavigating;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -57,6 +61,13 @@ export default function Navbar() {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const targetId = href.substring(1);
+
+    if (pathname !== "/") {
+      setIsMenuOpen(false);
+      router.push(`/${href}`);
+      return;
+    }
+
     const targetElement = document.getElementById(targetId);
     
     if (targetElement) {
@@ -82,7 +93,11 @@ export default function Navbar() {
       
       // Mobile menüyü kapat
       setIsMenuOpen(false);
+      return;
     }
+
+    router.push(`/${href}`);
+    setIsMenuOpen(false);
   };
   const menuItems = [
     { labelKey: "nav.home", href: "#home" },
@@ -97,11 +112,15 @@ export default function Navbar() {
   return (
     <motion.nav
       initial={{ y: 0 }}
-      animate={{ y: showNavbar ? 0 : -100 }}
-      transition={{ duration: 0.35 }}
+      animate={{
+        y: showNavbar ? 0 : -100,
+        opacity: navActive ? 0.92 : 1,
+        filter: navActive ? "blur(1.2px) saturate(0.97)" : "blur(0px) saturate(1)",
+      }}
+      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#0F1923]/95 backdrop-blur-md"
+          ? "bg-[rgba(15,25,35,0.6)] backdrop-blur-[14px] shadow-lg"
           : "bg-transparent"
       }`}
     >
@@ -120,11 +139,18 @@ export default function Navbar() {
               {t(item.labelKey)}
             </a>
           ))}
-          <div className="flex items-center gap-1 ml-4 border border-white/20 rounded-lg p-0.5">
+          <div className="relative flex items-center ml-4 rounded-lg p-0.5 overflow-hidden bg-white/5">
+            <motion.div
+              initial={false}
+              animate={{ x: locale === "tr" ? "0%" : "100%" }}
+              transition={{ type: "spring", stiffness: 280, damping: 24, mass: 0.8 }}
+              className="absolute top-0.5 bottom-0.5 left-0.5 w-[calc(50%-2px)] rounded-md bg-[#FF4655]"
+            />
             <button
               type="button"
               onClick={() => setLocale("tr")}
-              className={`px-2 py-1 text-xs font-medium rounded-md transition-colors ${locale === "tr" ? "bg-[#FF4655] text-white" : "text-gray-400 hover:text-white"}`}
+              disabled={isTransitioning}
+              className={`relative z-10 w-9 px-2 py-1 text-xs font-medium rounded-md transition-colors duration-300 ${locale === "tr" ? "text-white" : "text-gray-400 hover:text-white"} ${isTransitioning ? "opacity-80" : "opacity-100"}`}
               aria-label="Türkçe"
             >
               TR
@@ -132,7 +158,8 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setLocale("en")}
-              className={`px-2 py-1 text-xs font-medium rounded-md transition-colors ${locale === "en" ? "bg-[#FF4655] text-white" : "text-gray-400 hover:text-white"}`}
+              disabled={isTransitioning}
+              className={`relative z-10 w-9 px-2 py-1 text-xs font-medium rounded-md transition-colors duration-300 ${locale === "en" ? "text-white" : "text-gray-400 hover:text-white"} ${isTransitioning ? "opacity-80" : "opacity-100"}`}
               aria-label="English"
             >
               EN
@@ -142,7 +169,7 @@ export default function Navbar() {
         {/* Mobile Menu Button */}
         <button
           ref={menuButtonRef}
-          className="md:hidden text-white p-2 rounded-lg hover:bg-[#1F2731] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF4655]"
+          className="md:hidden text-white p-2 rounded-lg hover:bg-[#1F2731] transition-colors focus:outline-none"
           onClick={toggleMenu}
           aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
           aria-expanded={isMenuOpen}
@@ -161,7 +188,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-[#0F1923]/95 backdrop-blur-md absolute top-full left-0 right-0 z-50"
+            className="md:hidden absolute top-full left-0 right-0 z-50 bg-[rgba(15,25,35,0.65)] backdrop-blur-[14px]"
           >
             <div className="container mx-auto py-3 flex flex-col space-y-1 px-3 sm:px-6 items-center">
               {menuItems.map((item, index) => (
@@ -170,18 +197,26 @@ export default function Navbar() {
                   ref={index === 0 ? firstMenuLinkRef : undefined}
                   href={item.href}
                   download={"isDownload" in item && item.isDownload ? true : undefined}
-                  className="py-2 px-3 rounded-lg flex items-center text-sm w-full text-center justify-center text-white hover:text-[#FF4655] hover:bg-[#1F2731]/30 transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF4655] rounded-lg"
+                  className="py-2 px-3 rounded-lg flex items-center text-sm w-full text-center justify-center text-white hover:text-[#FF4655] hover:bg-[#1F2731]/30 transition-colors focus:outline-none"
                   onClick={"isDownload" in item && item.isDownload ? () => setIsMenuOpen(false) : (e) => handleNavClick(e, item.href)}
                   aria-label={"isDownload" in item && item.isDownload ? t("nav.cvDownload") : t(item.labelKey)}
                 >
                   {t(item.labelKey)}
                 </a>
               ))}
-              <div className="flex items-center gap-1 mt-2 pt-2 border-t border-white/10 w-full justify-center">
+              <div className="relative flex items-center gap-1 mt-2 pt-2 w-full justify-center">
+                <div className="relative flex items-center rounded-lg p-0.5 overflow-hidden bg-white/5">
+                  <motion.div
+                    initial={false}
+                    animate={{ x: locale === "tr" ? "0%" : "100%" }}
+                    transition={{ type: "spring", stiffness: 280, damping: 24, mass: 0.8 }}
+                    className="absolute top-0.5 bottom-0.5 left-0.5 w-[calc(50%-2px)] rounded-md bg-[#FF4655]"
+                  />
                 <button
                   type="button"
                   onClick={() => setLocale("tr")}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${locale === "tr" ? "bg-[#FF4655] text-white" : "text-gray-400 hover:text-white"}`}
+                  disabled={isTransitioning}
+                  className={`relative z-10 w-12 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-300 ${locale === "tr" ? "text-white" : "text-gray-400 hover:text-white"} ${isTransitioning ? "opacity-80" : "opacity-100"}`}
                   aria-label="Türkçe"
                 >
                   TR
@@ -189,11 +224,13 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setLocale("en")}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${locale === "en" ? "bg-[#FF4655] text-white" : "text-gray-400 hover:text-white"}`}
+                  disabled={isTransitioning}
+                  className={`relative z-10 w-12 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-300 ${locale === "en" ? "text-white" : "text-gray-400 hover:text-white"} ${isTransitioning ? "opacity-80" : "opacity-100"}`}
                   aria-label="English"
                 >
                   EN
                 </button>
+                </div>
               </div>
             </div>
           </motion.div>

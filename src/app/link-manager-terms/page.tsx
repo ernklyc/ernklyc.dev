@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Link from "next/link";
+import BackOrHomeLink from "@/components/BackOrHomeLink";
 
 export const metadata: Metadata = {
   title: "Link Manager - Terms of Service | Eren Kalaycı",
@@ -181,9 +181,9 @@ export default function LinkManagerTermsPage() {
             </div>
 
             <div className="mt-12 pt-6 border-t border-white/10 text-center">
-              <Link href="/" className="text-gray-400 hover:text-white text-sm transition-colors">
-                ← Ana Sayfaya Dön
-              </Link>
+              <BackOrHomeLink className="text-gray-400 hover:text-white text-sm transition-colors">
+                ← Geri dön
+              </BackOrHomeLink>
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { FiGithub, FiLinkedin, FiMail, FiArrowUp } from "react-icons/fi";
 import { profile } from "@/data/profile";
 import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript, SiFramer } from "react-icons/si";
 import { useLocale } from "@/contexts/LocaleContext";
+import TransitionLink from "@/components/TransitionLink";
 
 export default function Footer() {
   const { t } = useLocale();
@@ -164,21 +165,21 @@ export default function Footer() {
             <p className="text-center sm:text-left">&copy; {year} Eren Kalaycı. {t("footer.rights")}</p>
             <span className="hidden sm:inline text-white/20" aria-hidden="true">|</span>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-              <a href="/privacy-policy" className="hover:text-white transition-colors">
+              <TransitionLink href="/privacy-policy" className="hover:text-white transition-colors">
                 HP Character Wiki Privacy
-              </a>
+              </TransitionLink>
               <span className="text-white/20" aria-hidden="true">|</span>
-              <a href="/movie-face-ai-privacy" className="hover:text-white transition-colors">
+              <TransitionLink href="/movie-face-ai-privacy" className="hover:text-white transition-colors">
                 Movie Face AI Privacy
-              </a>
+              </TransitionLink>
               <span className="text-white/20" aria-hidden="true">|</span>
-              <a href="/link-manager-privacy" className="hover:text-white transition-colors">
+              <TransitionLink href="/link-manager-privacy" className="hover:text-white transition-colors">
                 Link Manager Privacy
-              </a>
+              </TransitionLink>
               <span className="text-white/20" aria-hidden="true">|</span>
-              <a href="/link-manager-terms" className="hover:text-white transition-colors">
+              <TransitionLink href="/link-manager-terms" className="hover:text-white transition-colors">
                 Link Manager Terms
-              </a>
+              </TransitionLink>
             </div>
           </div>
         </motion.div>

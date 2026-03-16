@@ -2,6 +2,10 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #FF4655 #0A0F1C;
 }
 
 :root {
@@ -30,6 +34,99 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+#boot-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0a0f1c, #0f1923 55%, #151f2b);
+}
+
+#boot-loader::before,
+#boot-loader::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+#boot-loader::before {
+  width: 28rem;
+  height: 28rem;
+  top: 12%;
+  left: 18%;
+  background: rgba(255, 70, 85, 0.22);
+}
+
+#boot-loader::after {
+  width: 24rem;
+  height: 24rem;
+  right: 16%;
+  bottom: 12%;
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.boot-loader-spinner {
+  position: relative;
+  z-index: 1;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #ff4655;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 10px 30px rgba(0, 0, 0, 0.35);
+  animation: boot-spin-smooth 1s linear infinite;
+  will-change: transform;
+}
+
+.boot-loader-spinner::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.boot-loader-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.boot-loader-text {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.58);
+  animation: boot-text-pulse 1.8s ease-in-out infinite;
+}
+
+html.preboot-lock #boot-loader {
+  display: flex;
+}
+
+html.preboot-lock {
+  scroll-behavior: auto !important;
+}
+
+html.preboot-lock,
+html.preboot-lock body {
+  overflow: hidden !important;
+}
+
+html.preboot-lock body > :not(#boot-loader):not(script) {
+  visibility: hidden;
+}
+
 .prose code {
   font-family: var(--font-geist-mono);
 }
@@ -41,15 +138,56 @@ body {
 
 ::-webkit-scrollbar-track {
   background: #0A0F1C;
+  transition: background-color 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #FF4655;
   border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #e63946;
+}
+
+html.locale-transitioning {
+  scrollbar-color: transparent transparent;
+}
+
+html.locale-transitioning::-webkit-scrollbar-track,
+body.locale-transitioning::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html.locale-transitioning::-webkit-scrollbar-thumb,
+body.locale-transitioning::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.frosted-surface {
+  background: rgba(15, 25, 35, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.soft-panel {
+  background: linear-gradient(140deg, rgba(31, 39, 49, 0.45), rgba(21, 31, 43, 0.5));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-thumb {
+    transition: none;
+  }
 }
 
 /* Custom animations */
@@ -78,3 +216,20 @@ body {
 .animate-gradient-x {
   animation: gradient-x 3s ease infinite;
 }
+
+@keyframes boot-spin-smooth {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes boot-text-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
