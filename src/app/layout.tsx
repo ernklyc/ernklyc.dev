@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 // import AISupport from "@/components/AISupport"; // şu an görünür değil
 import StructuredData from "@/components/StructuredData";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { LocaleProvider } from "@/contexts/LocaleContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +46,7 @@ export const metadata: Metadata = {
     siteName: 'Eren Kalaycı Portfolio',
     images: [
       {
-        url: '/profil_resmim.jpg',
+        url: '/og-default.png',
         width: 1200,
         height: 630,
         alt: 'Eren Kalaycı - Bilgisayar Mühendisi Portfolio',
@@ -56,13 +57,13 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
     description: 'Eren Kalaycı - Flutter, React ve Unity uzmanı bilgisayar mühendisi. Portfolio ve projeler.',
-    images: ['/profil_resmim.jpg'],
+    images: ['/og-default.png'],
     creator: '@ernklyc',
   },
   icons: {
-    icon: '/profil_resmim.jpg',
-    shortcut: '/profil_resmim.jpg',
-    apple: '/profil_resmim.jpg',
+    icon: '/icon',
+    shortcut: '/icon',
+    apple: '/apple-touch-icon.png',
   },
   robots: {
     index: true,
@@ -91,12 +92,14 @@ export default function RootLayout({
   return (
     <html lang="tr" className="scroll-smooth" suppressHydrationWarning>
       <body className={bodyClasses} suppressHydrationWarning>
-        <StructuredData />
-        <ErrorBoundary>
-          <Navbar />
-          {children}
-          {/* <AISupport /> */}
-        </ErrorBoundary>
+        <LocaleProvider>
+          <StructuredData />
+          <ErrorBoundary>
+            <Navbar />
+            {children}
+            {/* <AISupport /> */}
+          </ErrorBoundary>
+        </LocaleProvider>
       </body>
     </html>
   );

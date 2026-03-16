@@ -97,6 +97,12 @@ src/
 Ana renk: `#FF4655` (Kırmızı accent)
 Arka plan: Gradient dark theme
 
+### Favicon ve OG (tüm platformlar: Android, PC/Web, iOS)
+- **Favicon** (`src/app/icon.svg`): Tarayıcı sekmesi ikonu — PC, Mac, Android, iOS tüm web tarayıcılarında görünür. İstersen `public/favicon.ico` (32x32/48x48) ekleyip layout metadata’daki `icons.icon` değerini güncelleyebilirsin.
+- **Apple Touch Icon** (`public/apple-touch-icon.png`, 180×180): iOS (iPhone/iPad) “Ana Ekrana Ekle” ve Android Chrome “Ana ekrana ekle” ile site eklendiğinde bu ikon kullanılır; ana ekranda uygulama gibi görünür, markanı güçlendirir. Layout’ta `icons.apple` bu dosyayı kullanır.
+- **Open Graph** (`public/og-default.png`, 1200×630): Tüm platformlarda (PC, Android, iOS, web) link paylaşıldığında (Facebook, Twitter/X, LinkedIn, WhatsApp, Telegram vb.) önizlemede çıkan büyük görsel. İyi bir OG görseli paylaşımın dikkat çekmesini ve marka algısını artırır. Layout’ta `openGraph.images` ve `twitter.images` bu dosyayı kullanır.
+
+
 ### Animasyonlar
 - Scroll-triggered animations
 - Hover effects

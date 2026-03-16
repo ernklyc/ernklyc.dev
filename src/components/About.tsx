@@ -2,8 +2,10 @@
 import { motion } from "framer-motion";
 import { FiGlobe } from "react-icons/fi";
 import Image from "next/image";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export default function About() {
+  const { t } = useLocale();
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -45,7 +47,7 @@ export default function About() {
         >
           <motion.div variants={itemVariants} className="inline-block relative">
             <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              HAKKIMDA
+              {t("about.title")}
             </h2>
             <motion.div
               initial={{ width: 0 }}

@@ -13,6 +13,6 @@ export const profile = {
     twitter: "https://twitter.com/ernklyc",
     instagram: "https://instagram.com/ernklyc",
     /** CV indirme linki; public/cv.pdf ekledikten sonra "/cv.pdf" yap. Yoksa link gösterilmez. */
-    cv: undefined as string | undefined,
+    cv: "/cv.pdf" as string | undefined,
   },
 }; 

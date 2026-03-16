@@ -3,8 +3,10 @@ import { motion } from "framer-motion";
 import { FiGithub, FiLinkedin, FiMail, FiArrowUp } from "react-icons/fi";
 import { profile } from "@/data/profile";
 import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript, SiFramer } from "react-icons/si";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export default function Footer() {
+  const { t } = useLocale();
   const year = new Date().getFullYear();
 
   const scrollToTop = () => {
@@ -55,10 +57,10 @@ export default function Footer() {
           {/* Header */}
           <motion.div variants={itemVariants} className="mb-6">
             <h2 className="text-2xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              Eren Kalaycı
+              {t("footer.title")}
             </h2>
             <p className="text-gray-300 max-w-md text-center text-sm leading-relaxed">
-              Bilgisayar Mühendisi & Mobil Uygulama Geliştirici
+              {t("footer.subtitle")}
             </p>
           </motion.div>
           
@@ -143,7 +145,7 @@ export default function Footer() {
             whileHover={{ scale: 1.1, y: -3 }}
             whileTap={{ scale: 0.95 }}
             className="bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] hover:from-[#FF4655]/90 hover:to-[#FF6B7A]/90 text-white p-3 rounded-xl transition-all duration-300 mb-6"
-            aria-label="Scroll to top"
+            aria-label={t("footer.backToTop")}
           >
             <FiArrowUp className="w-5 h-5" />
           </motion.button>
@@ -159,7 +161,7 @@ export default function Footer() {
         >
           {/* Copyright + Legal Links - tek blok, tutarlı tip */}
           <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-4 text-sm text-gray-400">
-            <p className="text-center sm:text-left">&copy; {year} Eren Kalaycı. All rights reserved.</p>
+            <p className="text-center sm:text-left">&copy; {year} Eren Kalaycı. {t("footer.rights")}</p>
             <span className="hidden sm:inline text-white/20" aria-hidden="true">|</span>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
               <a href="/privacy-policy" className="hover:text-white transition-colors">

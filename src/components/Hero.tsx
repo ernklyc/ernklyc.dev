@@ -3,8 +3,10 @@ import { motion } from "framer-motion";
 import { FiMail, FiGithub, FiLinkedin, FiDownload } from "react-icons/fi";
 import { profile } from "@/data/profile";
 import Image from "next/image";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export default function Hero() {
+  const { t } = useLocale();
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -108,7 +110,7 @@ export default function Hero() {
             className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 relative"
           >
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              Eren KALAYCI
+              {t("hero.title")}
             </span>
             <motion.div
               initial={{ width: 0 }}
@@ -130,7 +132,7 @@ export default function Hero() {
               className="text-lg md:text-xl font-medium text-gray-300"
             >
               <span className="text-[#FF4655]">&lt;</span>
-              Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi
+              {t("hero.subtitle")}
               <span className="text-[#FF4655]">/&gt;</span>
             </motion.h2>
           </motion.div>
@@ -140,7 +142,7 @@ export default function Hero() {
             variants={itemVariants}
             className="max-w-2xl mb-8 md:mb-12 text-gray-300 text-center text-sm md:text-base lg:text-lg leading-relaxed px-4 md:px-0"
           >
-            Merhaba, ben <strong className="text-white">Eren Kalaycı</strong>. Aktif olarak Flutter ile mobil uygulama geliştirme üzerine yoğunlaşmaktayım. Hobi olarak ise Unity ile oyunlar geliştiriyor ve modern web siteleri tasarlıyorum. Eren Kalaycı olarak geliştirdiğim mobil uygulamaları, oyunları ve web sitelerini yayınlıyorum.
+            {t("hero.description")}
           </motion.p>
           
           {/* Social Links with Enhanced Design */}
@@ -204,10 +206,10 @@ export default function Hero() {
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 className="group relative flex items-center gap-2 p-4 bg-[#1F2731]/30 backdrop-blur-sm border border-white/10 hover:border-[#FF4655]/50 rounded-2xl transition-all duration-300"
-                aria-label="CV İndir"
+                aria-label={t("hero.cvDownload")}
               >
                 <FiDownload className="w-6 h-6 text-white group-hover:text-[#FF4655] transition-colors duration-300 shrink-0" />
-                <span className="text-sm font-medium text-white group-hover:text-[#FF4655] transition-colors duration-300 hidden sm:inline">CV İndir</span>
+                <span className="text-sm font-medium text-white group-hover:text-[#FF4655] transition-colors duration-300 hidden sm:inline">{t("hero.cvDownload")}</span>
               </motion.a>
             )}
           </motion.div>
@@ -244,7 +246,7 @@ export default function Hero() {
             transition={{ delay: 2.5 }}
             className="text-xs text-gray-400 mt-2 group-hover:text-[#FF4655] transition-colors duration-300 text-center"
           >
-            Keşfet
+            {t("hero.discover")}
           </motion.p>
         </div>
       </motion.div>

@@ -3,8 +3,10 @@ import { motion } from "framer-motion";
 import { FiCode, FiPenTool, FiGlobe, FiUsers, FiCpu, FiDatabase } from "react-icons/fi";
 import { skills } from "@/data/skills";
 import React, { useState } from "react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export default function Skills() {
+  const { t } = useLocale();
   const [activeTab, setActiveTab] = useState<string>("Programlama & Geliştirme");
 
   const iconMap: Record<string, React.ReactNode> = {
@@ -74,7 +76,7 @@ export default function Skills() {
         >
           <motion.div variants={itemVariants} className="inline-block relative">
             <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              YETENEKLERİM
+              {t("skills.title")}
             </h2>
             <motion.div
               initial={{ width: 0 }}
@@ -88,7 +90,7 @@ export default function Skills() {
             variants={itemVariants}
             className="text-gray-300 max-w-2xl mx-auto mt-4 text-base"
           >
-            Sürekli gelişen teknoloji dünyasında edindiğim uzmanlık alanlarım
+            {t("skills.subtitle")}
           </motion.p>
         </motion.div>
 

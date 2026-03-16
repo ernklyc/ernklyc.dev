@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { FiSend, FiCheck, FiAlertCircle } from "react-icons/fi";
 import { profile } from "@/data/profile";
+import { useLocale } from "@/contexts/LocaleContext";
 
 interface FormErrors {
   name?: string;
@@ -11,6 +12,7 @@ interface FormErrors {
 }
 
 export default function Contact() {
+  const { t } = useLocale();
   const [formStatus, setFormStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [formData, setFormData] = useState({
     name: '',
@@ -22,31 +24,28 @@ export default function Contact() {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    // Name validation
     if (!formData.name.trim()) {
-      newErrors.name = 'Ad alanı zorunludur';
+      newErrors.name = t("contact.errorNameRequired");
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Ad en az 2 karakter olmalıdır';
+      newErrors.name = t("contact.errorNameMin");
     } else if (formData.name.trim().length > 50) {
-      newErrors.name = 'Ad en fazla 50 karakter olabilir';
+      newErrors.name = t("contact.errorNameMax");
     }
 
-    // Subject validation
     if (!formData.subject.trim()) {
-      newErrors.subject = 'Konu alanı zorunludur';
+      newErrors.subject = t("contact.errorSubjectRequired");
     } else if (formData.subject.trim().length < 3) {
-      newErrors.subject = 'Konu en az 3 karakter olmalıdır';
+      newErrors.subject = t("contact.errorSubjectMin");
     } else if (formData.subject.trim().length > 100) {
-      newErrors.subject = 'Konu en fazla 100 karakter olabilir';
+      newErrors.subject = t("contact.errorSubjectMax");
     }
 
-    // Message validation
     if (!formData.message.trim()) {
-      newErrors.message = 'Mesaj alanı zorunludur';
+      newErrors.message = t("contact.errorMessageRequired");
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Mesaj en az 10 karakter olmalıdır';
+      newErrors.message = t("contact.errorMessageMin");
     } else if (formData.message.trim().length > 1000) {
-      newErrors.message = 'Mesaj en fazla 1000 karakter olabilir';
+      newErrors.message = t("contact.errorMessageMax");
     }
 
     setErrors(newErrors);
@@ -64,25 +63,20 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     setFormStatus('loading');
-    
+
     try {
       const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
         `Ad: ${formData.name}\n\nMesaj: ${formData.message}`
       )}`;
-      
-      // Simulate async operation
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
       window.location.href = mailto;
+
       setFormStatus('success');
-      
-      // Reset form after success
       setTimeout(() => {
         setFormData({ name: '', subject: '', message: '' });
         setFormStatus('idle');
@@ -112,7 +106,7 @@ export default function Contact() {
         >
           <div className="inline-block relative">
             <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              İLETİŞİME GEÇ
+              {t("contact.title")}
             </h2>
             <motion.div 
               initial={{ width: 0 }}
@@ -130,7 +124,7 @@ export default function Contact() {
             transition={{ duration: 0.6, delay: 0.7 }}
             className="text-gray-300 max-w-2xl mx-auto text-lg mt-8 leading-relaxed"
           >
-            Proje teklifleri, iş birliği fırsatları veya herhangi bir sorunuz için benimle iletişime geçmekten çekinmeyin.
+            {t("contact.subtitle")}
           </motion.p>
         </motion.div>
 
@@ -153,13 +147,13 @@ export default function Contact() {
                   className="space-y-2"
                 >
                   <label htmlFor="name" className="text-sm font-semibold text-gray-300 block">
-                    Adınız <span className="text-[#FF4655]">*</span>
+                    {t("contact.nameLabel")} <span className="text-[#FF4655]">*</span>
                   </label>
                   <input
                     id="name"
                     type="text"
                     name="name"
-                    placeholder="Adınızı girin"
+                    placeholder={t("contact.namePlaceholder")}
                     value={formData.name}
                     onChange={handleChange}
                     required
@@ -185,13 +179,13 @@ export default function Contact() {
                   className="space-y-2"
                 >
                   <label htmlFor="subject" className="text-sm font-semibold text-gray-300 block">
-                    Konu <span className="text-[#FF4655]">*</span>
+                    {t("contact.subjectLabel")} <span className="text-[#FF4655]">*</span>
                   </label>
                   <input
                     id="subject"
                     type="text"
                     name="subject"
-                    placeholder="Mesaj konusu"
+                    placeholder={t("contact.subjectPlaceholder")}
                     value={formData.subject}
                     onChange={handleChange}
                     required
@@ -218,7 +212,7 @@ export default function Contact() {
                 className="space-y-2"
               >
                 <label htmlFor="message" className="text-sm font-semibold text-gray-300 block">
-                  Mesajınız <span className="text-[#FF4655]">*</span>
+                  {t("contact.messageLabel")} <span className="text-[#FF4655]">*</span>
                   <span className="text-xs text-gray-400 ml-2">
                     ({formData.message.length}/1000)
                   </span>
@@ -226,7 +220,7 @@ export default function Contact() {
                 <textarea
                   id="message"
                   name="message"
-                  placeholder="Mesajınızı detaylı bir şekilde yazın..."
+                  placeholder={t("contact.messagePlaceholder")}
                   value={formData.message}
                   onChange={handleChange}
                   required
@@ -252,14 +246,14 @@ export default function Contact() {
               {formStatus === 'error' && (
                 <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-4 text-red-400 text-sm flex items-center gap-2" role="alert">
                   <FiAlertCircle className="w-5 h-5" />
-                  <span>Bir hata oluştu. Lütfen tekrar deneyin.</span>
+                  <span>{t("contact.error")}</span>
                 </div>
               )}
 
               <motion.button
                 type="submit"
                 disabled={formStatus === 'loading' || formStatus === 'success'}
-                aria-label="Mesaj gönder"
+                aria-label={t("contact.submit")}
                 whileHover={formStatus === 'idle' ? { scale: 1.02, y: -2 } : {}}
                 whileTap={formStatus === 'idle' ? { scale: 0.98 } : {}}
                 className={`w-full bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] hover:from-[#FF4655]/90 hover:to-[#FF6B7A]/90 text-white py-4 px-8 rounded-xl font-semibold text-lg flex items-center justify-center transition-all duration-500 transform ${
@@ -269,7 +263,7 @@ export default function Contact() {
                 {formStatus === 'idle' && (
                   <>
                     <FiSend className="mr-3 w-5 h-5" /> 
-                    <span>Mesaj Gönder</span>
+                    <span>{t("contact.submit")}</span>
                   </>
                 )}
                 {formStatus === 'loading' && (
@@ -278,13 +272,13 @@ export default function Contact() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    <span>Gönderiliyor...</span>
+                    <span>{t("contact.sending")}</span>
                   </>
                 )}
                 {formStatus === 'success' && (
                   <>
                     <FiCheck className="mr-3 w-5 h-5" /> 
-                    <span>Gönderildi!</span>
+                    <span>{t("contact.success")}</span>
                   </>
                 )}
               </motion.button>

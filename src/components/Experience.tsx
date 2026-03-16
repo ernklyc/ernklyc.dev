@@ -6,6 +6,7 @@ import { FaGraduationCap } from "react-icons/fa";
 import { FiBriefcase } from "react-icons/fi";
 import { education } from "@/data/education";
 import { experience, formatDuration, type ExperienceEntry } from "@/data/experience";
+import { useLocale } from "@/contexts/LocaleContext";
 
 const listVariants = {
   hidden: { opacity: 0 },
@@ -23,6 +24,7 @@ function getDisplayDuration(item: ExperienceEntry): string {
 }
 
 export default function Experience() {
+  const { t } = useLocale();
   const experienceNewestFirst = [...experience].reverse();
 
   return (
@@ -44,7 +46,7 @@ export default function Experience() {
         >
           <div className="inline-block relative">
             <h2 className="text-2xl font-bold sm:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              Eğitim & İş Deneyimi
+              {t("experience.title")}
             </h2>
             <motion.div
               initial={{ width: 0 }}
@@ -55,7 +57,7 @@ export default function Experience() {
             />
           </div>
           <p className="mt-4 text-sm text-gray-300">
-            Akademik geçmişim ve profesyonel deneyimlerim
+            {t("experience.subtitle")}
           </p>
         </motion.header>
 

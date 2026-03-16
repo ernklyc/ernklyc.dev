@@ -3,13 +3,34 @@ import { useState, useEffect, useRef } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { profile } from "@/data/profile";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export default function Navbar() {
+  const { locale, setLocale, t } = useLocale();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const [showNavbar, setShowNavbar] = useState(true);
   const lastScrollY = useRef(0);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const firstMenuLinkRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      firstMenuLinkRef.current?.focus();
+    } else {
+      menuButtonRef.current?.focus();
+    }
+  }, [isMenuOpen]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,13 +85,13 @@ export default function Navbar() {
     }
   };
   const menuItems = [
-    { label: "Ana Sayfa", href: "#home" },
-    { label: "Hakkımda", href: "#about" },
-    { label: "Yetenekler", href: "#skills" },
-    { label: "Deneyim", href: "#experience" },
-    { label: "Projeler", href: "#projects" },
-    { label: "İletişim", href: "#contact" },
-    ...(profile.links.cv ? [{ label: "CV İndir", href: profile.links.cv, isDownload: true as const }] : []),
+    { labelKey: "nav.home", href: "#home" },
+    { labelKey: "nav.about", href: "#about" },
+    { labelKey: "nav.skills", href: "#skills" },
+    { labelKey: "nav.experience", href: "#experience" },
+    { labelKey: "nav.projects", href: "#projects" },
+    { labelKey: "nav.contact", href: "#contact" },
+    ...(profile.links.cv ? [{ labelKey: "nav.cvDownload", href: profile.links.cv, isDownload: true as const }] : []),
   ];
 
   return (
@@ -86,7 +107,7 @@ export default function Navbar() {
     >
       <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 md:py-4 max-w-6xl flex justify-center items-center">
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-6 lg:space-x-8 justify-center w-full">
+        <div className="hidden md:flex space-x-6 lg:space-x-8 justify-center items-center w-full">
           {menuItems.map((item) => (
             <a
               key={item.href}
@@ -94,17 +115,37 @@ export default function Navbar() {
               download={"isDownload" in item && item.isDownload ? true : undefined}
               onClick={"isDownload" in item && item.isDownload ? undefined : (e) => handleNavClick(e, item.href)}
               className="py-2 px-1 font-medium text-xs md:text-sm tracking-wide text-white hover:text-[#FF4655] transition-colors focus:outline-none"
-              aria-label={"isDownload" in item && item.isDownload ? "CV indir" : `${item.label} bölümüne git`}
+              aria-label={"isDownload" in item && item.isDownload ? t("nav.cvDownload") : `${t(item.labelKey)}`}
             >
-              {item.label}
+              {t(item.labelKey)}
             </a>
           ))}
+          <div className="flex items-center gap-1 ml-4 border border-white/20 rounded-lg p-0.5">
+            <button
+              type="button"
+              onClick={() => setLocale("tr")}
+              className={`px-2 py-1 text-xs font-medium rounded-md transition-colors ${locale === "tr" ? "bg-[#FF4655] text-white" : "text-gray-400 hover:text-white"}`}
+              aria-label="Türkçe"
+            >
+              TR
+            </button>
+            <button
+              type="button"
+              onClick={() => setLocale("en")}
+              className={`px-2 py-1 text-xs font-medium rounded-md transition-colors ${locale === "en" ? "bg-[#FF4655] text-white" : "text-gray-400 hover:text-white"}`}
+              aria-label="English"
+            >
+              EN
+            </button>
+          </div>
         </div>
         {/* Mobile Menu Button */}
-        <button 
+        <button
+          ref={menuButtonRef}
           className="md:hidden text-white p-2 rounded-lg hover:bg-[#1F2731] transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF4655]"
           onClick={toggleMenu}
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
+          aria-expanded={isMenuOpen}
         >
           {isMenuOpen ? (
             <FiX className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -123,18 +164,37 @@ export default function Navbar() {
             className="md:hidden bg-[#0F1923]/95 backdrop-blur-md absolute top-full left-0 right-0 z-50"
           >
             <div className="container mx-auto py-3 flex flex-col space-y-1 px-3 sm:px-6 items-center">
-              {menuItems.map((item) => (
+              {menuItems.map((item, index) => (
                 <a
                   key={item.href}
+                  ref={index === 0 ? firstMenuLinkRef : undefined}
                   href={item.href}
                   download={"isDownload" in item && item.isDownload ? true : undefined}
-                  className="py-2 px-3 rounded-lg flex items-center text-sm w-full text-center justify-center text-white hover:text-[#FF4655] hover:bg-[#1F2731]/30 transition-colors focus:outline-none"
+                  className="py-2 px-3 rounded-lg flex items-center text-sm w-full text-center justify-center text-white hover:text-[#FF4655] hover:bg-[#1F2731]/30 transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF4655] rounded-lg"
                   onClick={"isDownload" in item && item.isDownload ? () => setIsMenuOpen(false) : (e) => handleNavClick(e, item.href)}
-                  aria-label={"isDownload" in item && item.isDownload ? "CV indir" : `${item.label} bölümüne git`}
+                  aria-label={"isDownload" in item && item.isDownload ? t("nav.cvDownload") : t(item.labelKey)}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </a>
               ))}
+              <div className="flex items-center gap-1 mt-2 pt-2 border-t border-white/10 w-full justify-center">
+                <button
+                  type="button"
+                  onClick={() => setLocale("tr")}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${locale === "tr" ? "bg-[#FF4655] text-white" : "text-gray-400 hover:text-white"}`}
+                  aria-label="Türkçe"
+                >
+                  TR
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLocale("en")}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${locale === "en" ? "bg-[#FF4655] text-white" : "text-gray-400 hover:text-white"}`}
+                  aria-label="English"
+                >
+                  EN
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

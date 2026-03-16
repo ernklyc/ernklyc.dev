@@ -1,5 +1,7 @@
+"use client";
 import Image from "next/image";
 import type { PlayStoreApp } from "@/lib/playstore";
+import { useLocale } from "@/contexts/LocaleContext";
 
 const PLAY_STORE_DEV_URL = "https://play.google.com/store/apps/dev?id=6576291249346115918";
 
@@ -8,6 +10,9 @@ interface PlayStoreAppsProps {
 }
 
 export default function PlayStoreApps({ apps }: PlayStoreAppsProps) {
+  const { t } = useLocale();
+  const isEmpty = !apps || apps.length === 0;
+
   return (
     <section
       id="play-store-apps"
@@ -21,26 +26,28 @@ export default function PlayStoreApps({ apps }: PlayStoreAppsProps) {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12 text-center md:text-left">
           <div>
             <h2 className="text-2xl md:text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              Google Play Uygulamalarım
+              {t("projects.playStoreTitle")}
             </h2>
             <div className="h-1 w-24 md:w-32 bg-gradient-to-r from-[#FF4655] to-transparent rounded mt-2 mx-auto md:mx-0" />
             <p className="mt-4 text-gray-300">
-              Yelbegen Software adıyla yayınladığım mobil uygulamalar. Hepsini
-              görmek için{" "}
-              <a
-                href={PLAY_STORE_DEV_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[#FF4655] hover:text-[#FF6B7A] underline underline-offset-4 transition-colors"
-                aria-label="Google Play geliştirici sayfasını aç"
-              >
-                Google Play sayfamı
-              </a>{" "}
-              ziyaret edebilirsin.
+              {isEmpty
+                ? t("projects.playStoreEmpty")
+                : <>{t("projects.playStoreDescription")}{" "}
+                  <a
+                    href={PLAY_STORE_DEV_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#FF4655] hover:text-[#FF6B7A] underline underline-offset-4 transition-colors"
+                    aria-label="Google Play geliştirici sayfasını aç"
+                  >
+                    {t("projects.playStorePage")}
+                  </a>{" "}
+                  {t("projects.playStoreVisit")}</>}
             </p>
           </div>
         </div>
 
+        {isEmpty ? null : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {apps.map((app) => (
             <a
@@ -75,11 +82,12 @@ export default function PlayStoreApps({ apps }: PlayStoreAppsProps) {
                 </div>
               </div>
               <span className="text-xs text-gray-400 mt-auto inline-flex items-center gap-1 group-hover:text-[#FF4655] transition-colors">
-                Google Play&apos;de gör →
+                {t("projects.playStoreCta")}
               </span>
             </a>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

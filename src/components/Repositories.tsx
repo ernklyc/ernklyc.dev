@@ -1,4 +1,6 @@
+"use client";
 import { GitHubRepo } from "@/lib/github";
+import { useLocale } from "@/contexts/LocaleContext";
 
 function formatUpdatedAt(dateString: string) {
   const date = new Date(dateString);
@@ -23,6 +25,8 @@ interface RepositoriesProps {
 }
 
 export default function Repositories({ repos }: RepositoriesProps) {
+  const { t } = useLocale();
+
   if (!repos || repos.length === 0) {
     return (
       <section
@@ -35,12 +39,11 @@ export default function Repositories({ repos }: RepositoriesProps) {
         </div>
         <div className="max-w-6xl mx-auto relative z-10">
           <h2 className="text-2xl md:text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-            GitHub Repolarım
+            {t("projects.githubTitle")}
           </h2>
           <div className="h-1 w-24 bg-gradient-to-r from-[#FF4655] to-transparent rounded mt-2 mb-4" />
           <p className="text-gray-300">
-            Şu anda GitHub projeleri yüklenemedi. Lütfen daha sonra tekrar
-            deneyin.
+            {t("projects.githubEmpty")}
           </p>
         </div>
       </section>
@@ -60,12 +63,11 @@ export default function Repositories({ repos }: RepositoriesProps) {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
           <div>
             <h2 className="text-2xl md:text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              GitHub Repolarım
+              {t("projects.githubTitle")}
             </h2>
             <div className="h-1 w-24 bg-gradient-to-r from-[#FF4655] to-transparent rounded mt-2 mb-2" />
             <p className="text-gray-300">
-              GitHub hesabımdaki son açık kaynak projelerim. Tüm repoları
-              görmek için{" "}
+              {t("projects.githubDescription")}{" "}
               <a
                 href="https://github.com/ernklyc?tab=repositories"
                 target="_blank"
@@ -73,9 +75,9 @@ export default function Repositories({ repos }: RepositoriesProps) {
                 className="text-[#FF4655] hover:text-[#FF6B7A] underline underline-offset-4 transition-colors"
                 aria-label="GitHub profil sayfasını aç"
               >
-                GitHub profilimi
+                {t("projects.githubProfile")}
               </a>{" "}
-              ziyaret edebilirsin.
+              {t("projects.githubVisit")}
             </p>
           </div>
         </div>
