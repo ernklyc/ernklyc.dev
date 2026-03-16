@@ -77,7 +77,7 @@ export default function About() {
                   <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-2xl overflow-hidden border border-white/10">
                     <Image 
                       src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2xteHR5bGdleXIwejF5YzRlcXRvenc5dml6bXZnNHJ0ZnE3YXp1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1vlBgKjXEz1jTtsuiH/giphy.gif" 
-                      alt="Eren Kalaycı - Penguen karakter animasyonu"
+                      alt="Eren Kalaycı - Bilgisayar Mühendisi ve Mobil Uygulama Geliştiricisi Penguen Animasyonu"
                       width={256}
                       height={256}
                       loading="lazy"

@@ -93,7 +93,7 @@ export default function Hero() {
             <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-2 border-white/20 p-1 overflow-hidden bg-gradient-to-br from-[#1F2731] to-[#0F1923]">
               <Image 
                 src="/profil_resmim.jpg" 
-                alt="Eren Kalaycı - Bilgisayar Mühendisi ve Mobil Uygulama Geliştirici"
+                alt="Eren Kalaycı - Bilgisayar Mühendisi ve Mobil Uygulama Geliştiricisi"
                 width={128}
                 height={128}
                 priority

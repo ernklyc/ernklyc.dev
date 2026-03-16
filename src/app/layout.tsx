@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     default: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici | Portfolio",
     template: "%s | Eren Kalaycı"
   },
-  description: "Eren Kalaycı - Flutter, React ve Unity uzmanı bilgisayar mühendisi. Mobil uygulama geliştirme, web geliştirme ve oyun geliştirme projeleri. Eren Kalaycı'nın portfolyosu ve projeleri.",
+  description: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.",
   keywords: ["Eren Kalaycı", "Eren KALAYCI", "eren kalaycı", "Flutter", "React", "Unity", "Mobil Uygulama", "Web Geliştirme", "Bilgisayar Mühendisi", "Portfolio", "Mobil Uygulama Geliştirici", "Eren Kalaycı portfolio"],
   authors: [{ name: "Eren Kalaycı" }],
   creator: "Eren Kalaycı",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     locale: 'tr_TR',
     url: 'https://ernklyc.vercel.app',
     title: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
-    description: 'Eren Kalaycı - Flutter, React ve Unity uzmanı bilgisayar mühendisi. Mobil uygulama geliştirme, web geliştirme ve oyun geliştirme projeleri.',
+    description: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.',
     siteName: 'Eren Kalaycı Portfolio',
     images: [
       {
@@ -58,9 +58,9 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
-    description: 'Eren Kalaycı - Flutter, React ve Unity uzmanı bilgisayar mühendisi. Portfolio ve projeler.',
+    description: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.',
     images: ['/og-default.png'],
-    creator: '@ernklyc',
+    creator: '@ernklycdev',
   },
   icons: {
     icon: '/icon',

@@ -19,9 +19,12 @@ export default function StructuredData() {
     "email": profile.email,
     "url": SITE_URL,
     "sameAs": [
-      profile.links.github,
       profile.links.linkedin,
       profile.links.twitter,
+      profile.links.github,
+      profile.links.instagram,
+      profile.links.youtube,
+      profile.links.playStore,
     ],
     "image": `${SITE_URL}/profil_resmim.jpg`,
     "address": {
@@ -45,7 +48,7 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
     "name": `Eren Kalaycı Portfolio`,
-    "description": `Eren Kalaycı - ${profile.bio.short}. Eren Kalaycı'nın portfolyosu, projeleri ve deneyimleri.`,
+    "description": `Eren Kalaycı - ${profile.bio.short}`,
     "author": {
       "@type": "Person",
       "name": "Eren Kalaycı",
