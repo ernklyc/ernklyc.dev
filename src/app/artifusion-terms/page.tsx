@@ -154,7 +154,7 @@ export default function ArtifusionTermsPage() {
                 For questions or complaints, you can contact us:
               </p>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Email: <a href="mailto:ernklyc@gmail.com" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">ernklyc@gmail.com</a></li>
+                <li>Email: <a href="mailto:ernklycdev@icloud.com" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">ernklycdev@icloud.com</a></li>
               </ul>
             </section>
 

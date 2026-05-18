@@ -176,7 +176,7 @@ export default function ArtifusionPrivacyPage() {
                 <li>Right to object to data processing</li>
               </ul>
               <p className="text-gray-300 leading-relaxed mt-4">
-                To exercise your rights, contact us at: <a href="mailto:ernklyc@gmail.com" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">ernklyc@gmail.com</a>
+                To exercise your rights, contact us at: <a href="mailto:ernklycdev@icloud.com" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">ernklycdev@icloud.com</a>
               </p>
             </section>
 
@@ -210,7 +210,7 @@ export default function ArtifusionPrivacyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4 text-white">12. CONTACT</h2>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Email: <a href="mailto:ernklyc@gmail.com" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">ernklyc@gmail.com</a></li>
+                <li>Email: <a href="mailto:ernklycdev@icloud.com" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">ernklycdev@icloud.com</a></li>
               </ul>
             </section>
 
