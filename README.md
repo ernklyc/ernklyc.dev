@@ -7,7 +7,7 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 ## 👨‍💻 Geliştirici
 
 **Eren KALAYCI**
-- 🌐 Website: [ernklyc.vercel.app](https://ernklyc.dev)
+- 🌐 Website: [ernklyc.dev(https://ernklyc.dev)
 - 📧 Email: ernklyc@gmail.com
 - 💼 LinkedIn: [erenklyc](https://linkedin.com/in/erenklyc)
 - 🐱 GitHub: [ernklyc](https://github.com/ernklyc)
