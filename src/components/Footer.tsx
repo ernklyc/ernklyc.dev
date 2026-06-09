@@ -188,6 +188,10 @@ export default function Footer() {
               <TransitionLink href="/artifusion-terms" className="hover:text-white transition-colors">
                 Artifusion Terms
               </TransitionLink>
+              <span className="text-white/20" aria-hidden="true">|</span>
+              <TransitionLink href="/artifusion-support" className="hover:text-white transition-colors">
+                Artifusion Support
+              </TransitionLink>
             </div>
           </div>
         </motion.div>
