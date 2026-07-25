@@ -1,7 +1,6 @@
-"use client";
 import { profile } from "@/data/profile";
 
-const SITE_URL = "https://ernklyc.vercel.app";
+const SITE_URL = "https://ernklyc.dev";
 
 /** Öne çıkan uygulamalar (WebSite/SoftwareApplication schema için). */
 const FEATURED_APPS = [
@@ -39,8 +38,9 @@ export default function StructuredData() {
       "Unity",
       "C#",
       "Mobil Uygulama Geliştirme",
-      "Web Geliştirme",
       "Oyun Geliştirme",
+      "Web Geliştirme",
+      "Web Tasarımı",
     ],
   };
 
@@ -55,7 +55,7 @@ export default function StructuredData() {
       "alternateName": ["Eren KALAYCI", "eren kalaycı"],
     },
     "url": SITE_URL,
-    "keywords": "Eren Kalaycı, Eren KALAYCI, eren kalaycı, bilgisayar mühendisi, mobil uygulama geliştirici",
+    "keywords": "Eren Kalaycı, Eren KALAYCI, eren kalaycı, Eren Kalaycı Flutter, Eren Kalaycı Unity, Eren Kalaycı mobil uygulama geliştirici, Eren Kalaycı oyun geliştirici, Eren Kalaycı web tasarım, bilgisayar mühendisi",
   };
 
   const websiteSchema = {

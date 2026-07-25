@@ -165,20 +165,6 @@ body.locale-transitioning::-webkit-scrollbar-thumb {
   background: transparent;
 }
 
-.frosted-surface {
-  background: rgba(15, 25, 35, 0.6);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.soft-panel {
-  background: linear-gradient(140deg, rgba(31, 39, 49, 0.45), rgba(21, 31, 43, 0.5));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -231,5 +217,50 @@ body.locale-transitioning::-webkit-scrollbar-thumb {
   50% {
     opacity: 1;
   }
+}
+
+/* Magic Bento cards */
+.bento-section {
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 200px;
+  --glow-color: 255, 70, 85;
+}
+
+.card--border-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 6px;
+  background: radial-gradient(var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+      rgba(var(--glow-color), calc(var(--glow-intensity) * 0.8)) 0%,
+      rgba(var(--glow-color), calc(var(--glow-intensity) * 0.4)) 30%,
+      transparent 60%);
+  border-radius: inherit;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.card--border-glow:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 30px rgba(var(--glow-color), 0.2);
+}
+
+.bento-section .particle::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: rgba(var(--glow-color), 0.2);
+  border-radius: 50%;
+  z-index: -1;
 }
 

@@ -4,6 +4,7 @@ import { FiCode, FiPenTool, FiGlobe, FiUsers, FiCpu, FiDatabase } from "react-ic
 import { skills } from "@/data/skills";
 import React, { useState } from "react";
 import { useLocale } from "@/contexts/LocaleContext";
+import SplitText from "./SplitText";
 
 export default function Skills() {
   const { t } = useLocale();
@@ -61,10 +62,10 @@ export default function Skills() {
   const activeSkills = skills.find(skill => skill.category === activeTab);
 
   return (
-    <section id="skills" className="py-16 bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white relative overflow-hidden scroll-mt-20">
+    <section id="skills" className="py-20 text-white relative overflow-hidden scroll-mt-20">
       <div className="absolute inset-0">
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF4655]/10 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full blur-3xl opacity-50"></div>
       </div>
       <div className="container mx-auto px-4 max-w-6xl relative z-10">
         <motion.div
@@ -75,15 +76,25 @@ export default function Skills() {
           className="mb-12 text-center"
         >
           <motion.div variants={itemVariants} className="inline-block relative">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              {t("skills.title")}
-            </h2>
+            <SplitText
+              text={t("skills.title")}
+              tag="h2"
+              className="text-2xl md:text-4xl font-bold mb-4 text-white"
+              splitType="words"
+              delay={30}
+              duration={0.8}
+              ease="power3.out"
+              from={{ opacity: 0, y: 30 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.2}
+              rootMargin="-80px"
+            />
             <motion.div
               initial={{ width: 0 }}
               whileInView={{ width: "100%" }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent mx-auto"
+              className="h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"
             />
           </motion.div>
           <motion.p
@@ -99,7 +110,7 @@ export default function Skills() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="rounded-3xl border border-white/10 bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/60 to-[#0F1923]/90 backdrop-blur-xl overflow-hidden hover:border-white/20 transition-all duration-500"
+          className="rounded-2xl border border-white/10 border-t-white/20 shadow-xl shadow-black/40 bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/75 to-[#0F1923]/90 backdrop-blur-xl overflow-hidden hover:border-white/20 hover:shadow-2xl hover:shadow-black/50 transition-all duration-500"
         >
           <div className="flex flex-wrap justify-center gap-2 p-4 sm:p-5 border-b border-[#2A3441]/60 bg-[#0F1923]/50">
             {skills.map((skill, index) => (
@@ -112,7 +123,7 @@ export default function Skills() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab(skill.category)}
-                className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2 border
+                className={`px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2 border
                   ${activeTab === skill.category
                     ? "bg-[#FF4655] text-white border-[#FF4655]"
                     : "bg-[#1F2731]/60 text-gray-300 border-white/10 hover:border-white/20 hover:text-white"}`}
@@ -138,7 +149,7 @@ export default function Skills() {
                     variants={fadeIn}
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.15 }}
-                    className="inline-flex items-center rounded-xl bg-[#1F2731]/60 border border-white/10 px-4 py-2.5 text-sm text-gray-300 hover:border-white/20 hover:bg-[#1F2731]/80 transition-all duration-300"
+                    className="inline-flex items-center rounded-full bg-[#1F2731]/60 border border-white/10 px-4 py-2.5 text-sm text-gray-300 hover:border-white/20 hover:bg-[#1F2731]/80 transition-all duration-300"
                   >
                     <span className="w-2 h-2 bg-[#FF4655] rounded-full mr-2.5 flex-shrink-0" />
                     {item}

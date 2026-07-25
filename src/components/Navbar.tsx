@@ -120,20 +120,20 @@ export default function Navbar() {
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[rgba(15,25,35,0.6)] backdrop-blur-[14px] shadow-lg"
-          : "bg-transparent"
+          ? "bg-[#0F1923]/60 backdrop-blur-xl shadow-lg"
+          : "bg-[#0A0F1C]/40 backdrop-blur-md"
       }`}
     >
       <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 md:py-4 max-w-6xl flex justify-center items-center">
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-6 lg:space-x-8 justify-center items-center w-full">
+        <div className="hidden lg:flex space-x-5 xl:space-x-8 justify-center items-center w-full">
           {menuItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
               download={"isDownload" in item && item.isDownload ? true : undefined}
               onClick={"isDownload" in item && item.isDownload ? undefined : (e) => handleNavClick(e, item.href)}
-              className="py-2 px-1 font-medium text-xs md:text-sm tracking-wide text-white hover:text-[#FF4655] transition-colors focus:outline-none"
+              className="py-2 px-1 font-medium text-sm tracking-wide text-white hover:text-[#FF4655] transition-colors focus:outline-none"
               aria-label={"isDownload" in item && item.isDownload ? t("nav.cvDownload") : `${t(item.labelKey)}`}
             >
               {t(item.labelKey)}
@@ -169,7 +169,7 @@ export default function Navbar() {
         {/* Mobile Menu Button */}
         <button
           ref={menuButtonRef}
-          className="md:hidden text-white p-2 rounded-lg hover:bg-[#1F2731] transition-colors focus:outline-none"
+          className="lg:hidden text-white p-2 rounded-lg hover:bg-[#1F2731] transition-colors focus:outline-none"
           onClick={toggleMenu}
           aria-label={isMenuOpen ? "Menüyü kapat" : "Menüyü aç"}
           aria-expanded={isMenuOpen}
@@ -188,7 +188,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden absolute top-full left-0 right-0 z-50 bg-[rgba(15,25,35,0.65)] backdrop-blur-[14px]"
+            className="lg:hidden absolute top-full left-0 right-0 z-50 bg-[#0F1923]/65 backdrop-blur-xl"
           >
             <div className="container mx-auto py-3 flex flex-col space-y-1 px-3 sm:px-6 items-center">
               {menuItems.map((item, index) => (

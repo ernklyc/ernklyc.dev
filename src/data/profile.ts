@@ -4,7 +4,7 @@ export const profile = {
   email: "ernklyc@gmail.com",
   location: "İstanbul, Türkiye",
   bio: {
-    short: "Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.",
+    short: "Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile mobil uygulamalar, Unity ile oyunlar ve modern web siteleri geliştiriyorum.",
     long: "5 yılı aşkın deneyimle web uygulamaları ve dijital çözümler geliştiren tutkulu bir yazılım geliştiriciyim. Yolculuğum, şeylerin nasıl çalıştığına dair merakla başladı ve zamanla zarif, verimli kod yazma sevgisine dönüştü."
   },
   links: {

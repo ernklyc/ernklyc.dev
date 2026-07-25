@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FiGlobe } from "react-icons/fi";
 import Image from "next/image";
 import { useLocale } from "@/contexts/LocaleContext";
+import SplitText from "./SplitText";
 
 export default function About() {
   const { t } = useLocale();
@@ -32,10 +33,10 @@ export default function About() {
 
 
   return (
-    <section id="about" className="py-16 bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white relative overflow-hidden scroll-mt-20">
+    <section id="about" className="py-20 text-white relative overflow-hidden scroll-mt-20">
       <div className="absolute inset-0">
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF4655]/10 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl opacity-50"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full blur-3xl opacity-50"></div>
       </div>
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl relative z-10">
         <motion.div
@@ -46,28 +47,38 @@ export default function About() {
           className="mb-12 text-center"
         >
           <motion.div variants={itemVariants} className="inline-block relative">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              {t("about.title")}
-            </h2>
+            <SplitText
+              text={t("about.title")}
+              tag="h2"
+              className="text-2xl md:text-4xl font-bold mb-4 text-white"
+              splitType="words"
+              delay={30}
+              duration={0.8}
+              ease="power3.out"
+              from={{ opacity: 0, y: 30 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.2}
+              rootMargin="-80px"
+            />
             <motion.div
               initial={{ width: 0 }}
               whileInView={{ width: "100%" }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="h-1 bg-gradient-to-r from-transparent via-[#FF4655] to-transparent mx-auto"
+              className="h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"
             />
           </motion.div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 items-stretch mb-8">
           {/* Sol Taraf - Penguen Karakteri ve Bilgiler */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <div className="bg-gradient-to-br from-[#2A3441] via-[#1F2731] to-[#151F2B] rounded-2xl p-4 md:p-6 border border-white/10 relative overflow-hidden group h-full">
+            <div className="bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/75 to-[#0F1923]/90 backdrop-blur-xl rounded-2xl p-5 border border-white/10 border-t-white/20 shadow-xl shadow-black/40 hover:border-white/20 hover:shadow-2xl hover:shadow-black/50 transition-all duration-500 relative overflow-hidden group h-full">
               <div className="relative z-10 flex flex-col items-center justify-center text-center space-y-3 md:space-y-4 h-full">
                 {/* Penguen GIF - Daha küçük boyut */}
                 <motion.div 
@@ -104,21 +115,21 @@ export default function About() {
               </div>
             </div>
           </motion.div>
-          
+
           {/* Sağ Taraf - Detaylı Açıklama */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <div className="bg-gradient-to-br from-[#2A3441] via-[#1F2731] to-[#151F2B] rounded-2xl p-4 md:p-6 border border-white/10 relative overflow-hidden group h-full">
+            <div className="bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/75 to-[#0F1923]/90 backdrop-blur-xl rounded-2xl p-5 border border-white/10 border-t-white/20 shadow-xl shadow-black/40 hover:border-white/20 hover:shadow-2xl hover:shadow-black/50 transition-all duration-500 relative overflow-hidden group h-full">
               <div className="absolute inset-0 bg-gradient-to-br from-[#FF4655]/0 via-[#FF4655]/5 to-[#FF4655]/10 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none"></div>
               
               <div className="relative z-10 h-full flex flex-col">
                 <motion.h3 
                   whileHover={{ x: 5 }}
-                  className="text-xl font-bold mb-6 text-white flex items-center"
+                  className="text-lg font-semibold mb-6 text-white flex items-center"
                 >
                   <span className="text-[#FF4655] mr-2 text-2xl">&lt;</span>
                   Merhaba, Ben Eren Kalaycı
@@ -164,4 +175,4 @@ export default function About() {
       </div>
     </section>
   );
-} 
+}

@@ -5,6 +5,7 @@ import { profile } from "@/data/profile";
 import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript, SiFramer } from "react-icons/si";
 import { useLocale } from "@/contexts/LocaleContext";
 import TransitionLink from "@/components/TransitionLink";
+import SplitText from "@/components/SplitText";
 
 export default function Footer() {
   const { t } = useLocale();
@@ -40,11 +41,11 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white border-t border-white/10 relative overflow-hidden">
+    <footer className="text-white border-t border-white/10 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-[#FF4655]/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF4655]/10 rounded-full blur-3xl opacity-60"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full blur-3xl opacity-50"></div>
       </div>
 
       <div className="container mx-auto px-4 max-w-6xl py-10 relative z-10">
@@ -57,9 +58,19 @@ export default function Footer() {
         >
           {/* Header */}
           <motion.div variants={itemVariants} className="mb-6">
-            <h2 className="text-2xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white animate-gradient-x">
-              {t("footer.title")}
-            </h2>
+            <SplitText
+              text={t("footer.title")}
+              tag="h2"
+              className="text-2xl md:text-4xl font-bold mb-3 text-white"
+              splitType="words"
+              delay={30}
+              duration={0.8}
+              ease="power3.out"
+              from={{ opacity: 0, y: 30 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.2}
+              rootMargin="-80px"
+            />
             <p className="text-gray-300 max-w-md text-center text-sm leading-relaxed">
               {t("footer.subtitle")}
             </p>
@@ -73,7 +84,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/20 backdrop-blur-sm"
+              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/10 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-[#FF4655]/40 backdrop-blur-sm"
               aria-label="GitHub"
             >
               <FiGithub className="w-5 h-5 text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" />
@@ -84,7 +95,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/20 backdrop-blur-sm"
+              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/10 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-[#FF4655]/40 backdrop-blur-sm"
               aria-label="LinkedIn"
             >
               <FiLinkedin className="w-5 h-5 text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" />
@@ -93,7 +104,7 @@ export default function Footer() {
               href={`mailto:${profile.email}`}
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/20 backdrop-blur-sm"
+              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/10 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-[#FF4655]/40 backdrop-blur-sm"
               aria-label="Email"
             >
               <FiMail className="w-5 h-5 text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" />
@@ -104,7 +115,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.1, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/20 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-white/20 backdrop-blur-sm"
+              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/10 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-[#FF4655]/40 backdrop-blur-sm"
               aria-label="Google Play Store"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512" className="text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" fill="currentColor">
@@ -119,10 +130,10 @@ export default function Footer() {
             <div className="flex flex-wrap justify-center gap-2">
               {[
                 { icon: SiNextdotjs, name: "Next.js", color: "text-white" },
-                { icon: SiReact, name: "React", color: "text-blue-400" },
-                { icon: SiTailwindcss, name: "Tailwind", color: "text-cyan-400" },
-                { icon: SiTypescript, name: "TypeScript", color: "text-blue-500" },
-                { icon: SiFramer, name: "Framer", color: "text-purple-400" }
+                { icon: SiReact, name: "React", color: "text-gray-300" },
+                { icon: SiTailwindcss, name: "Tailwind", color: "text-gray-300" },
+                { icon: SiTypescript, name: "TypeScript", color: "text-gray-300" },
+                { icon: SiFramer, name: "Framer", color: "text-gray-300" }
               ].map((tech, index) => (
                 <motion.div
                   key={tech.name}
@@ -130,7 +141,7 @@ export default function Footer() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ scale: 1.05, y: -1 }}
-                  className="flex items-center gap-1.5 bg-[#1F2731]/40 hover:bg-[#FF4655]/10 py-1.5 px-2.5 rounded-lg transition-all duration-300 border border-white/10 hover:border-white/20"
+                  className="flex items-center gap-1.5 bg-[#1F2731]/40 hover:bg-[#FF4655]/10 py-1.5 px-2.5 rounded-full transition-all duration-300 border border-white/10 hover:border-white/20"
                 >
                   <tech.icon className={`${tech.color} w-3.5 h-3.5`} />
                   <span className="text-gray-300 text-xs font-medium">{tech.name}</span>
@@ -163,7 +174,6 @@ export default function Footer() {
           {/* Copyright + Legal Links - tek blok, tutarlı tip */}
           <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-4 text-sm text-gray-400">
             <p className="text-center sm:text-left">&copy; {year} Eren Kalaycı. {t("footer.rights")}</p>
-            <span className="hidden sm:inline text-white/20" aria-hidden="true">|</span>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
               <TransitionLink href="/privacy-policy" className="hover:text-white transition-colors">
                 HP Character Wiki Privacy

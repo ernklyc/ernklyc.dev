@@ -145,7 +145,7 @@ export default function MovieFaceAIPrivacyPolicyPage() {
           </div>
 
           <div className="mt-12 pt-6 border-t border-white/10 text-center">
-            <BackOrHomeLink className="text-gray-400 hover:text-white text-sm transition-colors">
+            <BackOrHomeLink className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors border border-white/10 hover:border-white/20 px-6 py-3 rounded-xl">
               ← Geri dön
             </BackOrHomeLink>
           </div>

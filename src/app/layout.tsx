@@ -3,11 +3,13 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-// import AISupport from "@/components/AISupport"; // şu an görünür değil
+import SiteBackground from "@/components/SiteBackground";
 import StructuredData from "@/components/StructuredData";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { LocaleProvider } from "@/contexts/LocaleContext";
 import LocaleTransition from "@/components/LocaleTransition";
+import ClickSpark from "@/components/ClickSpark";
+import GlobalCursor from "@/components/GlobalCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,19 +32,38 @@ export const metadata: Metadata = {
     default: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici | Portfolio",
     template: "%s | Eren Kalaycı"
   },
-  description: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.",
-  keywords: ["Eren Kalaycı", "Eren KALAYCI", "eren kalaycı", "Flutter", "React", "Unity", "Mobil Uygulama", "Web Geliştirme", "Bilgisayar Mühendisi", "Portfolio", "Mobil Uygulama Geliştirici", "Eren Kalaycı portfolio"],
+  description: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile mobil uygulamalar, Unity ile oyunlar ve modern web siteleri geliştiriyorum.",
+  keywords: [
+    "Eren Kalaycı",
+    "Eren KALAYCI",
+    "eren kalaycı",
+    "Eren Kalaycı Flutter",
+    "Eren Kalaycı mobil uygulama geliştirici",
+    "Eren Kalaycı Unity",
+    "Eren Kalaycı oyun geliştirici",
+    "Eren Kalaycı web tasarım",
+    "Eren Kalaycı web geliştirme",
+    "Flutter",
+    "Unity",
+    "React",
+    "Mobil Uygulama Geliştirici",
+    "Oyun Geliştirici",
+    "Web Tasarımı",
+    "Web Geliştirme",
+    "Bilgisayar Mühendisi",
+    "Eren Kalaycı portfolio",
+  ],
   authors: [{ name: "Eren Kalaycı" }],
   creator: "Eren Kalaycı",
   publisher: "Eren Kalaycı",
-  metadataBase: new URL('https://ernklyc.vercel.app'),
+  metadataBase: new URL('https://ernklyc.dev'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'tr_TR',
-    url: 'https://ernklyc.vercel.app',
+    url: 'https://ernklyc.dev',
     title: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
     description: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.',
     siteName: 'Eren Kalaycı Portfolio',
@@ -144,6 +165,8 @@ export default function RootLayout({
           `}
         </Script>
 
+        <SiteBackground />
+
         <div id="boot-loader" aria-hidden="true">
           <div className="boot-loader-content">
             <div className="boot-loader-spinner" />
@@ -151,14 +174,17 @@ export default function RootLayout({
           </div>
         </div>
 
+        <GlobalCursor />
+
         <LocaleProvider>
           <StructuredData />
           <ErrorBoundary>
-            <Navbar />
-            <LocaleTransition>
-              {children}
-            </LocaleTransition>
-            {/* <AISupport /> */}
+            <ClickSpark sparkColor="#FF4655" sparkSize={10} sparkRadius={18} sparkCount={8} duration={400}>
+              <Navbar />
+              <LocaleTransition>
+                {children}
+              </LocaleTransition>
+            </ClickSpark>
           </ErrorBoundary>
         </LocaleProvider>
       </body>

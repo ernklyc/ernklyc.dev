@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/'],
     },
-    sitemap: 'https://ernklyc.vercel.app/sitemap.xml',
+    sitemap: 'https://ernklyc.dev/sitemap.xml',
   };
 }
 
