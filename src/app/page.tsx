@@ -6,6 +6,7 @@ import Repositories from "@/components/Repositories";
 import PlayStoreApps from "@/components/PlayStoreApps";
 import BlurHashLoading from "@/components/BlurHashLoading";
 import HashScrollHandler from "@/components/HashScrollHandler";
+import BlogPreview from "@/components/BlogPreview";
 
 // Lazy loading ile performans optimizasyonu
 const About = dynamic(() => import("@/components/About"), { 
@@ -49,6 +50,7 @@ export default async function Home() {
         <PlayStoreApps apps={playStoreApps} />
         <Repositories repos={repos} />
       </section>
+      <BlogPreview />
       <section>
         <Contact />
       </section>

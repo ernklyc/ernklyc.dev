@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useImperativeHandle, useEffect, useRef, useMemo, FC, ReactNode } from 'react';
+import { forwardRef, useImperativeHandle, useEffect, useRef, useMemo, useState, FC, ReactNode } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
@@ -67,11 +67,33 @@ function extendMaterial<T extends THREE.Material = THREE.Material>(
   return mat;
 }
 
-const CanvasWrapper: FC<{ children: ReactNode }> = ({ children }) => (
-  <Canvas dpr={[1, 2]} frameloop="always" className="w-full h-full relative">
-    {children}
-  </Canvas>
-);
+// dpr üst sınırı 2 yerine 1.5 — retina ekranlarda tüm ekranı kaplayan bu
+// shader'ı 4 kat piksel yerine ~2.25 kat piksel için hesaplıyor, gözle fark
+// edilmeyecek kalite kaybıyla belirgin bir performans kazancı sağlıyor.
+// `performance.min` düşük FPS'te otomatik olarak dpr'ı daha da kısar.
+const CanvasWrapper: FC<{ children: ReactNode }> = ({ children }) => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const handleVisibility = () => setIsVisible(document.visibilityState === "visible");
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
+  return (
+    <Canvas
+      dpr={[1, 1.5]}
+      // Sekme arka plandayken animasyon döngüsünü tamamen durdurur —
+      // pil/CPU tüketimini boşa yakmasın diye.
+      frameloop={isVisible ? "always" : "never"}
+      gl={{ antialias: false, powerPreference: "high-performance" }}
+      performance={{ min: 0.5 }}
+      className="w-full h-full relative"
+    >
+      {children}
+    </Canvas>
+  );
+};
 
 const hexToNormalizedRGB = (hex: string): [number, number, number] => {
   const clean = hex.replace('#', '');
@@ -304,8 +326,11 @@ const MergedPlanes = forwardRef<
 >(({ material, width, count, height }, ref) => {
   const mesh = useRef<THREE.Mesh<THREE.BufferGeometry, THREE.ShaderMaterial>>(null!);
   useImperativeHandle(ref, () => mesh.current);
+  // heightSegments 100 -> 40: gözle ayırt edilemeyecek kadar az bir pürüzsüzlük
+  // kaybıyla vertex/face sayısını (dolayısıyla her karede işlenen vertex
+  // shader maliyetini) 2.5 kat azaltıyor.
   const geometry = useMemo(
-    () => createStackedPlanesBufferGeometry(count, width, height, 0, 100),
+    () => createStackedPlanesBufferGeometry(count, width, height, 0, 40),
     [count, width, height]
   );
   useFrame((_, delta) => {

@@ -15,6 +15,8 @@ export interface BlogPost {
   content: string;
   tags: string[];
   coverImage?: string;
+  /** Ana sayfada gösterilmek üzere admin panelden sabitlenmiş mi. */
+  pinned: boolean;
   /** ISO tarih string'i (Firestore Timestamp'ten dönüştürülmüş, serileştirilebilir) */
   publishedAt: string;
 }
@@ -27,6 +29,7 @@ interface RawPostData {
   tags?: string[];
   coverImage?: string;
   status?: "published" | "draft";
+  pinned?: boolean;
   publishedAt?: Timestamp | string;
 }
 
@@ -44,6 +47,7 @@ function mapDoc(id: string, data: RawPostData): BlogPost {
     content: data.content || "",
     tags: data.tags || [],
     coverImage: data.coverImage,
+    pinned: data.pinned ?? false,
     publishedAt: toIsoDate(data.publishedAt),
   };
 }
@@ -74,6 +78,19 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 /** Ana sayfada önizleme için son N yazıyı getirir. */
 export async function getRecentPosts(count = 3): Promise<BlogPost[]> {
   const posts = await getAllPosts();
+  return posts.slice(0, count);
+}
+
+/**
+ * Ana sayfada gösterilecek yazıları getirir: admin panelden "sabitlenmiş"
+ * (pinned) yazılar öncelikli, hiç sabitlenmiş yazı yoksa en son yayınlanan
+ * N yazıya düşer. Böylece homepage'i güncel tutmak için her yazıyı elle
+ * sabitlemek zorunda kalmıyorsun.
+ */
+export async function getHomePosts(count = 8): Promise<BlogPost[]> {
+  const posts = await getAllPosts();
+  const pinned = posts.filter((p) => p.pinned);
+  if (pinned.length > 0) return pinned.slice(0, count);
   return posts.slice(0, count);
 }
 

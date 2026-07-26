@@ -21,6 +21,8 @@ export interface AdminPost {
   tags: string[];
   coverImage?: string;
   status: "published" | "draft";
+  /** Ana sayfada gösterilsin mi (admin panelden sabitleme). */
+  pinned: boolean;
   /** ISO tarih string'i (form içinde düzenlenebilir olsun diye Timestamp değil string tutuyoruz) */
   publishedAt: string;
 }
@@ -33,6 +35,7 @@ export interface PostFormValues {
   tags: string[];
   coverImage?: string;
   status: "published" | "draft";
+  pinned: boolean;
 }
 
 function toIsoDate(value: unknown): string {
@@ -56,6 +59,7 @@ export async function getAllPostsAdmin(): Promise<AdminPost[]> {
       tags: data.tags || [],
       coverImage: data.coverImage,
       status: (data.status as "published" | "draft") || "draft",
+      pinned: data.pinned ?? false,
       publishedAt: toIsoDate(data.publishedAt),
     } satisfies AdminPost;
   });
@@ -75,6 +79,7 @@ export async function getPostByIdAdmin(id: string): Promise<AdminPost | null> {
     tags: data.tags || [],
     coverImage: data.coverImage,
     status: (data.status as "published" | "draft") || "draft",
+    pinned: data.pinned ?? false,
     publishedAt: toIsoDate(data.publishedAt),
   };
 }

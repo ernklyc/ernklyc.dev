@@ -64,6 +64,11 @@ export default function AdminDashboardPage() {
                 >
                   {post.status === "published" ? "Yayında" : "Taslak"}
                 </span>
+                {post.pinned && (
+                  <span className={cn(darkChip, "rounded-full px-2 py-0.5 text-[11px] shrink-0")}>
+                    📌 Ana sayfada
+                  </span>
+                )}
               </div>
               <p className="text-xs text-gray-500 truncate">/blog/{post.slug}</p>
             </div>

@@ -47,6 +47,10 @@ export const translations = {
       playStoreVisit: "ziyaret edebilirsin.",
       playStoreCta: "Google Play'de gör →",
     },
+    blog: {
+      title: "BLOG",
+      viewAll: "Tüm yazılar →",
+    },
     contact: {
       title: "İLETİŞİME GEÇ",
       subtitle: "Proje teklifleri, iş birliği fırsatları veya herhangi bir sorunuz için benimle iletişime geçmekten çekinmeyin.",
@@ -126,6 +130,10 @@ export const translations = {
       playStorePage: "my Google Play page",
       playStoreVisit: ".",
       playStoreCta: "View on Google Play →",
+    },
+    blog: {
+      title: "BLOG",
+      viewAll: "All posts →",
     },
     contact: {
       title: "GET IN TOUCH",

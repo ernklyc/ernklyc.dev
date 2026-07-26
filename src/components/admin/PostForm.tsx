@@ -22,6 +22,7 @@ const emptyValues: PostFormValues = {
   tags: [],
   coverImage: "",
   status: "draft",
+  pinned: false,
 };
 
 function slugify(text: string): string {
@@ -325,6 +326,26 @@ export default function PostForm({ initialValues, onSubmit, submitLabel }: PostF
             </button>
           ))}
         </div>
+      </div>
+
+      <div>
+        <label className="block text-xs text-gray-400 mb-1.5">Ana Sayfa</label>
+        <button
+          type="button"
+          onClick={() => setValues((v) => ({ ...v, pinned: !v.pinned }))}
+          className={cn(
+            "rounded-xl px-4 py-2 text-sm border transition-all duration-300",
+            values.pinned
+              ? "bg-white/[0.1] border-white/20 text-white"
+              : "bg-white/[0.03] border-white/10 text-gray-400 hover:bg-white/[0.06]"
+          )}
+        >
+          {values.pinned ? "📌 Ana sayfada gösteriliyor" : "Ana sayfada göster"}
+        </button>
+        <p className="text-[11px] text-gray-500 mt-1.5">
+          Sabitlenen yazılar ana sayfadaki blog şeridinde görünür. Hiç yazı sabitlenmezse en son
+          yayınlanan yazılar otomatik gösterilir.
+        </p>
       </div>
 
       {error && <p className="text-sm text-red-400">{error}</p>}

@@ -83,19 +83,21 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     [easing]
   );
 
+  const animationIdRef = useRef<number | null>(null);
+
+  const drawRef = useRef<(timestamp: number) => void>(() => {});
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationId: number;
-
-    const draw = (timestamp: number) => {
+    drawRef.current = (timestamp: number) => {
       if (!startTimeRef.current) {
         startTimeRef.current = timestamp;
       }
-      ctx?.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       sparksRef.current = sparksRef.current.filter((spark: Spark) => {
         const elapsed = timestamp - spark.startTime;
@@ -124,15 +126,25 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
         return true;
       });
 
-      animationId = requestAnimationFrame(draw);
+      // Aktif spark kalmadıysa döngüyü durdur — sitenin her yerini saran bu
+      // canvas, önceden tıklama olsun olmasın sonsuza dek her karede
+      // clearRect çağırıyordu. Boşta CPU/GPU harcamamak için sadece
+      // görünecek bir şey varken çalışsın.
+      if (sparksRef.current.length > 0) {
+        animationIdRef.current = requestAnimationFrame((t) => drawRef.current(t));
+      } else {
+        animationIdRef.current = null;
+        startTimeRef.current = null;
+      }
     };
-
-    animationId = requestAnimationFrame(draw);
 
     return () => {
-      cancelAnimationFrame(animationId);
+      if (animationIdRef.current !== null) {
+        cancelAnimationFrame(animationIdRef.current);
+        animationIdRef.current = null;
+      }
     };
-  }, [sparkColor, sparkSize, sparkRadius, sparkCount, duration, easeFunc, extraScale]);
+  }, [sparkColor, sparkSize, sparkRadius, duration, easeFunc, extraScale]);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>): void => {
     const canvas = canvasRef.current;
@@ -150,6 +162,11 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     }));
 
     sparksRef.current.push(...newSparks);
+
+    // Döngü boştaysa (spark yoksa) durdurulmuştu — yeni tıklamayla yeniden başlat.
+    if (animationIdRef.current === null) {
+      animationIdRef.current = requestAnimationFrame((t) => drawRef.current(t));
+    }
   };
 
   return (

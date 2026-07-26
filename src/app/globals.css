@@ -150,6 +150,16 @@ html.preboot-lock body > :not(#boot-loader):not(script) {
   background: #7E8FA0;
 }
 
+/* Yatay kaydırılan kartlar (blog önizleme vb.) için gizli scrollbar */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 html.locale-transitioning {
   scrollbar-color: transparent transparent;
 }

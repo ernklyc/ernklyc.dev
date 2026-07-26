@@ -31,6 +31,7 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
             tags: post.tags,
             coverImage: post.coverImage ?? "",
             status: post.status,
+            pinned: post.pinned,
           }}
           onSubmit={handleSubmit}
           submitLabel="Değişiklikleri Kaydet"
