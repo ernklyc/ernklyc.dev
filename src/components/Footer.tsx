@@ -48,7 +48,7 @@ export default function Footer() {
     <footer className="text-white border-t border-white/10 relative overflow-hidden">
       <SectionBackground />
 
-      <div className="container mx-auto px-4 max-w-6xl py-10 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl py-10 relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"

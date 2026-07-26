@@ -20,7 +20,10 @@ export function useScrollNavbar(): ScrollNavbarState {
   const lastScrollY = useRef(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
       const currentScrollY = window.scrollY;
       setScrolled(currentScrollY > 50);
 
@@ -32,7 +35,13 @@ export function useScrollNavbar(): ScrollNavbarState {
       lastScrollY.current = currentScrollY;
     };
 
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

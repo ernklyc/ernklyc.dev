@@ -53,9 +53,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <main className="min-h-screen text-white pt-32 pb-20 px-4 relative overflow-hidden">
+    <main className="min-h-screen text-white pt-32 pb-20 relative overflow-hidden">
       <SectionBackground />
-      <article className="container mx-auto max-w-3xl relative z-10">
+      <article className="container mx-auto max-w-3xl px-4 md:px-6 lg:px-8 relative z-10">
         <GlassCard className="p-8 md:p-10">
           {post.coverImage && (
             <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-white/10 mb-8">

@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
 html {
-  scroll-behavior: smooth;
+  /* Scroll fizigi artik Lenis (SmoothScrollProvider) tarafindan yonetiliyor;
+     native scroll-behavior: smooth ile ayni anda calisirsa cift yumusatma
+     yuzunden takilma hissi yaratiyordu. */
   overflow-y: scroll;
   scrollbar-gutter: stable;
   scrollbar-width: thin;

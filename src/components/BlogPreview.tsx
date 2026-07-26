@@ -19,7 +19,7 @@ export default async function BlogPreview() {
   return (
     <section id="blog" className="relative py-14 scroll-mt-20">
       <SectionBackground />
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6 lg:px-8 relative z-10">
         <BlogPreviewClient posts={posts} />
       </div>
     </section>

@@ -17,9 +17,9 @@ export default async function BlogPage() {
   const posts = await getAllPosts();
 
   return (
-    <main className="min-h-screen text-white pt-32 pb-20 px-4 relative overflow-hidden">
+    <main className="min-h-screen text-white pt-32 pb-20 relative overflow-hidden">
       <SectionBackground />
-      <section className="container mx-auto max-w-5xl relative z-10">
+      <section className="container mx-auto max-w-6xl px-4 md:px-6 lg:px-8 relative z-10">
         <SectionHeading
           title="BLOG"
           subtitle="Devlog kayıtları, araştırdığım konular ve paylaşmak istediklerim."

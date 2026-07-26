@@ -33,7 +33,7 @@ export default function AdminDashboardPage() {
 
   return (
     <main className="container mx-auto px-4 py-10 max-w-4xl">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold text-white">Blog Yazıları</h1>
         <Link
           href="/admin/posts/new"
@@ -42,6 +42,14 @@ export default function AdminDashboardPage() {
           + Yeni Yazı
         </Link>
       </div>
+
+      <Link
+        href="/admin/content"
+        className="mb-8 flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-300"
+      >
+        <span>Site içeriğini düzenle (Hero, Hakkımda, Yeteneklerim, Deneyim)</span>
+        <span aria-hidden="true">→</span>
+      </Link>
 
       {posts === null && <p className="text-gray-400 text-sm">Yükleniyor...</p>}
 

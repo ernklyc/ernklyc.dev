@@ -8,6 +8,11 @@ import BlurHashLoading from "@/components/BlurHashLoading";
 import HashScrollHandler from "@/components/HashScrollHandler";
 import BlogPreview from "@/components/BlogPreview";
 
+// Hero/About/Skills/Experience içeriği artık admin panelden düzenlenebiliyor
+// (Firestore siteContent koleksiyonu) — sayfanın statik cache'e takılıp
+// güncellemeleri göstermemesi için periyodik yeniden üretim.
+export const revalidate = 60;
+
 // Lazy loading ile performans optimizasyonu
 const About = dynamic(() => import("@/components/About"), { 
   loading: () => <BlurHashLoading />

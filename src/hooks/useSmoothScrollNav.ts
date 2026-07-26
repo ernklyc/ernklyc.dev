@@ -60,7 +60,11 @@ export function useSmoothScrollNav(onNavigate?: () => void) {
         offsetPosition = targetElement.offsetTop - 80;
       }
 
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+      if (window.__lenis) {
+        window.__lenis.scrollTo(Math.max(0, offsetPosition));
+      } else {
+        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+      }
       onNavigate?.();
       return;
     }

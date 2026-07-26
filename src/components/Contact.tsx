@@ -29,7 +29,7 @@ export default function Contact() {
     <section id="contact" className="py-24 text-white scroll-mt-20 relative overflow-hidden">
       <SectionBackground />
 
-      <div className="container mx-auto px-4 max-w-4xl relative z-10">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-6xl relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

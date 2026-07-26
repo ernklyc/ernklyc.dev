@@ -34,9 +34,9 @@ export default function Repositories({ repos }: RepositoriesProps) {
   const isEmpty = !repos || repos.length === 0;
 
   return (
-    <section id="github-projects" className="relative overflow-hidden min-h-screen text-white px-6 py-24 md:px-16">
+    <section id="github-projects" className="relative overflow-hidden min-h-screen text-white py-24">
       <SectionBackground />
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
           <div>
             <SectionHeading title={t("projects.githubTitle")} align="left" className="mb-0" />

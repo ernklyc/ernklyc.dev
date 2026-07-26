@@ -10,6 +10,7 @@ import { LocaleProvider } from "@/contexts/LocaleContext";
 import LocaleTransition from "@/components/LocaleTransition";
 import ClickSpark from "@/components/ClickSpark";
 import GlobalCursor from "@/components/GlobalCursor";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -108,7 +109,7 @@ export default function RootLayout({
   const bodyClasses = `${geistSans.variable} ${geistMono.variable} antialiased bg-[#0F1923] text-white min-h-screen`;
   
   return (
-    <html lang="tr" className="scroll-smooth preboot-lock" suppressHydrationWarning>
+    <html lang="tr" className="preboot-lock" suppressHydrationWarning>
       <body className={bodyClasses} suppressHydrationWarning>
         <Script id="scroll-restoration-fix" strategy="beforeInteractive">
           {`
@@ -165,6 +166,7 @@ export default function RootLayout({
           `}
         </Script>
 
+        <SmoothScrollProvider />
         <SiteBackground />
 
         <div id="boot-loader" aria-hidden="true">

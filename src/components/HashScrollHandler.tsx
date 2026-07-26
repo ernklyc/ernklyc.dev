@@ -21,7 +21,12 @@ function scrollToSection(id: string) {
     offsetPosition = targetElement.offsetTop - 80;
   }
 
-  window.scrollTo({ top: Math.max(0, offsetPosition), behavior: "smooth" });
+  const target = Math.max(0, offsetPosition);
+  if (window.__lenis) {
+    window.__lenis.scrollTo(target);
+  } else {
+    window.scrollTo({ top: target, behavior: "smooth" });
+  }
   return true;
 }
 
