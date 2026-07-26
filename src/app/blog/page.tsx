@@ -7,7 +7,7 @@ import BlogListClient from "@/components/blog/BlogListClient";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Eren KALAYCI'nın blog yazıları: devlog kayıtları, araştırdığı konular ve paylaştığı içerikler.",
+    "Eren Kalaycı'nın blog yazıları: devlog kayıtları, araştırdığı konular ve paylaştığı içerikler.",
   alternates: { canonical: "/blog" },
 };
 

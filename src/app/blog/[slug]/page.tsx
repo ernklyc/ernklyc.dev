@@ -10,6 +10,8 @@ import MarkdownContent from "@/components/ui/MarkdownContent";
 
 export const revalidate = 60;
 
+const SITE_URL = "https://ernklyc.dev";
+
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -26,12 +28,20 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     title: post.title,
     description: post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
+    authors: [{ name: "Eren Kalaycı", url: SITE_URL }],
     openGraph: {
       title: post.title,
       description: post.excerpt,
       type: "article",
       publishedTime: post.publishedAt,
+      authors: ["Eren Kalaycı"],
       images: post.coverImage ? [{ url: post.coverImage }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: post.coverImage ? [post.coverImage] : undefined,
     },
   };
 }
@@ -52,8 +62,30 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
+  // BlogPosting yapılandırılmış verisi — yazıyı "Eren KALAYCI" kişi
+  // şemasına (StructuredData.tsx'teki Person, aynı @id) bağlar, arama
+  // motorlarına yazarlık ve içerik ilişkisini netleştirir.
+  const blogPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    image: post.coverImage ? [post.coverImage] : undefined,
+    datePublished: post.publishedAt,
+    dateModified: post.publishedAt,
+    keywords: post.tags.join(", "),
+    author: { "@id": `${SITE_URL}#person` },
+    publisher: { "@id": `${SITE_URL}#person` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${post.slug}` },
+    url: `${SITE_URL}/blog/${post.slug}`,
+  };
+
   return (
     <main className="min-h-screen text-white pt-32 pb-20 relative overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }}
+      />
       <SectionBackground />
       <article className="container mx-auto max-w-3xl px-4 md:px-6 lg:px-8 relative z-10">
         <GlassCard className="p-8 md:p-10">
