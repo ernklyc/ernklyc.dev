@@ -1,6 +1,7 @@
 "use client";
 import { FiMenu, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useLocale } from "@/contexts/LocaleContext";
 import { useScrollNavbar } from "@/hooks/useScrollNavbar";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
@@ -9,13 +10,20 @@ import LocaleSwitch from "@/components/ui/LocaleSwitch";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const { t, isTransitioning, isNavigating } = useLocale();
   const navActive = isTransitioning || isNavigating;
+
+  // Admin paneli kendi üst çubuğunu (email + çıkış yap) kullanıyor —
+  // portfolyo navbar'ıyla üst üste binmesin diye burada hiç render etmiyoruz.
+  const isAdminRoute = pathname?.startsWith("/admin") ?? false;
 
   const { scrolled, showNavbar } = useScrollNavbar();
   const { isOpen: isMenuOpen, toggle: toggleMenu, close: closeMenu, menuButtonRef, firstLinkRef } =
     useMobileMenu();
   const { menuItems, handleNavClick } = useSmoothScrollNav(closeMenu);
+
+  if (isAdminRoute) return null;
 
   return (
     <motion.nav

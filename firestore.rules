@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Herkes yayınlanmış (status == "published") yazıları okuyabilir.
+    // Sahibi (Firebase Auth UID'i eşleşen kullanıcı) taslaklar dahil hepsini
+    // okuyabilir ve yazabilir — bu admin paneli için gerekli.
+    //
+    // ÖNEMLİ: Aşağıdaki OWNER_UID yerine kendi Firebase Auth kullanıcı UID'ini
+    // yaz (Firebase Console -> Authentication -> Users -> ernklyc@gmail.com
+    // satırındaki "User UID" değeri). Değiştirmeden deploy edersen hiç kimse
+    // (sen dahil) yazamaz — güvenli varsayılan budur.
+    match /posts/{postId} {
+      allow read: if resource.data.status == "published"
+        || (request.auth != null && request.auth.uid == "zYIbbfB5YpfCG6KHLJMpVlhT3B62");
+      allow write: if request.auth != null && request.auth.uid == "zYIbbfB5YpfCG6KHLJMpVlhT3B62";
+    }
+  }
+}

@@ -6,6 +6,8 @@ export interface NavMenuItem {
   labelKey: string;
   href: string;
   isDownload?: true;
+  /** "#..." anchor'lar gibi sayfa içi kaydırma değil, tam sayfa yönlendirmesi (örn. /blog) */
+  isRoute?: true;
 }
 
 export const navMenuItems: NavMenuItem[] = [
@@ -14,6 +16,7 @@ export const navMenuItems: NavMenuItem[] = [
   { labelKey: "nav.skills", href: "#skills" },
   { labelKey: "nav.experience", href: "#experience" },
   { labelKey: "nav.projects", href: "#projects" },
+  { labelKey: "nav.blog", href: "/blog", isRoute: true },
   { labelKey: "nav.contact", href: "#contact" },
 ];
 
@@ -27,6 +30,13 @@ export function useSmoothScrollNav(onNavigate?: () => void) {
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
+
+    if (!href.startsWith("#")) {
+      onNavigate?.();
+      router.push(href);
+      return;
+    }
+
     const targetId = href.substring(1);
 
     if (pathname !== "/") {
