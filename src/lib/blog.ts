@@ -75,6 +75,25 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   }
 }
 
+/**
+ * Yayınlanmış en az bir yazı var mı — navbar'daki "Blog" linkini göstermeye
+ * değip değmediğine karar vermek için kullanılır (tüm yazıları çekmek yerine
+ * tek bir doküman okuyarak ucuz bir kontrol). Hata durumunda linki gizlemek
+ * yerine göstermeyi tercih ediyoruz (fail-open) — geçici bir ağ hatası
+ * yüzünden var olan blogun navbardan kaybolması istenmez.
+ */
+export async function hasPublishedPosts(): Promise<boolean> {
+  try {
+    const postsRef = collection(db, "posts");
+    const q = query(postsRef, where("status", "==", "published"), fbLimit(1));
+    const snapshot = await getDocs(q);
+    return !snapshot.empty;
+  } catch (error) {
+    console.error("Blog varlığı kontrol edilemedi:", error);
+    return true;
+  }
+}
+
 /** Ana sayfada önizleme için son N yazıyı getirir. */
 export async function getRecentPosts(count = 3): Promise<BlogPost[]> {
   const posts = await getAllPosts();

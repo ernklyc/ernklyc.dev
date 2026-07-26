@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { hasPublishedPosts } from "@/lib/blog";
 
 export interface NavMenuItem {
   labelKey: string;
@@ -27,6 +29,22 @@ export const navMenuItems: NavMenuItem[] = [
 export function useSmoothScrollNav(onNavigate?: () => void) {
   const pathname = usePathname();
   const router = useRouter();
+  // Hiç yayınlanmış yazı yoksa "Blog" linkini navbardan gizle. Kontrol
+  // sonuçlanana kadar varsayılan olarak gösteriyoruz (fail-open, ani
+  // kaybolma yerine ani belirme daha az göze batıyor).
+  const [hasBlog, setHasBlog] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    hasPublishedPosts().then((result) => {
+      if (!cancelled) setHasBlog(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const menuItems = hasBlog ? navMenuItems : navMenuItems.filter((item) => item.href !== "#blog");
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -73,5 +91,5 @@ export function useSmoothScrollNav(onNavigate?: () => void) {
     onNavigate?.();
   };
 
-  return { menuItems: navMenuItems, handleNavClick };
+  return { menuItems, handleNavClick };
 }
