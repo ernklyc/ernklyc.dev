@@ -18,7 +18,6 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
 
   return (
     <main className="container mx-auto px-4 py-10 max-w-2xl">
-      <h1 className="text-2xl font-semibold text-white mb-8">Yazıyı Düzenle</h1>
       {post === undefined && <p className="text-gray-400 text-sm">Yükleniyor...</p>}
       {post === null && <p className="text-gray-400 text-sm">Yazı bulunamadı.</p>}
       {post && (

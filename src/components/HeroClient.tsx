@@ -1,12 +1,11 @@
 "use client";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { FiMail, FiGithub, FiLinkedin } from "react-icons/fi";
 import { useLocale } from "@/contexts/LocaleContext";
 import type { HeroContent } from "@/lib/siteContent";
 import SplitText from "./SplitText";
 import SectionBackground from "@/components/ui/SectionBackground";
-import IconButton from "@/components/ui/IconButton";
+import SocialLinks from "@/components/ui/SocialLinks";
 
 const StickerPeel = dynamic(() => import("./StickerPeel"), {
   ssr: false,
@@ -112,39 +111,11 @@ export default function HeroClient({ content }: HeroClientProps) {
             variants={itemVariants}
             className="flex flex-wrap justify-center gap-4 md:gap-6 mb-8 px-4 md:px-0"
           >
-            <IconButton href={content.links.github} whileHover={{ scale: 1.05, y: -2 }} aria-label="GitHub">
-              <FiGithub className="w-6 h-6 text-gray-300 group-hover:text-[#A9B7C4] transition-colors duration-300" />
-            </IconButton>
-
-            <IconButton href={content.links.linkedin} whileHover={{ scale: 1.05, y: -2 }} aria-label="LinkedIn">
-              <FiLinkedin className="w-6 h-6 text-gray-300 group-hover:text-[#A9B7C4] transition-colors duration-300" />
-            </IconButton>
-
-            <IconButton
-              href={`mailto:${content.links.email}`}
-              external={false}
+            <SocialLinks
+              links={content.links}
               whileHover={{ scale: 1.05, y: -2 }}
-              aria-label="Email"
-            >
-              <FiMail className="w-6 h-6 text-gray-300 group-hover:text-[#A9B7C4] transition-colors duration-300" />
-            </IconButton>
-
-            <IconButton
-              href={content.links.playStore}
-              whileHover={{ scale: 1.05, y: -2 }}
-              aria-label="Google Play Store"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 512 512"
-                className="text-gray-300 group-hover:text-[#A9B7C4] transition-colors duration-300"
-                fill="currentColor"
-              >
-                <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.6 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z" />
-              </svg>
-            </IconButton>
+              iconClassName="w-6 h-6 text-gray-300 group-hover:text-[#A9B7C4] transition-colors duration-300"
+            />
           </motion.div>
         </motion.div>
       </div>

@@ -46,8 +46,6 @@ export default function HeroContentPage() {
 
   return (
     <main className="container mx-auto px-4 py-10 max-w-2xl">
-      <h1 className="text-2xl font-semibold text-white mb-8">Ana Ekran (Hero)</h1>
-
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label className="block text-xs text-gray-400 mb-1.5">İsim / Başlık</label>
@@ -128,6 +126,43 @@ export default function HeroContentPage() {
                 className={cn(inputBase, inputBorder.default, "text-sm")}
               />
             </div>
+            <div>
+              <label className="block text-[11px] text-gray-500 mb-1">App Store (opsiyonel)</label>
+              <input
+                value={values.links.appStore ?? ""}
+                onChange={(e) =>
+                  setValues((v) => v && { ...v, links: { ...v.links, appStore: e.target.value } })
+                }
+                className={cn(inputBase, inputBorder.default, "text-sm")}
+                placeholder="https://apps.apple.com/..."
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] text-gray-500 mb-1">YouTube (opsiyonel)</label>
+              <input
+                value={values.links.youtube ?? ""}
+                onChange={(e) =>
+                  setValues((v) => v && { ...v, links: { ...v.links, youtube: e.target.value } })
+                }
+                className={cn(inputBase, inputBorder.default, "text-sm")}
+                placeholder="https://youtube.com/@..."
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] text-gray-500 mb-1">TikTok (opsiyonel)</label>
+              <input
+                value={values.links.tiktok ?? ""}
+                onChange={(e) =>
+                  setValues((v) => v && { ...v, links: { ...v.links, tiktok: e.target.value } })
+                }
+                className={cn(inputBase, inputBorder.default, "text-sm")}
+                placeholder="https://tiktok.com/@..."
+              />
+            </div>
+            <p className="text-[11px] text-gray-500">
+              App Store, YouTube ve TikTok boş bırakılırsa ilgili ikon Hero ve Footer&apos;da hiç
+              gösterilmez.
+            </p>
           </div>
         </div>
 
@@ -141,13 +176,6 @@ export default function HeroContentPage() {
             className="rounded-xl bg-white/[0.08] hover:bg-white/[0.12] border border-white/10 hover:border-white/20 text-white px-5 py-2.5 text-sm font-medium transition-all duration-300 disabled:opacity-50"
           >
             {saving ? "Kaydediliyor..." : "Kaydet"}
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/admin/content")}
-            className="text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            Geri
           </button>
         </div>
       </form>

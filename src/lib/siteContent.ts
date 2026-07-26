@@ -22,6 +22,10 @@ export interface HeroContent {
     linkedin: string;
     email: string;
     playStore: string;
+    /** Opsiyonel — boşsa Hero ve Footer'daki ilgili ikon hiç gösterilmez. */
+    youtube?: string;
+    appStore?: string;
+    tiktok?: string;
   };
 }
 
@@ -65,6 +69,9 @@ const defaultHero: HeroContent = {
     linkedin: profile.links.linkedin,
     email: profile.email,
     playStore: profile.links.playStore,
+    youtube: profile.links.youtube ?? "",
+    appStore: "",
+    tiktok: "",
   },
 };
 
@@ -102,15 +109,21 @@ async function readDoc(sectionId: string): Promise<Record<string, unknown> | nul
 export async function getHeroContent(): Promise<HeroContent> {
   const data = await readDoc("hero");
   if (!data) return defaultHero;
+  const links = data.links as HeroContent["links"] | undefined;
   return {
     title: (data.title as string) || defaultHero.title,
     subtitle: (data.subtitle as string) || defaultHero.subtitle,
     description: (data.description as string) || defaultHero.description,
     links: {
-      github: (data.links as HeroContent["links"] | undefined)?.github || defaultHero.links.github,
-      linkedin: (data.links as HeroContent["links"] | undefined)?.linkedin || defaultHero.links.linkedin,
-      email: (data.links as HeroContent["links"] | undefined)?.email || defaultHero.links.email,
-      playStore: (data.links as HeroContent["links"] | undefined)?.playStore || defaultHero.links.playStore,
+      github: links?.github || defaultHero.links.github,
+      linkedin: links?.linkedin || defaultHero.links.linkedin,
+      email: links?.email || defaultHero.links.email,
+      playStore: links?.playStore || defaultHero.links.playStore,
+      // Opsiyonel linkler — admin boş bırakırsa (veya hiç doldurmadıysa) boş
+      // string kalır, ilgili ikon Hero/Footer'da hiç render edilmez.
+      youtube: links?.youtube ?? defaultHero.links.youtube,
+      appStore: links?.appStore ?? defaultHero.links.appStore,
+      tiktok: links?.tiktok ?? defaultHero.links.tiktok,
     },
   };
 }
@@ -123,18 +136,19 @@ export async function getAboutContent(): Promise<AboutContent> {
     role: (data.role as string) || defaultAbout.role,
     location: (data.location as string) || defaultAbout.location,
     avatarUrl: (data.avatarUrl as string) || defaultAbout.avatarUrl,
-    paragraphs:
-      Array.isArray(data.paragraphs) && data.paragraphs.length > 0
-        ? (data.paragraphs as string[])
-        : defaultAbout.paragraphs,
+    paragraphs: Array.isArray(data.paragraphs) ? (data.paragraphs as string[]) : defaultAbout.paragraphs,
   };
 }
 
+/**
+ * Not: Doküman Firestore'da hiç yoksa (admin panelden hiç kaydedilmemişse)
+ * statik varsayılanlara düşülür. Ama doküman VARSA ve admin bilerek tüm
+ * maddeleri silmişse (dizi boş), bu artık gerçek bir tercih — eski statik
+ * veriye geri dönmeyip ilgili bölüm boş/gizli gösterilir.
+ */
 export async function getSkillsContent(): Promise<SkillsContent> {
   const data = await readDoc("skills");
-  if (!data || !Array.isArray(data.categories) || data.categories.length === 0) {
-    return defaultSkills;
-  }
+  if (!data || !Array.isArray(data.categories)) return defaultSkills;
   return { categories: data.categories as SkillCategory[] };
 }
 
@@ -142,13 +156,7 @@ export async function getExperienceContent(): Promise<ExperienceContent> {
   const data = await readDoc("experience");
   if (!data) return defaultExperience;
   return {
-    education:
-      Array.isArray(data.education) && data.education.length > 0
-        ? (data.education as EducationEntry[])
-        : defaultExperience.education,
-    work:
-      Array.isArray(data.work) && data.work.length > 0
-        ? (data.work as ExperienceEntry[])
-        : defaultExperience.work,
+    education: Array.isArray(data.education) ? (data.education as EducationEntry[]) : defaultExperience.education,
+    work: Array.isArray(data.work) ? (data.work as ExperienceEntry[]) : defaultExperience.work,
   };
 }

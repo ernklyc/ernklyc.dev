@@ -43,7 +43,8 @@ interface SkillsClientProps {
 export default function SkillsClient({ content }: SkillsClientProps) {
   const { t } = useLocale();
   const skills = content.categories;
-  const [activeTab, setActiveTab] = useState<string>(skills[0]?.category ?? "");
+  const firstCategory = skills[0]?.category ?? "";
+  const [activeTab, setActiveTab] = useState<string>(firstCategory);
   const activeSkills = skills.find((skill) => skill.category === activeTab) ?? skills[0];
 
   return (
@@ -55,7 +56,7 @@ export default function SkillsClient({ content }: SkillsClientProps) {
         <GlassCard className="overflow-hidden">
           <div className="flex flex-wrap justify-center gap-2 p-4 sm:p-5 border-b border-white/10 bg-white/[0.03]">
             {skills.map((skill, index) => {
-              const isActive = (activeTab || skills[0]?.category) === skill.category;
+              const isActive = activeTab === skill.category;
               return (
                 <motion.button
                   key={skill.category}

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import GlassCard from "@/components/ui/GlassCard";
-import { FiArrowLeft } from "react-icons/fi";
 
 const sections = [
   {
@@ -28,16 +27,6 @@ const sections = [
 export default function ContentHubPage() {
   return (
     <main className="container mx-auto px-4 py-10 max-w-4xl">
-      <div className="flex items-center gap-3 mb-6">
-        <Link
-          href="/admin"
-          className="p-1 rounded-lg text-gray-400 hover:text-white hover:bg-white/[0.08] transition-colors"
-          title="Panele dön"
-        >
-          <FiArrowLeft className="w-5 h-5" />
-        </Link>
-        <h1 className="text-2xl font-semibold text-white">Site İçeriği</h1>
-      </div>
       <p className="text-sm text-gray-400 mb-8">
         Ana sayfadaki bu bölümleri buradan düzenleyebilirsin — değişiklikler koda dokunmadan
         (en fazla 60 saniye içinde) canlı sitede görünür.
