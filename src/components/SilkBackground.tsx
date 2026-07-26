@@ -18,6 +18,6 @@ export default function SilkBackground() {
   if (reducedMotion) return null;
 
   return (
-    <Silk speed={3} scale={1} color="#FF4655" noiseIntensity={0.9} rotation={0} />
+    <Silk speed={3} scale={1} color="#A9B7C4" noiseIntensity={0.9} rotation={0} />
   );
 }

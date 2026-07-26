@@ -17,7 +17,7 @@ export default function Loading({ size = "md", text }: LoadingProps) {
     <div className="flex flex-col items-center justify-center gap-4 py-8">
       <div className="relative">
         <motion.div
-          className={`${sizeClasses[size]} border-4 border-[#FF4655]/20 border-t-[#FF4655] rounded-full`}
+          className={`${sizeClasses[size]} border-4 border-[#A9B7C4]/20 border-t-[#A9B7C4] rounded-full`}
           animate={{ rotate: 360 }}
           transition={{
             duration: 1,

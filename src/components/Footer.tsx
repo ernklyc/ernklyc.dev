@@ -5,48 +5,48 @@ import { profile } from "@/data/profile";
 import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript, SiFramer } from "react-icons/si";
 import { useLocale } from "@/contexts/LocaleContext";
 import TransitionLink from "@/components/TransitionLink";
-import SplitText from "@/components/SplitText";
+import SectionHeading from "@/components/ui/SectionHeading";
+import SectionBackground from "@/components/ui/SectionBackground";
+import IconButton from "@/components/ui/IconButton";
+import Chip from "@/components/ui/Chip";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
+
+const TECHNOLOGIES = [
+  { icon: SiNextdotjs, name: "Next.js", color: "text-white" },
+  { icon: SiReact, name: "React", color: "text-gray-300" },
+  { icon: SiTailwindcss, name: "Tailwind", color: "text-gray-300" },
+  { icon: SiTypescript, name: "TypeScript", color: "text-gray-300" },
+  { icon: SiFramer, name: "Framer", color: "text-gray-300" },
+];
+
+const LEGAL_LINKS = [
+  { href: "/privacy-policy", label: "HP Character Wiki Privacy" },
+  { href: "/movie-face-ai-privacy", label: "Movie Face AI Privacy" },
+  { href: "/link-manager-privacy", label: "Link Manager Privacy" },
+  { href: "/link-manager-terms", label: "Link Manager Terms" },
+  { href: "/artifusion-privacy", label: "Artifusion Privacy" },
+  { href: "/artifusion-terms", label: "Artifusion Terms" },
+  { href: "/artifusion-support", label: "Artifusion Support" },
+];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.6, staggerChildren: 0.1 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
 
 export default function Footer() {
   const { t } = useLocale();
   const year = new Date().getFullYear();
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5
-      }
-    }
-  };
+  const scrollToTop = useScrollToTop();
 
   return (
     <footer className="text-white border-t border-white/10 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF4655]/10 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full blur-3xl opacity-50"></div>
-      </div>
+      <SectionBackground />
 
       <div className="container mx-auto px-4 max-w-6xl py-10 relative z-10">
         <motion.div
@@ -56,152 +56,96 @@ export default function Footer() {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center"
         >
-          {/* Header */}
           <motion.div variants={itemVariants} className="mb-6">
-            <SplitText
-              text={t("footer.title")}
-              tag="h2"
-              className="text-2xl md:text-4xl font-bold mb-3 text-white"
-              splitType="words"
-              delay={30}
-              duration={0.8}
-              ease="power3.out"
-              from={{ opacity: 0, y: 30 }}
-              to={{ opacity: 1, y: 0 }}
-              threshold={0.2}
-              rootMargin="-80px"
-            />
+            <SectionHeading title={t("footer.title")} className="mb-3" />
             <p className="text-gray-300 max-w-md text-center text-sm leading-relaxed">
               {t("footer.subtitle")}
             </p>
           </motion.div>
-          
+
           {/* Social Links */}
           <motion.div variants={itemVariants} className="flex space-x-4 mb-8">
-            <motion.a
-              href={profile.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.1, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/10 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-[#FF4655]/40 backdrop-blur-sm"
-              aria-label="GitHub"
-            >
-              <FiGithub className="w-5 h-5 text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" />
-            </motion.a>
-            <motion.a
-              href={profile.links.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.1, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/10 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-[#FF4655]/40 backdrop-blur-sm"
-              aria-label="LinkedIn"
-            >
-              <FiLinkedin className="w-5 h-5 text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" />
-            </motion.a>
-            <motion.a
-              href={`mailto:${profile.email}`}
-              whileHover={{ scale: 1.1, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/10 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-[#FF4655]/40 backdrop-blur-sm"
-              aria-label="Email"
-            >
-              <FiMail className="w-5 h-5 text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" />
-            </motion.a>
-            <motion.a
+            <IconButton href={profile.links.github} aria-label="GitHub">
+              <FiGithub className="w-5 h-5 text-gray-300 group-hover:text-[#A9B7C4] transition-colors duration-300" />
+            </IconButton>
+            <IconButton href={profile.links.linkedin} aria-label="LinkedIn">
+              <FiLinkedin className="w-5 h-5 text-gray-300 group-hover:text-[#A9B7C4] transition-colors duration-300" />
+            </IconButton>
+            <IconButton href={`mailto:${profile.email}`} external={false} aria-label="Email">
+              <FiMail className="w-5 h-5 text-gray-300 group-hover:text-[#A9B7C4] transition-colors duration-300" />
+            </IconButton>
+            <IconButton
               href="https://play.google.com/store/apps/dev?id=6576291249346115918"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.1, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="group bg-[#1F2731]/60 hover:bg-[#FF4655]/10 p-3 rounded-xl transition-all duration-300 border border-white/10 hover:border-[#FF4655]/40 backdrop-blur-sm"
               aria-label="Google Play Store"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512" className="text-gray-300 group-hover:text-[#FF4655] transition-colors duration-300" fill="currentColor">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 512 512"
+                className="text-gray-300 group-hover:text-[#A9B7C4] transition-colors duration-300"
+                fill="currentColor"
+              >
                 <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.6 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z" />
               </svg>
-            </motion.a>
+            </IconButton>
           </motion.div>
-          
+
           {/* Technologies - Compact */}
           <motion.div variants={itemVariants} className="mb-6">
             <h3 className="text-gray-400 mb-3 text-xs font-medium uppercase tracking-wide">Site Teknolojileri</h3>
             <div className="flex flex-wrap justify-center gap-2">
-              {[
-                { icon: SiNextdotjs, name: "Next.js", color: "text-white" },
-                { icon: SiReact, name: "React", color: "text-gray-300" },
-                { icon: SiTailwindcss, name: "Tailwind", color: "text-gray-300" },
-                { icon: SiTypescript, name: "TypeScript", color: "text-gray-300" },
-                { icon: SiFramer, name: "Framer", color: "text-gray-300" }
-              ].map((tech, index) => (
-                <motion.div
+              {TECHNOLOGIES.map((tech, index) => (
+                <Chip
                   key={tech.name}
+                  interactive
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ scale: 1.05, y: -1 }}
-                  className="flex items-center gap-1.5 bg-[#1F2731]/40 hover:bg-[#FF4655]/10 py-1.5 px-2.5 rounded-full transition-all duration-300 border border-white/10 hover:border-white/20"
+                  className="py-1.5 px-2.5"
                 >
                   <tech.icon className={`${tech.color} w-3.5 h-3.5`} />
                   <span className="text-gray-300 text-xs font-medium">{tech.name}</span>
-                </motion.div>
+                </Chip>
               ))}
             </div>
           </motion.div>
-          
+
           {/* Scroll to Top */}
           <motion.button
             variants={itemVariants}
             onClick={scrollToTop}
             whileHover={{ scale: 1.1, y: -3 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] hover:from-[#FF4655]/90 hover:to-[#FF6B7A]/90 text-white p-3 rounded-xl transition-all duration-300 mb-6"
+            className="bg-[#12161B] hover:bg-[#1A1F26] border border-white/10 hover:border-white/20 text-white p-3 rounded-xl transition-all duration-300 mb-6"
             aria-label={t("footer.backToTop")}
           >
             <FiArrowUp className="w-5 h-5" />
           </motion.button>
         </motion.div>
-        
+
         {/* Footer Bottom */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="pt-8 border-t border-white/10"
+          className="pt-8"
         >
-          {/* Copyright + Legal Links - tek blok, tutarlı tip */}
           <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-4 text-sm text-gray-400">
-            <p className="text-center sm:text-left">&copy; {year} Eren Kalaycı. {t("footer.rights")}</p>
+            <p className="text-center sm:text-left">&copy; {year} Eren KALAYCI. {t("footer.rights")}</p>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-              <TransitionLink href="/privacy-policy" className="hover:text-white transition-colors">
-                HP Character Wiki Privacy
-              </TransitionLink>
-              <span className="text-white/20" aria-hidden="true">|</span>
-              <TransitionLink href="/movie-face-ai-privacy" className="hover:text-white transition-colors">
-                Movie Face AI Privacy
-              </TransitionLink>
-              <span className="text-white/20" aria-hidden="true">|</span>
-              <TransitionLink href="/link-manager-privacy" className="hover:text-white transition-colors">
-                Link Manager Privacy
-              </TransitionLink>
-              <span className="text-white/20" aria-hidden="true">|</span>
-              <TransitionLink href="/link-manager-terms" className="hover:text-white transition-colors">
-                Link Manager Terms
-              </TransitionLink>
-              <span className="text-white/20" aria-hidden="true">|</span>
-              <TransitionLink href="/artifusion-privacy" className="hover:text-white transition-colors">
-                Artifusion Privacy
-              </TransitionLink>
-              <span className="text-white/20" aria-hidden="true">|</span>
-              <TransitionLink href="/artifusion-terms" className="hover:text-white transition-colors">
-                Artifusion Terms
-              </TransitionLink>
-              <span className="text-white/20" aria-hidden="true">|</span>
-              <TransitionLink href="/artifusion-support" className="hover:text-white transition-colors">
-                Artifusion Support
-              </TransitionLink>
+              {LEGAL_LINKS.map((link, index) => (
+                <span key={link.href} className="flex items-center gap-x-3">
+                  <TransitionLink href={link.href} className="hover:text-white transition-colors">
+                    {link.label}
+                  </TransitionLink>
+                  {index !== LEGAL_LINKS.length - 1 && (
+                    <span className="text-white/20" aria-hidden="true">|</span>
+                  )}
+                </span>
+              ))}
             </div>
           </div>
         </motion.div>

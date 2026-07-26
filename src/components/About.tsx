@@ -3,173 +3,111 @@ import { motion } from "framer-motion";
 import { FiGlobe } from "react-icons/fi";
 import Image from "next/image";
 import { useLocale } from "@/contexts/LocaleContext";
-import SplitText from "./SplitText";
+import { profile } from "@/data/profile";
+import SectionBackground from "@/components/ui/SectionBackground";
+import SectionHeading from "@/components/ui/SectionHeading";
+import GlassCard from "@/components/ui/GlassCard";
+import Chip from "@/components/ui/Chip";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.6, staggerChildren: 0.2 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, ease: "easeOut" as const },
+  },
+};
+
+const aboutParagraphs = [
+  "Bilgisayar Mühendisliği mezunu, Flutter/Dart odaklı bir mobil uygulama geliştiricisiyim. Glass Padel'de 15.000'den fazla kayıtlı ve 800'den fazla günlük aktif kullanıcısı olan canlı bir platformun geliştirilmesinde aktif rol alıyorum; rezervasyon, turnuva, açık maç ve uygulama içi pazaryeri akışlarına katkı sağlıyor, RevenueCat ile abonelik/IAP entegrasyonlarında görev alıyorum.",
+  "Firebase, REST API ve temiz mimari (MVVM, Riverpod/Bloc, Clean Architecture) ile gerçek ürün geliştirme deneyimine sahibim. Flutter'ın yanında Unity & C# ile oyunlar geliştiriyor, Laravel & PHP ile yönetim panelleri de yazıyorum. Bu sitenin kendisi de dahil olmak üzere Next.js, React ve modern web teknolojileriyle çeşitli projeler üretiyorum.",
+  "Teknolojik gelişmeleri yakından takip ederek kendimi sürekli geliştirir, yeni yazılım ve framework'lere hızla adapte olurum. Analitik düşünme ve problem çözme becerilerimle teknik yetkinliklerimi birleştirerek, yazılım geliştirme süreçlerine etkin katkı sağlarım. Öğrenmeyi seven, yenilikleri takip eden ve gelişimi önemseyen bir profesyonel anlayışla hareket ederim.",
+];
 
 export default function About() {
   const { t } = useLocale();
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.2
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: "easeOut"
-      }
-    }
-  };
-
-
 
   return (
-    <section id="about" className="py-20 text-white relative overflow-hidden scroll-mt-20">
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#FF4655]/10 rounded-full blur-3xl opacity-60"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full blur-3xl opacity-50"></div>
-      </div>
+    <section id="about" className="py-24 text-white relative overflow-hidden scroll-mt-20">
+      <SectionBackground />
       <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="mb-12 text-center"
         >
-          <motion.div variants={itemVariants} className="inline-block relative">
-            <SplitText
-              text={t("about.title")}
-              tag="h2"
-              className="text-2xl md:text-4xl font-bold mb-4 text-white"
-              splitType="words"
-              delay={30}
-              duration={0.8}
-              ease="power3.out"
-              from={{ opacity: 0, y: 30 }}
-              to={{ opacity: 1, y: 0 }}
-              threshold={0.2}
-              rootMargin="-80px"
-            />
-            <motion.div
-              initial={{ width: 0 }}
-              whileInView={{ width: "100%" }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-              className="h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto"
-            />
+          <motion.div variants={itemVariants}>
+            <SectionHeading title={t("about.title")} />
           </motion.div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 items-stretch mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-7 items-stretch mb-8">
           {/* Sol Taraf - Penguen Karakteri ve Bilgiler */}
-          <motion.div
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <div className="bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/75 to-[#0F1923]/90 backdrop-blur-xl rounded-2xl p-5 border border-white/10 border-t-white/20 shadow-xl shadow-black/40 hover:border-white/20 hover:shadow-2xl hover:shadow-black/50 transition-all duration-500 relative overflow-hidden group h-full">
+          <motion.div variants={itemVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <GlassCard className="p-6 group h-full">
               <div className="relative z-10 flex flex-col items-center justify-center text-center space-y-3 md:space-y-4 h-full">
-                {/* Penguen GIF - Daha küçük boyut */}
-                <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  className="relative"
-                >
+                <motion.div whileHover={{ scale: 1.05 }} className="relative">
                   <div className="w-48 h-48 md:w-64 md:h-64 mx-auto rounded-2xl overflow-hidden border border-white/10">
-                    <Image 
-                      src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2xteHR5bGdleXIwejF5YzRlcXRvenc5dml6bXZnNHJ0ZnE3YXp1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1vlBgKjXEz1jTtsuiH/giphy.gif" 
-                      alt="Eren Kalaycı - Bilgisayar Mühendisi ve Mobil Uygulama Geliştiricisi Penguen Animasyonu"
+                    <Image
+                      src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2xteHR5bGdleXIwejF5YzRlcXRvenc5dml6bXZnNHJ0ZnE3YXp1cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1vlBgKjXEz1jTtsuiH/giphy.gif"
+                      alt="Eren KALAYCI - Bilgisayar Mühendisi ve Mobil Uygulama Geliştiricisi Penguen Animasyonu"
                       width={256}
                       height={256}
                       loading="lazy"
-                      unoptimized={true}
+                      unoptimized
                       className="w-full h-full object-cover"
                     />
                   </div>
                 </motion.div>
 
-                {/* Bilgiler */}
                 <div className="text-center space-y-2">
-                  <h3 className="text-lg md:text-xl font-bold text-white">Eren Kalaycı</h3>
-                  <p className="text-[#FF4655] text-xs md:text-sm font-semibold px-2">Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi</p>
+                  <h3 className="text-xl md:text-2xl font-bold text-white">Eren KALAYCI</h3>
+                  <p className="text-[#A9B7C4] text-sm md:text-base font-semibold px-2">
+                    Bilgisayar Mühendisi &amp; Mobil Uygulama Geliştiricisi
+                  </p>
                 </div>
 
-                {/* Konum Bilgisi - Yeni minimal tasarım */}
-                <motion.div 
-                  whileHover={{ scale: 1.02 }}
-                  className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-[#1F2731]/60 border border-white/10 backdrop-blur-sm"
-                >
-                  <FiGlobe className="text-[#FF4655] w-4 h-4" />
-                  <span className="text-white text-sm font-medium">Türkiye, Trabzon</span>
-                </motion.div>
+                <Chip dotColor="#A9B7C4" className="px-4 py-2.5 text-sm">
+                  <FiGlobe className="text-[#A9B7C4] w-4 h-4" />
+                  <span className="text-white text-sm font-medium">{profile.location}</span>
+                </Chip>
               </div>
-            </div>
+            </GlassCard>
           </motion.div>
 
           {/* Sağ Taraf - Detaylı Açıklama */}
-          <motion.div
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <div className="bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/75 to-[#0F1923]/90 backdrop-blur-xl rounded-2xl p-5 border border-white/10 border-t-white/20 shadow-xl shadow-black/40 hover:border-white/20 hover:shadow-2xl hover:shadow-black/50 transition-all duration-500 relative overflow-hidden group h-full">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#FF4655]/0 via-[#FF4655]/5 to-[#FF4655]/10 opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none"></div>
-              
+          <motion.div variants={itemVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+            <GlassCard className="p-6 group h-full">
               <div className="relative z-10 h-full flex flex-col">
-                <motion.h3 
-                  whileHover={{ x: 5 }}
-                  className="text-lg font-semibold mb-6 text-white flex items-center"
-                >
-                  <span className="text-[#FF4655] mr-2 text-2xl">&lt;</span>
-                  Merhaba, Ben Eren Kalaycı
-                  <span className="text-[#FF4655] ml-2 text-2xl">/&gt;</span>
+                <motion.h3 whileHover={{ x: 5 }} className="text-xl font-semibold mb-6 text-white flex items-center">
+                  <span className="text-[#A9B7C4] mr-2 text-2xl">&lt;</span>
+                  Merhaba, Ben Eren KALAYCI
+                  <span className="text-[#A9B7C4] ml-2 text-2xl">/&gt;</span>
                 </motion.h3>
-                
+
                 <div className="space-y-4 text-gray-300 leading-relaxed flex-grow">
-                  <motion.div
-                    whileHover={{ x: 5 }}
-                    className="relative pl-4 border-l-2 border-white/20 hover:border-white/40 transition-colors duration-300"
-                  >
-                    <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#FF4655] rounded-full"></div>
-                    <p className="text-sm">
-                      Dijital dünyada yenilikçi çözümler üreten bir yazılım geliştiricisiyim. İleriye dönük projeleri ve özgün fikirleri hayata geçirerek, kullanıcılar için değer yaratan uygulamalar, oyunlar ve web çözümleri geliştirmeye odaklanıyorum. Temel motivasyonum, belirlenen hedeflere ulaşarak etkili ve ölçülebilir sonuçlar elde etmektir.
-                    </p>
-                  </motion.div>
-                  
-                  <motion.div
-                    whileHover={{ x: 5 }}
-                    className="relative pl-4 border-l-2 border-white/20 hover:border-white/40 transition-colors duration-300"
-                  >
-                    <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#FF4655] rounded-full"></div>
-                    <p className="text-sm">
-                      <span className="text-[#FF4655] font-semibold">Flutter</span> platformunda Android için mobil uygulamalar ve{" "}
-                      <span className="text-[#FF4655] font-semibold">Unity</span> motoruyla Android ile Masaüstü sistemler için oyunlar geliştirme konusunda deneyime sahibim. Şu anda aktif olarak Flutter ile mobil uygulama geliştirme süreçlerine odaklanmış durumdayım. Ayrıca, modern web teknolojileriyle çeşitli projeler geliştirmekteyim. Projelerimde kullanıcı deneyimini ve tasarımını merkeze alarak, estetik ve yüksek işlevselliğe sahip profesyonel çıktılar sunmaktayım.
-                    </p>
-                  </motion.div>
-                  
-                  <motion.div
-                    whileHover={{ x: 5 }}
-                    className="relative pl-4 border-l-2 border-white/20 hover:border-white/40 transition-colors duration-300"
-                  >
-                    <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#FF4655] rounded-full"></div>
-                    <p className="text-sm">
-                      Teknolojik gelişmeleri yakından takip ederek kendimi sürekli geliştirir, yeni yazılım ve framework&apos;lere hızla adapte olurum. Analitik düşünme ve problem çözme becerilerimle teknik yetkinliklerimi birleştirerek, yazılım geliştirme süreçlerine etkin katkı sağlarım. İşbirlikçi bir yaklaşımla ekip çalışmalarında üzerime düşen görevleri titizlikle yerine getirir, ortak hedeflere ulaşmak amacıyla çözüm odaklı ve yapıcı önerilerle ekibe destek olurum; Öğrenmeyi seven, yenilikleri takip eden ve gelişimi önemseyen bir profesyonel anlayışla hareket ederim.
-                    </p>
-                  </motion.div>
+                  {aboutParagraphs.map((paragraph) => (
+                    <motion.div
+                      key={paragraph.slice(0, 24)}
+                      whileHover={{ x: 5 }}
+                      className="relative pl-4 border-l-2 border-white/20 hover:border-white/40 transition-colors duration-300"
+                    >
+                      <div className="absolute -left-1.5 top-1.5 w-2 h-2 bg-[#A9B7C4] rounded-full"></div>
+                      <p className="text-[0.95rem]">{paragraph}</p>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
-            </div>
+            </GlassCard>
           </motion.div>
         </div>
       </div>

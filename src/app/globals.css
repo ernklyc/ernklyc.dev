@@ -5,7 +5,7 @@ html {
   overflow-y: scroll;
   scrollbar-gutter: stable;
   scrollbar-width: thin;
-  scrollbar-color: #FF4655 #0A0F1C;
+  scrollbar-color: #A9B7C4 #0B0E12;
 }
 
 :root {
@@ -42,7 +42,7 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #0a0f1c, #0f1923 55%, #151f2b);
+  background: #0B0E12;
 }
 
 #boot-loader::before,
@@ -59,7 +59,7 @@ body {
   height: 28rem;
   top: 12%;
   left: 18%;
-  background: rgba(255, 70, 85, 0.22);
+  background: rgba(169, 183, 196, 0.12);
 }
 
 #boot-loader::after {
@@ -67,7 +67,7 @@ body {
   height: 24rem;
   right: 16%;
   bottom: 12%;
-  background: rgba(59, 130, 246, 0.2);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .boot-loader-spinner {
@@ -76,11 +76,10 @@ body {
   width: 3rem;
   height: 3rem;
   border-radius: 9999px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #ff4655;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 10px 30px rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #A9B7C4;
+  background: #12161B;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 10px 30px rgba(0, 0, 0, 0.5);
   animation: boot-spin-smooth 1s linear infinite;
   will-change: transform;
 }
@@ -142,13 +141,13 @@ html.preboot-lock body > :not(#boot-loader):not(script) {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FF4655;
+  background: #A9B7C4;
   border-radius: 4px;
   transition: background-color 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #e63946;
+  background: #7E8FA0;
 }
 
 html.locale-transitioning {
@@ -225,7 +224,7 @@ body.locale-transitioning::-webkit-scrollbar-thumb {
   --glow-y: 50%;
   --glow-intensity: 0;
   --glow-radius: 200px;
-  --glow-color: 255, 70, 85;
+  --glow-color: 169, 183, 196;
 }
 
 .card--border-glow::after {

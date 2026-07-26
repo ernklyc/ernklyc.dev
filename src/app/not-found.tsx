@@ -16,7 +16,7 @@ export default function NotFound() {
           <FuzzyText
             fontSize="clamp(3.75rem, 15vw, 6rem)"
             fontWeight={800}
-            color="#FF4655"
+            color="#A9B7C4"
             baseIntensity={0.15}
             hoverIntensity={0.4}
             fuzzRange={20}

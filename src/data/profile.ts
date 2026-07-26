@@ -2,10 +2,10 @@ export const profile = {
   name: "Eren KALAYCI",
   title: "Bilgisayar Mühendisi & Mobil Uygulama Geliştirici",
   email: "ernklyc@gmail.com",
-  location: "İstanbul, Türkiye",
+  location: "Trabzon, Türkiye",
   bio: {
-    short: "Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile mobil uygulamalar, Unity ile oyunlar ve modern web siteleri geliştiriyorum.",
-    long: "5 yılı aşkın deneyimle web uygulamaları ve dijital çözümler geliştiren tutkulu bir yazılım geliştiriciyim. Yolculuğum, şeylerin nasıl çalıştığına dair merakla başladı ve zamanla zarif, verimli kod yazma sevgisine dönüştü."
+    short: "Bilgisayar Mühendisliği mezunu, Flutter/Dart odaklı mobil uygulama geliştiricisiyim. Firebase, REST API, RevenueCat/IAP ve temiz mimari (MVVM, Riverpod/Bloc) ile gerçek ürün geliştirme deneyimine sahibim.",
+    long: "Bilgisayar Mühendisliği mezunu, Flutter/Dart odaklı bir mobil uygulama geliştiricisiyim. Glass Padel'de 15.000'den fazla kayıtlı ve 800'den fazla günlük aktif kullanıcısı olan canlı bir platformun geliştirilmesinde aktif rol alıyorum; Firebase, REST API, RevenueCat/IAP entegrasyonları ve temiz mimari (MVVM, Riverpod/Bloc) ile gerçek ürün geliştirme deneyimine sahibim. Bunların yanında Laravel ve PHP ile yönetim panelleri de geliştiriyorum. Yeni teknolojilere hızla adapte olur, kullanıcı odaklı ve ölçeklenebilir çözümler üretirim."
   },
   links: {
     github: "https://github.com/ernklyc",
@@ -14,7 +14,5 @@ export const profile = {
     instagram: "https://www.instagram.com/ernklyc.dev/",
     youtube: "https://www.youtube.com/@klycmedya",
     playStore: "https://play.google.com/store/apps/dev?id=6576291249346115918",
-    /** CV indirme linki; public/cv.pdf ekledikten sonra "/cv.pdf" yap. Yoksa link gösterilmez. */
-    cv: "/cv.pdf" as string | undefined,
   },
 }; 

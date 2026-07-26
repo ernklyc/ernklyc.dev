@@ -4,11 +4,34 @@ export const skills = [
     items: [
       "Flutter & Dart",
       "Unity & C#",
+      "React Native",
+      "SwiftUI",
+      "Next.js & React",
+      "JavaScript",
       "HTML",
       "CSS",
-      "JavaScript",
-      "C",
-      "Firebase"
+      "C"
+    ]
+  },
+  {
+    category: "Backend & Veritabanı",
+    items: [
+      "Firebase",
+      "REST API",
+      "RevenueCat / IAP",
+      "Laravel & PHP"
+    ]
+  },
+  {
+    category: "Diğer Teknolojiler",
+    items: [
+      "Riverpod / Bloc",
+      "MVVM",
+      "Clean Architecture",
+      "Git & GitHub",
+      "Postman",
+      "Play Console",
+      "App Store Connect"
     ]
   },
   {
@@ -25,7 +48,7 @@ export const skills = [
     category: "Diller",
     items: [
       "Türkçe (Anadil)",
-      "İngilizce"
+      "İngilizce (Teknik Dokümantasyon)"
     ]
   },
   {
@@ -39,4 +62,4 @@ export const skills = [
       "Adaptasyon"
     ]
   }
-]; 
+];

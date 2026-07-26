@@ -2,15 +2,22 @@
 
 import dynamic from "next/dynamic";
 
-const SilkBackground = dynamic(() => import("./SilkBackground"), { ssr: false });
+const Beams = dynamic(() => import("./Beams"), { ssr: false });
 
 export default function SiteBackground() {
   return (
     <div className="fixed inset-0 -z-10 pointer-events-none" aria-hidden="true">
-      <div className="absolute inset-0 opacity-45">
-        <SilkBackground />
-      </div>
-      <div className="absolute inset-0 bg-[#0A0F1C]/70" />
+      <Beams
+        beamWidth={2}
+        beamHeight={15}
+        beamNumber={12}
+        lightColor="#ffffff"
+        speed={2}
+        noiseIntensity={1.75}
+        scale={0.2}
+        rotation={0}
+      />
+      <div className="absolute inset-0 bg-black/78" />
     </div>
   );
 }

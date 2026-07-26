@@ -44,7 +44,7 @@ type CursorFollowProps = Omit<CursorFollowPropsPrimitive, "asChild">;
 function CursorFollow({ className, children, sideOffset = 15, alignOffset = 5, ...props }: CursorFollowProps) {
   return (
     <CursorFollowPrimitive sideOffset={sideOffset} alignOffset={alignOffset} asChild {...props}>
-      <div className={cn("bg-[#FF4655] rounded-md text-white px-2 py-1 text-sm font-medium", className)}>
+      <div className={cn("bg-[#A9B7C4] rounded-md text-white px-2 py-1 text-sm font-medium", className)}>
         {children}
       </div>
     </CursorFollowPrimitive>

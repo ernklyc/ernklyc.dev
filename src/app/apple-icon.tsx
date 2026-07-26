@@ -26,7 +26,7 @@ export default function Icon() {
         >
           <img
             src={base64Image}
-            alt="Eren Kalaycı Apple Touch Icon"
+            alt="Eren KALAYCI Apple Touch Icon"
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </div>
@@ -46,7 +46,7 @@ export default function Icon() {
             justifyContent: 'center',
             borderRadius: '50%',
             backgroundColor: '#0F1923',
-            color: '#FF4655',
+            color: '#A9B7C4',
             fontSize: '90px',
             fontWeight: 'bold',
           }}

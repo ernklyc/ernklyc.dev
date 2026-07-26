@@ -1,19 +1,22 @@
 import { Metadata } from "next";
 import BackOrHomeLink from "@/components/BackOrHomeLink";
+import SectionBackground from "@/components/ui/SectionBackground";
+import GlassCard from "@/components/ui/GlassCard";
 
 export const metadata: Metadata = {
-  title: "Link Manager - Privacy Policy | Eren Kalaycı",
+  title: "Link Manager - Privacy Policy | Eren KALAYCI",
   description: "Link Manager mobile application privacy policy and personal data protection information.",
   alternates: { canonical: "/link-manager-privacy" },
 };
 
 export default function LinkManagerPrivacyPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white py-20 px-4">
-      <section className="container mx-auto max-w-4xl">
-        <div className="bg-[#1F2731]/60 backdrop-blur-sm rounded-2xl p-8 md:p-10 border border-white/10 shadow-2xl">
+    <main className="min-h-screen text-white pt-32 pb-20 px-4 relative overflow-hidden">
+      <SectionBackground />
+      <section className="container mx-auto max-w-4xl relative z-10">
+        <GlassCard className="p-8 md:p-10">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white">
+            <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#A9B7C4] to-white">
               LINK MANAGER PRIVACY POLICY
             </h1>
             <p className="text-gray-400 text-sm">Last Updated: 2025</p>
@@ -21,7 +24,7 @@ export default function LinkManagerPrivacyPage() {
               href="https://play.google.com/store/apps/details?id=com.link.manager&hl=tr"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block mt-4 text-[#FF4655] hover:text-[#FF6B7A] transition-colors text-sm"
+              className="inline-block mt-4 text-[#A9B7C4] hover:text-[#C7D2DA] transition-colors text-sm"
             >
               View on Play Store →
             </a>
@@ -187,7 +190,7 @@ export default function LinkManagerPrivacyPage() {
                 <li>Right to object to data processing</li>
               </ul>
               <p className="text-gray-300 leading-relaxed mt-4">
-                To exercise your rights, contact us at: <a href="mailto:privacy@linkmanager.app" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">privacy@linkmanager.app</a>
+                To exercise your rights, contact us at: <a href="mailto:privacy@linkmanager.app" className="text-[#A9B7C4] hover:text-[#C7D2DA] transition-colors">privacy@linkmanager.app</a>
               </p>
             </section>
 
@@ -229,8 +232,8 @@ export default function LinkManagerPrivacyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-semibold mb-4 text-white">13. CONTACT</h2>
               <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                <li>Email: <a href="mailto:privacy@linkmanager.app" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">privacy@linkmanager.app</a></li>
-                <li>Play Store: <a href="https://play.google.com/store/apps/details?id=com.link.manager&hl=tr" target="_blank" rel="noopener noreferrer" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">Link Manager</a></li>
+                <li>Email: <a href="mailto:privacy@linkmanager.app" className="text-[#A9B7C4] hover:text-[#C7D2DA] transition-colors">privacy@linkmanager.app</a></li>
+                <li>Play Store: <a href="https://play.google.com/store/apps/details?id=com.link.manager&hl=tr" target="_blank" rel="noopener noreferrer" className="text-[#A9B7C4] hover:text-[#C7D2DA] transition-colors">Link Manager</a></li>
               </ul>
             </section>
 
@@ -243,12 +246,12 @@ export default function LinkManagerPrivacyPage() {
             </section>
 
             <div className="mt-12 pt-6 border-t border-white/10 text-center">
-              <BackOrHomeLink className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors border border-white/10 hover:border-white/20 px-6 py-3 rounded-xl">
+              <BackOrHomeLink className="inline-flex items-center gap-2 bg-[#12161B] hover:bg-[#1A1F26] text-gray-300 hover:text-white text-sm transition-all duration-300 border border-white/10 hover:border-white/20 px-6 py-3 rounded-xl">
                 ← Geri dön
               </BackOrHomeLink>
             </div>
           </div>
-        </div>
+      </GlassCard>
       </section>
     </main>
   );

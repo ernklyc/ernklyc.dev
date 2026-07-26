@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import BackOrHomeLink from "@/components/BackOrHomeLink";
+import SectionBackground from "@/components/ui/SectionBackground";
+import GlassCard from "@/components/ui/GlassCard";
 
 export const metadata: Metadata = {
   title: "HP Character Wiki Gizlilik Politikası",
@@ -10,11 +12,12 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#0A0F1C] via-[#0F1923] to-[#151F2B] text-white py-20 px-4">
-      <section className="container mx-auto max-w-4xl">
-        <div className="bg-[#1F2731]/60 backdrop-blur-sm rounded-2xl p-8 border border-white/10 shadow-2xl">
+    <main className="min-h-screen text-white pt-32 pb-20 px-4 relative overflow-hidden">
+      <SectionBackground />
+      <section className="container mx-auto max-w-4xl relative z-10">
+        <GlassCard className="p-8 md:p-10">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#FF4655] to-white">
+            <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-[#A9B7C4] to-white">
               HP CHARACTER WIKI PRIVACY POLICY
             </h1>
             <p className="text-gray-400 text-sm">Effective Date: September 18, 2025</p>
@@ -52,7 +55,7 @@ export default function PrivacyPolicyPage() {
                 href="https://hp-api.onrender.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors"
+                className="text-[#A9B7C4] hover:text-[#C7D2DA] transition-colors"
               >
                 https://hp-api.onrender.com
               </a>
@@ -67,7 +70,7 @@ export default function PrivacyPolicyPage() {
                 href="https://policies.google.com/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors"
+                className="text-[#A9B7C4] hover:text-[#C7D2DA] transition-colors"
               >
                 https://policies.google.com/privacy
               </a>
@@ -152,7 +155,7 @@ export default function PrivacyPolicyPage() {
               <strong>Developer</strong>: Yelbegen Software
             </li>
             <li>
-              <strong>Email</strong>: <a href="mailto:yelbegensoftware@gmail.com" className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors">yelbegensoftware@gmail.com</a>
+              <strong>Email</strong>: <a href="mailto:yelbegensoftware@gmail.com" className="text-[#A9B7C4] hover:text-[#C7D2DA] transition-colors">yelbegensoftware@gmail.com</a>
             </li>
             <li>
               <strong>Website</strong>: {" "}
@@ -160,7 +163,7 @@ export default function PrivacyPolicyPage() {
                 href="https://ernklyc.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#FF4655] hover:text-[#FF6B7A] transition-colors"
+                className="text-[#A9B7C4] hover:text-[#C7D2DA] transition-colors"
               >
                 https://ernklyc.dev
               </a>
@@ -168,12 +171,12 @@ export default function PrivacyPolicyPage() {
           </ul>
 
           <div className="mt-12 pt-6 border-t border-white/10 text-center">
-            <BackOrHomeLink className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm transition-colors border border-white/10 hover:border-white/20 px-6 py-3 rounded-xl">
+            <BackOrHomeLink className="inline-flex items-center gap-2 bg-[#12161B] hover:bg-[#1A1F26] text-gray-300 hover:text-white text-sm transition-all duration-300 border border-white/10 hover:border-white/20 px-6 py-3 rounded-xl">
               ← Geri dön
             </BackOrHomeLink>
           </div>
         </div>
-      </div>
+      </GlassCard>
       </section>
     </main>
   );

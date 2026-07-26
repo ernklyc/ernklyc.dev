@@ -37,6 +37,8 @@ export default function StructuredData() {
       "Next.js",
       "Unity",
       "C#",
+      "Laravel",
+      "PHP",
       "Mobil Uygulama Geliştirme",
       "Oyun Geliştirme",
       "Web Geliştirme",
@@ -47,21 +49,21 @@ export default function StructuredData() {
   const portfolioSchema = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
-    "name": `Eren Kalaycı Portfolio`,
-    "description": `Eren Kalaycı - ${profile.bio.short}`,
+    "name": `Eren KALAYCI Portfolio`,
+    "description": `Eren KALAYCI - ${profile.bio.short}`,
     "author": {
       "@type": "Person",
-      "name": "Eren Kalaycı",
-      "alternateName": ["Eren KALAYCI", "eren kalaycı"],
+      "name": "Eren KALAYCI",
+      "alternateName": ["Eren KALAYCI", "eren KALAYCI"],
     },
     "url": SITE_URL,
-    "keywords": "Eren Kalaycı, Eren KALAYCI, eren kalaycı, Eren Kalaycı Flutter, Eren Kalaycı Unity, Eren Kalaycı mobil uygulama geliştirici, Eren Kalaycı oyun geliştirici, Eren Kalaycı web tasarım, bilgisayar mühendisi",
+    "keywords": "Eren KALAYCI, Eren KALAYCI, eren KALAYCI, Eren KALAYCI Flutter, Eren KALAYCI Unity, Eren KALAYCI mobil uygulama geliştirici, Eren KALAYCI oyun geliştirici, Eren KALAYCI web tasarım, bilgisayar mühendisi",
   };
 
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Eren Kalaycı Portfolio",
+    "name": "Eren KALAYCI Portfolio",
     "url": SITE_URL,
     "description": profile.bio.short,
     "author": { "@id": `${SITE_URL}#person` },

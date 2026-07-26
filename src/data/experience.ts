@@ -12,6 +12,8 @@ export type ExperienceEntry = {
   category: string;
   logo: string;
   skills: string[];
+  /** Somut katkı/başarı maddeleri (CV'deki madde işaretli liste ile aynı) */
+  highlights?: string[];
 };
 
 /** İki tarih arasındaki ay sayısı; başlangıç ve bitiş ayı dahil (Ağustos başı + bu ay = 8 ay gibi) */
@@ -46,6 +48,9 @@ export const experience: ExperienceEntry[] = [
     category: "Staj",
     logo: "/tiski.png",
     skills: ["Dart", "Flutter", "Git", "BloC", "Firebase"],
+    highlights: [
+      "Bilgi İşlem Dairesi'nde kurumsal bir ortamda baştan sona bir dijital proje geliştirdim; planlama ve kurum içi koordinasyon süreçlerinde aktif rol aldım.",
+    ],
   },
   {
     title: "Flutter Developer",
@@ -59,6 +64,9 @@ export const experience: ExperienceEntry[] = [
     category: "Staj",
     logo: "https://media.licdn.com/dms/image/v2/D4D0BAQHcgj44MkLlAA/company-logo_200_200/company-logo_200_200/0/1690998382929/daynex_web_z_mleri_logo?e=1775088000&v=beta&t=SLg1Uevt5OrfN-KZm-ij1uXZ0PDbKRLO7gsq_HUTMoc",
     skills: ["Dart", "Flutter", "Git", "BloC"],
+    highlights: [
+      "Son kullanıcıya yönelik büyük ölçekli ticari bir ürünün geliştirme sürecinde görev aldım; fikir aşamasından canlıya alınmasına kadar tüm yaşam döngüsünü deneyimledim.",
+    ],
   },
   {
     title: "Flutter & Mobile Developer",
@@ -70,6 +78,12 @@ export const experience: ExperienceEntry[] = [
     endDate: null,
     category: "Tam zamanlı",
     logo: "https://media.licdn.com/dms/image/v2/D4D0BAQEbuXQuda9xdg/company-logo_200_200/B4DZnuo1ZkGgAI-/0/1760645306330?e=1775088000&v=beta&t=l8upHyZh-VBuVxbFmP4Owm4lXQv1TGrZuGZb8-ld4do",
-    skills: ["Dart", "Flutter", "Firebase", "REST APIs", "Flutterflow"],
+    skills: ["Dart", "Flutter", "Firebase", "REST API", "RevenueCat"],
+    highlights: [
+      "15.000+ kayıtlı ve 800+ günlük aktif kullanıcılı mobil platformun geliştirme süreçlerinde aktif rol alıyorum.",
+      "Rezervasyon, turnuva, açık maç ve uygulama içi pazaryeri akışlarının geliştirilmesine katkı sağladım.",
+      "RevenueCat ile abonelik ve uygulama içi satın alma (IAP) entegrasyonlarında görev aldım.",
+      "Güvenli ödeme, gerçek zamanlı sohbet ve coin tabanlı ekonomi modüllerinin entegrasyonunda yer aldım; Play Store / App Store Connect yayın süreçlerini ekiple yürüttüm.",
+    ],
   },
 ];

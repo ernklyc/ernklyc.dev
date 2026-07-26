@@ -6,16 +6,20 @@ import { useLocale } from "@/contexts/LocaleContext";
 
 type BlurHashLoadingProps = {
   label?: string;
-  accent?: "red" | "blue";
   minHeightClass?: string;
   hash?: string;
 };
 
 const DEFAULT_HASH = "L03S6RIn00#R#7WXJ7sC00jY~XX9";
 
+/**
+ * Section/route lazy-load fallback'i. Sitenin animasyonlu Beams arka planı
+ * global layout'ta zaten render edildiği için burada opak/farklı bir arka
+ * plan KOYMUYORUZ — sadece o arka planın üzerine oturan şeffaf bir spinner
+ * gösteriyoruz. Böylece yüklenme anlarında ani renk/tema sıçraması olmuyor.
+ */
 export default function BlurHashLoading({
   label,
-  accent = "red",
   minHeightClass = "min-h-screen",
   hash = DEFAULT_HASH,
 }: BlurHashLoadingProps) {
@@ -44,22 +48,19 @@ export default function BlurHashLoading({
     context.putImageData(imageData, 0, 0);
   }, [hash]);
 
-  const spinnerTopColor = accent === "blue" ? "#60a5fa" : "#ff4655";
-
   return (
-    <div className={`relative overflow-hidden bg-[#0F1923] ${minHeightClass}`}>
+    <div className={`relative overflow-hidden ${minHeightClass}`}>
       <canvas
         ref={canvasRef}
         width={48}
         height={32}
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-80 blur-2xl"
+        className="absolute inset-0 h-full w-full scale-110 object-cover opacity-20 blur-2xl"
       />
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0A0F1C]/80 via-[#0F1923]/70 to-[#151F2B]/85" />
 
       <div className="relative z-10 flex h-full min-h-[inherit] items-center justify-center text-white">
         <div className="boot-loader-content">
-          <div className="boot-loader-spinner" style={{ borderTopColor: spinnerTopColor }} />
+          <div className="boot-loader-spinner" />
           <p className="boot-loader-text">{sentenceCaseLabel}</p>
         </div>
       </div>

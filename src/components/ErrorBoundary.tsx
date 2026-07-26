@@ -44,8 +44,8 @@ export class ErrorBoundary extends React.Component<
       return (
         <div className="relative min-h-screen flex items-center justify-center bg-[#0F1923] text-white p-4 overflow-hidden">
           <Noise patternAlpha={12} />
-          <div className="relative z-10 max-w-md w-full bg-gradient-to-br from-[#1F2731]/80 via-[#1A252F]/75 to-[#0F1923]/90 backdrop-blur-xl rounded-2xl p-8 border border-[#FF4655]/20 border-t-[#FF4655]/35 shadow-xl shadow-black/40 text-center">
-            <FiAlertCircle className="w-16 h-16 text-[#FF4655] mx-auto mb-4" />
+          <div className="relative z-10 max-w-md w-full bg-white/[0.04] backdrop-blur-xl rounded-2xl p-8 border border-white/10 shadow-lg shadow-black/20 text-center">
+            <FiAlertCircle className="w-16 h-16 text-[#A9B7C4] mx-auto mb-4" />
             <div role="heading" aria-level={2} aria-label="Bir Hata Oluştu" className="flex justify-center mb-2">
               <FuzzyText
                 fontSize="clamp(1.5rem, 5vw, 2.25rem)"
@@ -73,7 +73,7 @@ export class ErrorBoundary extends React.Component<
             )}
             <button
               onClick={this.handleReset}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF4655] to-[#FF6B7A] hover:from-[#FF4655]/90 hover:to-[#FF6B7A]/90 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300"
+              className="inline-flex items-center gap-2 bg-[#12161B] hover:bg-[#1A1F26] border border-white/10 hover:border-white/20 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300"
               aria-label="Tekrar dene"
             >
               <FiRefreshCw className="w-5 h-5" />

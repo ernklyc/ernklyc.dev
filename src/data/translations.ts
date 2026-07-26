@@ -15,7 +15,7 @@ export const translations = {
       title: "Eren KALAYCI",
       subtitle: "Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi",
       description:
-        "Merhaba, ben Eren Kalaycı. Aktif olarak Flutter ile mobil uygulama geliştirme üzerine yoğunlaşmaktayım. Hobi olarak ise Unity ile oyunlar geliştiriyor ve modern web siteleri tasarlıyorum. Eren Kalaycı olarak geliştirdiğim mobil uygulamaları, oyunları ve web sitelerini yayınlıyorum.",
+        "Merhaba, ben Eren KALAYCI. Aktif olarak Flutter ile mobil uygulama geliştirme üzerine yoğunlaşmaktayım. Hobi olarak ise Unity ile oyunlar geliştiriyor ve modern web siteleri tasarlıyorum. Eren KALAYCI olarak geliştirdiğim mobil uygulamaları, oyunları ve web sitelerini yayınlıyorum.",
       cvDownload: "CV İndir",
       discover: "Keşfet",
     },
@@ -70,7 +70,7 @@ export const translations = {
       errorMessageMax: "Mesaj en fazla 1000 karakter olabilir",
     },
     footer: {
-      title: "Eren Kalaycı",
+      title: "Eren KALAYCI",
       subtitle: "Bilgisayar Mühendisi & Mobil Uygulama Geliştirici",
       backToTop: "Yukarı Çık",
       rights: "Tüm hakları saklıdır.",
@@ -94,7 +94,7 @@ export const translations = {
       title: "Eren KALAYCI",
       subtitle: "Computer Engineer & Mobile App Developer",
       description:
-        "Hi, I'm Eren Kalaycı. I focus on mobile app development with Flutter. As a hobby, I develop games with Unity and design modern websites. I publish mobile apps, games and websites as Eren Kalaycı.",
+        "Hi, I'm Eren KALAYCI. I focus on mobile app development with Flutter. As a hobby, I develop games with Unity and design modern websites. I publish mobile apps, games and websites as Eren KALAYCI.",
       cvDownload: "Download CV",
       discover: "Discover",
     },
@@ -149,7 +149,7 @@ export const translations = {
       errorMessageMax: "Message can be at most 1000 characters",
     },
     footer: {
-      title: "Eren Kalaycı",
+      title: "Eren KALAYCI",
       subtitle: "Computer Engineer & Mobile App Developer",
       backToTop: "Back to top",
       rights: "All rights reserved.",

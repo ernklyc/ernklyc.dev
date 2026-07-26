@@ -29,20 +29,20 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici | Portfolio",
-    template: "%s | Eren Kalaycı"
+    default: "Eren KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici | Portfolio",
+    template: "%s | Eren KALAYCI"
   },
-  description: "Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile mobil uygulamalar, Unity ile oyunlar ve modern web siteleri geliştiriyorum.",
+  description: "Eren KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile mobil uygulamalar, Unity ile oyunlar ve modern web siteleri geliştiriyorum.",
   keywords: [
-    "Eren Kalaycı",
     "Eren KALAYCI",
-    "eren kalaycı",
-    "Eren Kalaycı Flutter",
-    "Eren Kalaycı mobil uygulama geliştirici",
-    "Eren Kalaycı Unity",
-    "Eren Kalaycı oyun geliştirici",
-    "Eren Kalaycı web tasarım",
-    "Eren Kalaycı web geliştirme",
+    "Eren KALAYCI",
+    "eren KALAYCI",
+    "Eren KALAYCI Flutter",
+    "Eren KALAYCI mobil uygulama geliştirici",
+    "Eren KALAYCI Unity",
+    "Eren KALAYCI oyun geliştirici",
+    "Eren KALAYCI web tasarım",
+    "Eren KALAYCI web geliştirme",
     "Flutter",
     "Unity",
     "React",
@@ -51,11 +51,11 @@ export const metadata: Metadata = {
     "Web Tasarımı",
     "Web Geliştirme",
     "Bilgisayar Mühendisi",
-    "Eren Kalaycı portfolio",
+    "Eren KALAYCI portfolio",
   ],
-  authors: [{ name: "Eren Kalaycı" }],
-  creator: "Eren Kalaycı",
-  publisher: "Eren Kalaycı",
+  authors: [{ name: "Eren KALAYCI" }],
+  creator: "Eren KALAYCI",
+  publisher: "Eren KALAYCI",
   metadataBase: new URL('https://ernklyc.dev'),
   alternates: {
     canonical: '/',
@@ -64,22 +64,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'tr_TR',
     url: 'https://ernklyc.dev',
-    title: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
-    description: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.',
-    siteName: 'Eren Kalaycı Portfolio',
+    title: 'Eren KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
+    description: 'Eren KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.',
+    siteName: 'Eren KALAYCI Portfolio',
     images: [
       {
         url: '/og-default.png',
         width: 1200,
         height: 630,
-        alt: 'Eren Kalaycı - Bilgisayar Mühendisi Portfolio',
+        alt: 'Eren KALAYCI - Bilgisayar Mühendisi Portfolio',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
-    description: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.',
+    title: 'Eren KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
+    description: 'Eren KALAYCI - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ile yüksek performanslı mobil uygulamalar ve modern web projeleri geliştiriyorum.',
     images: ['/og-default.png'],
     creator: '@ernklycdev',
   },
@@ -179,7 +179,7 @@ export default function RootLayout({
         <LocaleProvider>
           <StructuredData />
           <ErrorBoundary>
-            <ClickSpark sparkColor="#FF4655" sparkSize={10} sparkRadius={18} sparkCount={8} duration={400}>
+            <ClickSpark sparkColor="#A9B7C4" sparkSize={10} sparkRadius={18} sparkCount={8} duration={400}>
               <Navbar />
               <LocaleTransition>
                 {children}
