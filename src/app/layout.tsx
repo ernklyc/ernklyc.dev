@@ -90,7 +90,7 @@ export const metadata: Metadata = {
     siteName: 'Eren Kalaycı Portfolio',
     images: [
       {
-        url: '/og-default.png',
+        url: '/og-default.jpg',
         width: 1200,
         height: 630,
         alt: 'Eren Kalaycı - Bilgisayar Mühendisi Portfolio',
@@ -101,7 +101,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştirici',
     description: 'Eren Kalaycı - Bilgisayar Mühendisi & Mobil Uygulama Geliştiricisi. Flutter ve Swift ile yüksek performanslı mobil uygulamalar, Unity ile oyunlar ve modern web projeleri geliştiriyorum.',
-    images: ['/og-default.png'],
+    images: ['/og-default.jpg'],
     creator: '@ernklycdev',
   },
   robots: {
