@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.erenkalayci.fitness_tracking",
+      "sha256_cert_fingerprints": [
+        "0A:73:EA:97:E1:80:25:13:4A:4A:AF:84:A5:CA:F8:1C:51:F2:84:1D:23:A9:D1:E9:45:14:90:94:AF:95:8C:B5"
+      ]
+    }
+  }
+]

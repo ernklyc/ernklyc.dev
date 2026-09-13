@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "WD7T86CX35.com.erenkalayci.fitnessTracking",
+        "paths": ["/join/*", "/join"]
+      }
+    ]
+  }
+}
