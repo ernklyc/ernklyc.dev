@@ -153,7 +153,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
       return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'İzlediklerim',
+            'MoTLog',
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
           actions: [

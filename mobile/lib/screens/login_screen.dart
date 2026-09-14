@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'İzlediklerim',
+                  'MoTLog',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w700,
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Kişisel film ve dizi arşivin',
+                  'Movie & TV Series Logger',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white54),
                 ),

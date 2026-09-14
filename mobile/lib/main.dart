@@ -20,7 +20,7 @@ class MovieLogApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'İzlediklerim',
+      title: 'MoTLog',
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF080B0F),
