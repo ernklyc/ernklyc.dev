@@ -11,7 +11,9 @@ import {
   updateDoc,
   where,
   writeBatch,
+  type DocumentData,
   type Unsubscribe,
+  type UpdateData,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { MOVIE_LIBRARY_OWNER_UID } from "./config";
@@ -98,6 +100,36 @@ export async function setLibraryPublic(uid: string, item: LibraryItem, isPublic:
   });
 }
 
+export async function repairLibraryPublicAndRatings(
+  uid: string,
+  items: LibraryItem[],
+  ratings: Record<string, { averageRating: number; numVotes: number } | null>,
+) {
+  assertOwner(uid);
+  const needsUpdate = items.filter((item) => {
+    const rating = item.imdbId ? ratings[item.imdbId] : null;
+    return !item.isPublic || (rating && typeof item.snapshot.imdbRating !== "number");
+  });
+  if (!needsUpdate.length) return;
+
+  for (let start = 0; start < needsUpdate.length; start += 450) {
+    const batch = writeBatch(db);
+    for (const item of needsUpdate.slice(start, start + 450)) {
+      const rating = item.imdbId ? ratings[item.imdbId] : null;
+      const payload: UpdateData<DocumentData> = {
+        isPublic: true,
+        updatedAt: serverTimestamp(),
+      };
+      if (rating && typeof item.snapshot.imdbRating !== "number") {
+        payload["snapshot.imdbRating"] = rating.averageRating;
+        payload["snapshot.imdbVotes"] = rating.numVotes;
+      }
+      batch.update(doc(db, "users", uid, "library", item.id), payload);
+    }
+    await batch.commit();
+  }
+}
+
 export async function removeFromLibrary(uid: string, item: LibraryItem) {
   assertOwner(uid);
   await deleteDoc(doc(db, "users", uid, "library", item.id));
@@ -109,7 +141,7 @@ function libraryPayload(media: TmdbSearchItem) {
     imdbId: media.imdbId,
     mediaType: media.mediaType,
     favorite: false,
-    isPublic: false,
+    isPublic: true,
     snapshot: {
       title: media.title,
       originalTitle: media.originalTitle,

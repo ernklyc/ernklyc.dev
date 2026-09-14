@@ -6,14 +6,12 @@ class MediaCard extends StatelessWidget {
     super.key,
     required this.item,
     required this.onFavorite,
-    required this.onPublic,
     required this.onRemove,
     required this.onOpen,
   });
 
   final LibraryItem item;
   final VoidCallback onFavorite;
-  final VoidCallback onPublic;
   final VoidCallback onRemove;
   final VoidCallback onOpen;
 
@@ -59,6 +57,12 @@ class MediaCard extends StatelessWidget {
                     item.mediaType == MediaType.movie ? 'FİLM' : 'DİZİ',
                   ),
                 ),
+                if (item.imdbRating != null)
+                  Positioned(
+                    bottom: 8,
+                    left: 8,
+                    child: _RatingBadge(item.imdbRating!),
+                  ),
                 Positioned(
                   top: 4,
                   right: 4,
@@ -75,16 +79,9 @@ class MediaCard extends StatelessWidget {
                   right: 6,
                   child: PopupMenuButton<String>(
                     onSelected: (value) {
-                      if (value == 'public') onPublic();
                       if (value == 'remove') onRemove();
                     },
                     itemBuilder: (_) => [
-                      PopupMenuItem(
-                        value: 'public',
-                        child: Text(
-                          item.isPublic ? 'Gizliye al' : 'Herkese aç',
-                        ),
-                      ),
                       const PopupMenuItem(
                         value: 'remove',
                         child: Text('Arşivden kaldır'),
@@ -106,12 +103,9 @@ class MediaCard extends StatelessWidget {
       ),
       const SizedBox(height: 3),
       Text(
-        '${item.year ?? '—'}${item.isPublic ? '  ·  Herkese açık' : ''}',
+        '${item.year ?? '—'}',
         maxLines: 1,
-        style: TextStyle(
-          fontSize: 12,
-          color: item.isPublic ? Colors.greenAccent.shade100 : Colors.white38,
-        ),
+        style: const TextStyle(fontSize: 12, color: Colors.white38),
       ),
     ],
   );
@@ -122,14 +116,12 @@ class MediaListTile extends StatelessWidget {
     super.key,
     required this.item,
     required this.onFavorite,
-    required this.onPublic,
     required this.onRemove,
     required this.onOpen,
   });
 
   final LibraryItem item;
   final VoidCallback onFavorite;
-  final VoidCallback onPublic;
   final VoidCallback onRemove;
   final VoidCallback onOpen;
 
@@ -183,7 +175,10 @@ class MediaListTile extends StatelessWidget {
                   children: [
                     _Badge(item.mediaType == MediaType.movie ? 'FİLM' : 'DİZİ'),
                     _SmallLabel('${item.year ?? '—'}'),
-                    if (item.isPublic) const _SmallLabel('PUBLIC'),
+                    if (item.imdbRating != null)
+                      _SmallLabel(
+                        'IMDb ${item.imdbRating!.toStringAsFixed(1)}',
+                      ),
                   ],
                 ),
               ],
@@ -202,14 +197,9 @@ class MediaListTile extends StatelessWidget {
               ),
               PopupMenuButton<String>(
                 onSelected: (value) {
-                  if (value == 'public') onPublic();
                   if (value == 'remove') onRemove();
                 },
                 itemBuilder: (_) => [
-                  PopupMenuItem(
-                    value: 'public',
-                    child: Text(item.isPublic ? 'Gizliye al' : 'Herkese aç'),
-                  ),
                   const PopupMenuItem(
                     value: 'remove',
                     child: Text('Arşivden kaldır'),
@@ -263,6 +253,30 @@ class _SmallLabel extends StatelessWidget {
       child: Text(
         text,
         style: const TextStyle(fontSize: 10, color: Colors.white60),
+      ),
+    ),
+  );
+}
+
+class _RatingBadge extends StatelessWidget {
+  const _RatingBadge(this.rating);
+  final double rating;
+
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      color: const Color(0xFFF5C518),
+      borderRadius: BorderRadius.circular(9),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      child: Text(
+        '★ ${rating.toStringAsFixed(1)}',
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 11,
+          fontWeight: FontWeight.w900,
+        ),
       ),
     ),
   );

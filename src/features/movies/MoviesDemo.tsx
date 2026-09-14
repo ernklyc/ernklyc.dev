@@ -3,15 +3,13 @@
 import Image from "next/image";
 import { auth } from "@/lib/firebase";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FiBookOpen, FiCheck, FiFilm, FiGlobe, FiHeart, FiLoader, FiLock, FiPlus, FiSearch, FiTrash2, FiTv, FiUpload, FiX } from "react-icons/fi";
+import { FiCheck, FiFilm, FiHeart, FiLoader, FiPlus, FiSearch, FiTrash2, FiTv, FiUpload, FiX } from "react-icons/fi";
 import LiveMediaDialog, { type MediaDetailTarget } from "./LiveMediaDialog";
-import { addManyToLibrary, addToLibrary, removeFromLibrary, setLibraryFavorite, setLibraryPublic } from "./library";
+import { addManyToLibrary, addToLibrary, removeFromLibrary, repairLibraryPublicAndRatings, setLibraryFavorite } from "./library";
 import { mediaDocumentId, type LibraryItem, type MediaType, type TmdbSearchItem } from "./models";
 import { useMovieLibrary } from "./useMovieLibrary";
 
 type Filter = "all" | MediaType | "favorites";
-type PageTab = "archive" | "public" | "editorial";
-type VisibilityFilter = "all" | "public" | "private";
 type SortMode = "added" | "imdb-desc" | "title" | "year-desc" | "year-asc";
 const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
   { id: "all", label: "Tümü" },
@@ -22,9 +20,7 @@ const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
 
 export default function MoviesDemo() {
   const { user, items, loading, error, isOwner } = useMovieLibrary();
-  const [pageTab, setPageTab] = useState<PageTab>("archive");
   const [activeFilter, setActiveFilter] = useState<Filter>("all");
-  const [visibilityFilter, setVisibilityFilter] = useState<VisibilityFilter>("all");
   const [genreFilter, setGenreFilter] = useState("all");
   const [yearFilter, setYearFilter] = useState("all");
   const [sortMode, setSortMode] = useState<SortMode>("imdb-desc");
@@ -33,6 +29,7 @@ export default function MoviesDemo() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [notice, setNotice] = useState("");
   const [ratings, setRatings] = useState<Record<string, { averageRating: number; numVotes: number } | null>>({});
+  const repairedSignatureRef = useRef("");
 
   useEffect(() => {
     const missingIds = [...new Set(items
@@ -62,16 +59,24 @@ export default function MoviesDemo() {
     };
   }, [items, ratings]);
 
+  useEffect(() => {
+    if (!user || !isOwner || !items.length) return;
+    const signature = items
+      .map((item) => `${item.id}:${item.isPublic ? 1 : 0}:${item.snapshot.imdbRating ?? ratings[item.imdbId ?? ""]?.averageRating ?? ""}`)
+      .join("|");
+    if (signature === repairedSignatureRef.current) return;
+    repairedSignatureRef.current = signature;
+    repairLibraryPublicAndRatings(user.uid, items, ratings).catch(() => undefined);
+  }, [isOwner, items, ratings, user]);
+
   const visibleItems = useMemo(() => {
       const normalizedQuery = normalize(query.trim());
     const filtered = items.filter((item) => {
       const matchesFilter = activeFilter === "all" || (activeFilter === "favorites" ? item.favorite : item.mediaType === activeFilter);
-      const effectiveVisibility = pageTab === "public" ? "public" : visibilityFilter;
-      const matchesVisibility = !isOwner || effectiveVisibility === "all" || (effectiveVisibility === "public" ? item.isPublic : !item.isPublic);
       const matchesGenre = genreFilter === "all" || item.snapshot.genres.includes(genreFilter);
       const matchesYear = yearFilter === "all" || String(item.snapshot.year ?? "") === yearFilter;
       const matchesQuery = !normalizedQuery || normalize(item.snapshot.title).includes(normalizedQuery) || normalize(item.snapshot.originalTitle).includes(normalizedQuery) || String(item.snapshot.year ?? "").includes(normalizedQuery);
-      return matchesFilter && matchesVisibility && matchesGenre && matchesYear && matchesQuery;
+      return matchesFilter && matchesGenre && matchesYear && matchesQuery;
     });
     return filtered.toSorted((a, b) => {
       if (sortMode === "title") return a.snapshot.title.localeCompare(b.snapshot.title, "tr");
@@ -80,14 +85,12 @@ export default function MoviesDemo() {
       if (sortMode === "imdb-desc") return imdbRatingOf(b, ratings) - imdbRatingOf(a, ratings);
       return timestampMillis(b.addedAt) - timestampMillis(a.addedAt);
     });
-  }, [activeFilter, genreFilter, isOwner, items, pageTab, query, ratings, sortMode, visibilityFilter, yearFilter]);
+  }, [activeFilter, genreFilter, items, query, ratings, sortMode, yearFilter]);
 
   const selectedItem = selectedId ? items.find((item) => item.id === selectedId) ?? null : null;
   const movieCount = items.filter((item) => item.mediaType === "movie").length;
   const tvCount = items.length - movieCount;
   const favoriteCount = items.filter((item) => item.favorite).length;
-  const publicCount = items.filter((item) => item.isPublic).length;
-  const privateCount = items.length - publicCount;
   const genres = useMemo(() => [...new Set(items.flatMap((item) => item.snapshot.genres))].sort((a, b) => a.localeCompare(b, "tr")), [items]);
   const years = useMemo(() => [...new Set(items.map((item) => item.snapshot.year).filter((year): year is number => typeof year === "number"))].sort((a, b) => b - a), [items]);
 
@@ -112,18 +115,9 @@ export default function MoviesDemo() {
 
       {notice && <div className="mb-6 flex items-start justify-between gap-4 rounded-xl border border-emerald-300/15 bg-emerald-400/[0.07] px-4 py-3 text-sm text-emerald-100"><span>{notice}</span><button onClick={() => setNotice("")} aria-label="Bildirimi kapat"><FiX /></button></div>}
 
-      <div className="mb-6 flex gap-2 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.025] p-1.5">
-        <TabButton active={pageTab === "archive"} onClick={() => setPageTab("archive")} icon={FiFilm} label="Arşiv" />
-        <TabButton active={pageTab === "public"} onClick={() => { setPageTab("public"); setVisibilityFilter("public"); }} icon={FiGlobe} label="Herkese açık vitrin" />
-        <TabButton active={pageTab === "editorial"} onClick={() => setPageTab("editorial")} icon={FiBookOpen} label="Film notları" />
+      <div className="mb-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard value={items.length} label="Toplam yapım" /><StatCard value={movieCount} label="Film" /><StatCard value={tvCount} label="Dizi" /><StatCard value={favoriteCount} label="Favori" />
       </div>
-
-      <div className="mb-9 grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <StatCard value={items.length} label="Toplam yapım" /><StatCard value={movieCount} label="Film" /><StatCard value={tvCount} label="Dizi" /><StatCard value={favoriteCount} label="Favori" /><StatCard value={publicCount} label="Herkese açık" />
-      </div>
-
-      {pageTab === "editorial" ? <EditorialTab publicCount={publicCount} favoriteCount={favoriteCount} />
-        : <>
 
       <div className="sticky top-4 z-30 mb-9 space-y-3 rounded-2xl border border-white/10 bg-[#0b0e12]/85 p-3 shadow-2xl shadow-black/30 backdrop-blur-2xl md:top-6">
         <div className="md:flex md:items-center md:gap-3">
@@ -138,8 +132,7 @@ export default function MoviesDemo() {
           return <button key={filter.id} type="button" onClick={() => setActiveFilter(filter.id)} className={`flex h-11 shrink-0 items-center gap-2 rounded-xl px-3.5 text-sm transition ${activeFilter === filter.id ? "bg-[#a9b7c4] font-medium text-[#0b0e12]" : "border border-white/10 bg-white/[0.035] text-white/65"}`}>{Icon && <Icon />}{filter.label}<span className={activeFilter === filter.id ? "text-black/50" : "text-white/30"}>{count}</span></button>;
         })}</div>
         </div>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {isOwner && <Select label="Görünürlük" value={visibilityFilter} onChange={(value) => setVisibilityFilter(value as VisibilityFilter)} options={[["all", `Tümü (${items.length})`], ["public", `Herkese açık (${publicCount})`], ["private", `Gizli (${privateCount})`]]} />}
+        <div className="grid gap-2 sm:grid-cols-3">
           <Select label="Tür" value={genreFilter} onChange={setGenreFilter} options={[["all", "Tüm türler"], ...genres.map((genre) => [genre, genre] as [string, string])]} />
           <Select label="Yıl" value={yearFilter} onChange={setYearFilter} options={[["all", "Tüm yıllar"], ...years.map((year) => [String(year), String(year)] as [string, string])]} />
           <Select label="Sırala" value={sortMode} onChange={(value) => setSortMode(value as SortMode)} options={[["added", "Son eklenen"], ["imdb-desc", "IMDb puanı"], ["title", "Ada göre"], ["year-desc", "Yeni yıl"], ["year-asc", "Eski yıl"]]} />
@@ -150,47 +143,11 @@ export default function MoviesDemo() {
 
       {loading ? <div className="grid min-h-64 place-items-center text-white/45"><FiLoader className="animate-spin text-3xl" /></div>
         : error ? <EmptyState title="Arşiv yüklenemedi" description={error} />
-        : visibleItems.length ? <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 xl:gap-x-6">{visibleItems.map((item) => <LibraryCard key={item.id} item={item} isOwner={isOwner} onOpen={() => setSelectedId(item.id)} onFavorite={() => toggleFavorite(item)} onPublic={() => user && setLibraryPublic(user.uid, item, !item.isPublic)} onRemove={() => user && removeFromLibrary(user.uid, item)} />)}</div>
-        : <EmptyState title={isOwner ? "Arşivin henüz boş" : "Henüz herkese açık yapım yok"} description={isOwner ? "TMDB’de arayıp izlediğin ilk filmi veya diziyi ekle." : "Eren bazı yapımları herkese açtığında burada görünecek."} />}
-      </>}
+        : visibleItems.length ? <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 xl:gap-x-6">{visibleItems.map((item) => <LibraryCard key={item.id} item={item} imdbRating={imdbRatingOf(item, ratings)} isOwner={isOwner} onOpen={() => setSelectedId(item.id)} onFavorite={() => toggleFavorite(item)} onRemove={() => user && removeFromLibrary(user.uid, item)} />)}</div>
+        : <EmptyState title={isOwner ? "Arşivin henüz boş" : "Henüz yapım yok"} description={isOwner ? "TMDB’de arayıp izlediğin ilk filmi veya diziyi ekle." : "Eren arşive yapım eklediğinde burada görünecek."} />}
 
       {selectedItem && <LiveMediaDialog item={libraryToDetailTarget(selectedItem)} onClose={() => setSelectedId(null)} onFavorite={isOwner ? () => toggleFavorite(selectedItem) : undefined} />}
       {searchOpen && user && <SearchDialog uid={user.uid} existingIds={new Set(items.map((item) => item.id))} onClose={() => setSearchOpen(false)} onNotice={setNotice} />}
-    </div>
-  );
-}
-
-function TabButton({ active, onClick, icon: Icon, label }: { active: boolean; onClick: () => void; icon: typeof FiFilm; label: string }) {
-  return (
-    <button type="button" onClick={onClick} className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-xl px-4 text-sm transition ${active ? "bg-white text-[#0b0e12]" : "text-white/55 hover:bg-white/[0.055] hover:text-white/80"}`}>
-      <Icon />
-      {label}
-    </button>
-  );
-}
-
-function EditorialTab({ publicCount, favoriteCount }: { publicCount: number; favoriteCount: number }) {
-  const categories = ["Öneriler", "Beyazperde notları", "Yıllık listeler", "Kült filmler", "Dizi rehberleri", "Favorilerden seçkiler"];
-  return (
-    <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
-      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#ffd54a]/70">Yakında</p>
-      <h2 className="mt-3 text-2xl font-semibold text-white">Film notları ve öneri vitrini</h2>
-      <p className="mt-3 max-w-2xl text-sm leading-6 text-white/45">
-        Burası ileride blog gibi çalışacak: herkese açtığın {publicCount} yapımdan seçkiler, kategori bazlı öneriler,
-        “ne izlemeli?” listeleri ve kısa film/dizi notları burada ayrı bir vitrin olarak durabilir.
-      </p>
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((category) => (
-          <div key={category} className="rounded-2xl border border-white/10 bg-black/20 p-4">
-            <div className="mb-3 grid h-10 w-10 place-items-center rounded-xl bg-[#ffd54a] text-black"><FiBookOpen /></div>
-            <h3 className="font-medium text-white/85">{category}</h3>
-            <p className="mt-2 text-xs leading-5 text-white/35">Arşivdeki herkese açık filmlerden otomatik veya elle hazırlanmış içerik alanı.</p>
-          </div>
-        ))}
-      </div>
-      <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm text-white/45">
-        Şimdilik altyapı notu: favori sayısı {favoriteCount}. Sonraki adımda buraya gerçek yazı/listeler için ayrı Firestore koleksiyonu ekleyebiliriz.
-      </div>
     </div>
   );
 }
@@ -244,12 +201,13 @@ function CsvImportButton({ uid, existingIds, onNotice }: { uid: string; existing
   return <><input ref={inputRef} type="file" accept=".csv,text/csv" className="hidden" onChange={(event) => importCsv(event.target.files?.[0])} /><button type="button" disabled={busy} onClick={() => inputRef.current?.click()} className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 px-4 text-sm text-white/70 disabled:opacity-50">{busy ? <FiLoader className="animate-spin" /> : <FiUpload />} IMDb CSV</button></>;
 }
 
-function LibraryCard({ item, isOwner, onOpen, onFavorite, onPublic, onRemove }: { item: LibraryItem; isOwner: boolean; onOpen: () => void; onFavorite: () => void; onPublic: () => void; onRemove: () => void }) {
+function LibraryCard({ item, imdbRating, isOwner, onOpen, onFavorite, onRemove }: { item: LibraryItem; imdbRating: number; isOwner: boolean; onOpen: () => void; onFavorite: () => void; onRemove: () => void }) {
   return <article className="group min-w-0"><div role="button" tabIndex={0} onClick={onOpen} onKeyDown={(event) => event.key === "Enter" && onOpen()} className="relative aspect-[2/3] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#12161b] shadow-xl shadow-black/25 transition duration-500 group-hover:-translate-y-1 group-hover:border-white/25">
     {item.snapshot.posterPath ? <Image src={`https://image.tmdb.org/t/p/w500${item.snapshot.posterPath}`} alt={`${item.snapshot.title} posteri`} fill sizes="(max-width:640px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-[1.035]" /> : <div className="grid h-full place-items-center text-4xl text-white/15"><FiFilm /></div>}<div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20" /><span className="absolute left-3 top-3 rounded-lg border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/80">{item.mediaType === "movie" ? "Film" : "Dizi"}</span>
+    {imdbRating >= 0 && <span className="absolute bottom-3 left-3 rounded-lg bg-[#f5c518] px-2.5 py-1 text-xs font-extrabold text-black">★ {imdbRating.toFixed(1)}</span>}
     <button onClick={(event) => { event.stopPropagation(); onFavorite(); }} disabled={!isOwner} className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border backdrop-blur-md ${item.favorite ? "border-rose-300/30 bg-rose-500/85 text-white" : "border-white/15 bg-black/45 text-white/70"}`} aria-label="Favori"><FiHeart className={item.favorite ? "fill-current" : ""} /></button>
-    {isOwner && <div className="absolute bottom-3 left-3 right-3 flex justify-end gap-2 opacity-0 transition group-hover:opacity-100"><button onClick={(event) => { event.stopPropagation(); onPublic(); }} className="grid h-9 w-9 place-items-center rounded-full border border-white/15 bg-black/70 text-white" title={item.isPublic ? "Gizliye al" : "Herkese aç"}>{item.isPublic ? <FiGlobe /> : <FiLock />}</button><button onClick={(event) => { event.stopPropagation(); if (window.confirm(`${item.snapshot.title} arşivden kaldırılsın mı?`)) onRemove(); }} className="grid h-9 w-9 place-items-center rounded-full border border-rose-300/20 bg-black/70 text-rose-300" title="Arşivden kaldır"><FiTrash2 /></button></div>}
-  </div><div className="px-1 pt-3"><h3 className="truncate font-medium text-white/90">{item.snapshot.title}</h3><p className="mt-1 flex items-center gap-2 text-xs text-white/35"><span>{item.snapshot.year ?? "—"}</span>{item.isPublic && <><span>·</span><span className="text-emerald-300/60">Herkese açık</span></>}</p></div></article>;
+    {isOwner && <div className="absolute bottom-3 left-3 right-3 flex justify-end gap-2 opacity-0 transition group-hover:opacity-100"><button onClick={(event) => { event.stopPropagation(); if (window.confirm(`${item.snapshot.title} arşivden kaldırılsın mı?`)) onRemove(); }} className="grid h-9 w-9 place-items-center rounded-full border border-rose-300/20 bg-black/70 text-rose-300" title="Arşivden kaldır"><FiTrash2 /></button></div>}
+  </div><div className="px-1 pt-3"><h3 className="truncate font-medium text-white/90">{item.snapshot.title}</h3><p className="mt-1 flex items-center gap-2 text-xs text-white/35"><span>{item.snapshot.year ?? "—"}</span></p></div></article>;
 }
 
 function StatCard({ value, label }: { value: number; label: string }) { return <div className="rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-4"><strong className="block text-2xl font-semibold text-white">{value}</strong><span className="mt-0.5 block text-sm text-white/40">{label}</span></div>; }

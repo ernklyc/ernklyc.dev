@@ -17,8 +17,6 @@ enum LibraryFilter { all, movie, tv, favorites }
 
 enum LibraryViewMode { grid, list }
 
-enum LibraryVisibilityFilter { all, public, private }
-
 enum LibrarySortMode { added, imdbDesc, title, yearDesc, yearAsc }
 
 class LibraryScreen extends StatefulWidget {
@@ -33,7 +31,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
   final search = TextEditingController();
   LibraryFilter filter = LibraryFilter.all;
   LibraryViewMode viewMode = LibraryViewMode.grid;
-  LibraryVisibilityFilter visibilityFilter = LibraryVisibilityFilter.all;
   LibrarySortMode sortMode = LibrarySortMode.imdbDesc;
   String genreFilter = 'all';
   String yearFilter = 'all';
@@ -42,6 +39,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   StreamSubscription<String>? shareSubscription;
   Map<String, double> imdbRatings = const {};
   String ratingsKey = '';
+  String repairKey = '';
   bool ratingsLoading = false;
 
   @override
@@ -149,16 +147,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
               item.mediaType == MediaType.movie) ||
           (filter == LibraryFilter.tv && item.mediaType == MediaType.tv) ||
           (filter == LibraryFilter.favorites && item.favorite);
-      final visibilityMatch =
-          visibilityFilter == LibraryVisibilityFilter.all ||
-          (visibilityFilter == LibraryVisibilityFilter.public
-              ? item.isPublic
-              : !item.isPublic);
       final genreMatch =
           genreFilter == 'all' || item.genres.contains(genreFilter);
       final yearMatch = yearFilter == 'all' || '${item.year}' == yearFilter;
       return filterMatch &&
-          visibilityMatch &&
           genreMatch &&
           yearMatch &&
           (query.isEmpty ||
@@ -199,24 +191,23 @@ class _LibraryScreenState extends State<LibraryScreen> {
         .ratings(ids)
         .then((ratings) {
           if (!mounted) return;
-          setState(() => imdbRatings = {...imdbRatings, ...ratings});
+          final merged = {...imdbRatings, ...ratings};
+          setState(() => imdbRatings = merged);
+          _repairItems(items, merged);
         })
         .whenComplete(() => ratingsLoading = false);
   }
 
-  Future<void> setShownPublic(List<LibraryItem> shown, bool value) async {
-    if (shown.isEmpty) return;
-    await library.setManyPublic(shown, value);
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          value
-              ? '${shown.length} kayıt herkese açıldı.'
-              : '${shown.length} kayıt gizliye alındı.',
-        ),
-      ),
-    );
+  void _repairItems(List<LibraryItem> items, Map<String, double> ratings) {
+    final key = items
+        .map(
+          (item) =>
+              '${item.id}:${item.isPublic ? 1 : 0}:${item.imdbRating ?? ratings[item.imdbId] ?? ''}',
+        )
+        .join('|');
+    if (key == repairKey) return;
+    repairKey = key;
+    library.repairPublicAndRatings(items, ratings).catchError((_) {});
   }
 
   @override
@@ -224,9 +215,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
     stream: library.watchLibrary(),
     builder: (context, snapshot) {
       final items = snapshot.data ?? const <LibraryItem>[];
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => _ensureRatings(items),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _ensureRatings(items);
+        _repairItems(items, imdbRatings);
+      });
       final shown = visible(items);
       final existingIds = items.map((item) => item.id).toSet();
       final movieCount = items
@@ -236,8 +228,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
           .where((item) => item.mediaType == MediaType.tv)
           .length;
       final favoriteCount = items.where((item) => item.favorite).length;
-      final publicCount = items.where((item) => item.isPublic).length;
-      final privateCount = items.length - publicCount;
       final genres = items.expand((item) => item.genres).toSet().toList()
         ..sort();
       final years =
@@ -250,23 +240,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
           actions: [
-            PopupMenuButton<String>(
-              tooltip: 'Toplu işlemler',
-              onSelected: (value) {
-                if (value == 'public_on') setShownPublic(shown, true);
-                if (value == 'public_off') setShownPublic(shown, false);
-              },
-              itemBuilder: (_) => [
-                const PopupMenuItem(
-                  value: 'public_on',
-                  child: Text('Görünenleri herkese aç'),
-                ),
-                const PopupMenuItem(
-                  value: 'public_off',
-                  child: Text('Görünenleri gizliye al'),
-                ),
-              ],
-            ),
             IconButton(
               onPressed: importing ? null : () => importCsv(existingIds),
               tooltip: 'IMDb CSV içe aktar',
@@ -303,7 +276,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 movies: movieCount,
                 tv: tvCount,
                 favorites: favoriteCount,
-                publicCount: publicCount,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 2, 16, 10),
@@ -343,24 +315,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   children: [
                     Row(
                       children: [
-                        Expanded(
-                          child: _EnumDropdown<LibraryVisibilityFilter>(
-                            label: 'Görünürlük',
-                            value: visibilityFilter,
-                            values: LibraryVisibilityFilter.values,
-                            labelFor: (value) => switch (value) {
-                              LibraryVisibilityFilter.all =>
-                                'Tümü (${items.length})',
-                              LibraryVisibilityFilter.public =>
-                                'Public ($publicCount)',
-                              LibraryVisibilityFilter.private =>
-                                'Gizli ($privateCount)',
-                            },
-                            onChanged: (value) =>
-                                setState(() => visibilityFilter = value),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
                         Expanded(
                           child: _EnumDropdown<LibrarySortMode>(
                             label: 'Sırala',
@@ -464,8 +418,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
                         ),
                         onFavorite: (item) =>
                             library.setFavorite(item, !item.favorite),
-                        onPublic: (item) =>
-                            library.setPublic(item, !item.isPublic),
                         onRemove: library.remove,
                       ),
               ),
@@ -494,14 +446,12 @@ class _StatsBar extends StatelessWidget {
     required this.movies,
     required this.tv,
     required this.favorites,
-    required this.publicCount,
   });
 
   final int total;
   final int movies;
   final int tv;
   final int favorites;
-  final int publicCount;
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -514,7 +464,6 @@ class _StatsBar extends StatelessWidget {
         _StatChip(label: 'Film', value: movies, icon: Icons.movie_creation),
         _StatChip(label: 'Dizi', value: tv, icon: Icons.live_tv),
         _StatChip(label: 'Favori', value: favorites, icon: Icons.favorite),
-        _StatChip(label: 'Public', value: publicCount, icon: Icons.public),
       ],
     ),
   );
@@ -663,7 +612,6 @@ class _LibraryResults extends StatelessWidget {
     required this.viewMode,
     required this.onOpen,
     required this.onFavorite,
-    required this.onPublic,
     required this.onRemove,
   });
 
@@ -671,7 +619,6 @@ class _LibraryResults extends StatelessWidget {
   final LibraryViewMode viewMode;
   final ValueChanged<LibraryItem> onOpen;
   final ValueChanged<LibraryItem> onFavorite;
-  final ValueChanged<LibraryItem> onPublic;
   final ValueChanged<LibraryItem> onRemove;
 
   @override
@@ -687,7 +634,6 @@ class _LibraryResults extends StatelessWidget {
             item: item,
             onOpen: () => onOpen(item),
             onFavorite: () => onFavorite(item),
-            onPublic: () => onPublic(item),
             onRemove: () => onRemove(item),
           );
         },
@@ -709,7 +655,6 @@ class _LibraryResults extends StatelessWidget {
           item: item,
           onOpen: () => onOpen(item),
           onFavorite: () => onFavorite(item),
-          onPublic: () => onPublic(item),
           onRemove: () => onRemove(item),
         );
       },

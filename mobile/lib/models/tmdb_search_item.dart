@@ -68,7 +68,7 @@ class TmdbSearchItem {
     'imdbId': imdbId,
     'mediaType': mediaType.name,
     'favorite': false,
-    'isPublic': false,
+    'isPublic': true,
     'snapshot': {
       'title': title,
       'originalTitle': originalTitle,

@@ -81,5 +81,32 @@ class LibraryService {
     }
   }
 
+  Future<void> repairPublicAndRatings(
+    List<LibraryItem> items,
+    Map<String, double> ratings,
+  ) async {
+    final pending = items.where((item) {
+      final rating = item.imdbId == null ? null : ratings[item.imdbId];
+      return !item.isPublic || (rating != null && item.imdbRating == null);
+    }).toList();
+    if (pending.isEmpty) return;
+
+    for (var start = 0; start < pending.length; start += 450) {
+      final batch = _firestore.batch();
+      for (final item in pending.skip(start).take(450)) {
+        final rating = item.imdbId == null ? null : ratings[item.imdbId];
+        final payload = <String, Object?>{
+          'isPublic': true,
+          'updatedAt': FieldValue.serverTimestamp(),
+        };
+        if (rating != null && item.imdbRating == null) {
+          payload['snapshot.imdbRating'] = rating;
+        }
+        batch.update(_library.doc(item.id), payload);
+      }
+      await batch.commit();
+    }
+  }
+
   Future<void> remove(LibraryItem item) => _library.doc(item.id).delete();
 }
