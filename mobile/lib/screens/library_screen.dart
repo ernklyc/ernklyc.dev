@@ -167,7 +167,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
     filtered.sort(
       (a, b) => switch (sortMode) {
         LibrarySortMode.title => a.title.compareTo(b.title),
-        LibrarySortMode.imdbDesc => _ratingOf(b).compareTo(_ratingOf(a)),
+        LibrarySortMode.imdbDesc => _compareByImdbRating(a, b),
         LibrarySortMode.yearDesc => (b.year ?? 0).compareTo(a.year ?? 0),
         LibrarySortMode.yearAsc => (a.year ?? 9999).compareTo(b.year ?? 9999),
         LibrarySortMode.added => b.id.compareTo(a.id),
@@ -183,6 +183,14 @@ class _LibraryScreenState extends State<LibraryScreen> {
   double _ratingOf(LibraryItem item) =>
       item.imdbRating ??
       (item.imdbId == null ? -1 : imdbRatings[item.imdbId] ?? -1);
+
+  int _compareByImdbRating(LibraryItem a, LibraryItem b) {
+    final rating = _ratingOf(b).compareTo(_ratingOf(a));
+    if (rating != 0) return rating;
+    final votes = (b.imdbVotes ?? 0).compareTo(a.imdbVotes ?? 0);
+    if (votes != 0) return votes;
+    return a.title.compareTo(b.title);
+  }
 
   void _ensureRatings(List<LibraryItem> items) {
     final ids =

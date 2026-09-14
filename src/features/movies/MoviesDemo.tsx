@@ -11,6 +11,7 @@ import { useMovieLibrary } from "./useMovieLibrary";
 
 type Filter = "all" | MediaType | "favorites";
 type SortMode = "added" | "imdb-desc" | "title" | "year-desc" | "year-asc";
+type RatingCache = Record<string, { averageRating: number; numVotes: number } | null>;
 const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
   { id: "all", label: "Tümü" },
   { id: "movie", label: "Filmler", icon: FiFilm },
@@ -32,7 +33,7 @@ export default function MoviesDemo() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [notice, setNotice] = useState("");
-  const [ratings, setRatings] = useState<Record<string, { averageRating: number; numVotes: number } | null>>(() => readRatingsCache());
+  const [ratings, setRatings] = useState<RatingCache>(() => readRatingsCache());
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
   const [, startTransition] = useTransition();
   const repairedSignatureRef = useRef("");
@@ -40,12 +41,14 @@ export default function MoviesDemo() {
   const missingRatingIds = useMemo(() => [...new Set(items
     .filter((item) => item.imdbId && typeof item.snapshot.imdbRating !== "number" && !(item.imdbId in ratings))
     .map((item) => item.imdbId as string))].sort(), [items, ratings]);
+  const missingRatingKey = missingRatingIds.join("|");
 
   useEffect(() => {
-    if (!missingRatingIds.length) return;
+    const idsToFetch = missingRatingKey ? missingRatingKey.split("|") : [];
+    if (!idsToFetch.length) return;
 
     let cancelled = false;
-    Promise.all(chunk(missingRatingIds, RATING_BATCH_SIZE).map(async (imdbIds) => {
+    Promise.all(chunk(idsToFetch, RATING_BATCH_SIZE).map(async (imdbIds) => {
       const response = await fetch("/api/movies/ratings", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -61,7 +64,7 @@ export default function MoviesDemo() {
     return () => {
       cancelled = true;
     };
-  }, [missingRatingIds]);
+  }, [missingRatingKey]);
 
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE_COUNT);
@@ -94,7 +97,7 @@ export default function MoviesDemo() {
       if (sortMode === "title") return a.snapshot.title.localeCompare(b.snapshot.title, "tr");
       if (sortMode === "year-desc") return (b.snapshot.year ?? 0) - (a.snapshot.year ?? 0);
       if (sortMode === "year-asc") return (a.snapshot.year ?? 9999) - (b.snapshot.year ?? 9999);
-      if (sortMode === "imdb-desc") return imdbRatingOf(b, ratings) - imdbRatingOf(a, ratings);
+      if (sortMode === "imdb-desc") return compareByImdbRating(a, b, ratings);
       return timestampMillis(b.addedAt) - timestampMillis(a.addedAt);
     });
   }, [activeFilter, genreFilter, items, query, ratings, sortMode, yearFilter]);
@@ -238,18 +241,26 @@ function Select({ label, value, options, onChange }: { label: string; value: str
 function EmptyState({ title, description }: { title: string; description: string }) { return <div className="grid min-h-64 place-items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.025] text-center"><div className="px-6"><FiSearch className="mx-auto mb-3 text-2xl text-white/25" /><p className="font-medium text-white/75">{title}</p><p className="mt-1 text-sm text-white/35">{description}</p></div></div>; }
 function normalize(value: string) { return value.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
 function sectionTitle(filter: Filter) { return filter === "favorites" ? "Favorilerim" : filter === "movie" ? "İzlediğim filmler" : filter === "tv" ? "İzlediğim diziler" : "Tüm izlediklerim"; }
-function imdbRatingOf(item: LibraryItem, ratings: Record<string, { averageRating: number } | null>) { return item.snapshot.imdbRating ?? (item.imdbId ? ratings[item.imdbId]?.averageRating : undefined) ?? -1; }
+function compareByImdbRating(a: LibraryItem, b: LibraryItem, ratings: RatingCache) {
+  const ratingDifference = imdbRatingOf(b, ratings) - imdbRatingOf(a, ratings);
+  if (ratingDifference !== 0) return ratingDifference;
+  const voteDifference = imdbVotesOf(b, ratings) - imdbVotesOf(a, ratings);
+  if (voteDifference !== 0) return voteDifference;
+  return a.snapshot.title.localeCompare(b.snapshot.title, "tr");
+}
+function imdbRatingOf(item: LibraryItem, ratings: RatingCache) { return item.snapshot.imdbRating ?? (item.imdbId ? ratings[item.imdbId]?.averageRating : undefined) ?? -1; }
+function imdbVotesOf(item: LibraryItem, ratings: RatingCache) { return item.snapshot.imdbVotes ?? (item.imdbId ? ratings[item.imdbId]?.numVotes : undefined) ?? 0; }
 function libraryToDetailTarget(item: LibraryItem): MediaDetailTarget { return { id: item.tmdbId, title: item.snapshot.title, originalTitle: item.snapshot.originalTitle, year: item.snapshot.year, mediaType: item.mediaType, posterPath: item.snapshot.posterPath, favorite: item.favorite, imdbId: item.imdbId }; }
 async function ownerAuthHeaders() { const token = await auth.currentUser?.getIdToken(); if (!token) throw new Error("Oturum bulunamadı."); return { Authorization: `Bearer ${token}` }; }
-function readRatingsCache(): Record<string, { averageRating: number; numVotes: number } | null> {
+function readRatingsCache(): RatingCache {
   if (typeof window === "undefined") return {};
   try {
-    return JSON.parse(window.localStorage.getItem(RATINGS_CACHE_KEY) ?? "{}") as Record<string, { averageRating: number; numVotes: number } | null>;
+    return JSON.parse(window.localStorage.getItem(RATINGS_CACHE_KEY) ?? "{}") as RatingCache;
   } catch {
     return {};
   }
 }
-function writeRatingsCache(ratings: Record<string, { averageRating: number; numVotes: number } | null>) {
+function writeRatingsCache(ratings: RatingCache) {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(RATINGS_CACHE_KEY, JSON.stringify(ratings));
