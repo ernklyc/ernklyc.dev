@@ -11,6 +11,8 @@ import { mediaDocumentId, type LibraryItem, type MediaType, type TmdbSearchItem 
 import { useMovieLibrary } from "./useMovieLibrary";
 
 type Filter = "all" | MediaType | "favorites";
+type VisibilityFilter = "all" | "public" | "private";
+type SortMode = "added" | "title" | "year-desc" | "year-asc";
 const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
   { id: "all", label: "Tümü" },
   { id: "movie", label: "Filmler", icon: FiFilm },
@@ -21,6 +23,10 @@ const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
 export default function MoviesDemo() {
   const { user, items, loading, error, isOwner } = useMovieLibrary();
   const [activeFilter, setActiveFilter] = useState<Filter>("all");
+  const [visibilityFilter, setVisibilityFilter] = useState<VisibilityFilter>("all");
+  const [genreFilter, setGenreFilter] = useState("all");
+  const [yearFilter, setYearFilter] = useState("all");
+  const [sortMode, setSortMode] = useState<SortMode>("added");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -28,17 +34,30 @@ export default function MoviesDemo() {
 
   const visibleItems = useMemo(() => {
     const normalizedQuery = normalize(query.trim());
-    return items.filter((item) => {
+    const filtered = items.filter((item) => {
       const matchesFilter = activeFilter === "all" || (activeFilter === "favorites" ? item.favorite : item.mediaType === activeFilter);
+      const matchesVisibility = !isOwner || visibilityFilter === "all" || (visibilityFilter === "public" ? item.isPublic : !item.isPublic);
+      const matchesGenre = genreFilter === "all" || item.snapshot.genres.includes(genreFilter);
+      const matchesYear = yearFilter === "all" || String(item.snapshot.year ?? "") === yearFilter;
       const matchesQuery = !normalizedQuery || normalize(item.snapshot.title).includes(normalizedQuery) || normalize(item.snapshot.originalTitle).includes(normalizedQuery) || String(item.snapshot.year ?? "").includes(normalizedQuery);
-      return matchesFilter && matchesQuery;
+      return matchesFilter && matchesVisibility && matchesGenre && matchesYear && matchesQuery;
     });
-  }, [activeFilter, items, query]);
+    return filtered.toSorted((a, b) => {
+      if (sortMode === "title") return a.snapshot.title.localeCompare(b.snapshot.title, "tr");
+      if (sortMode === "year-desc") return (b.snapshot.year ?? 0) - (a.snapshot.year ?? 0);
+      if (sortMode === "year-asc") return (a.snapshot.year ?? 9999) - (b.snapshot.year ?? 9999);
+      return timestampMillis(b.addedAt) - timestampMillis(a.addedAt);
+    });
+  }, [activeFilter, genreFilter, isOwner, items, query, sortMode, visibilityFilter, yearFilter]);
 
   const selectedItem = selectedId ? items.find((item) => item.id === selectedId) ?? null : null;
   const movieCount = items.filter((item) => item.mediaType === "movie").length;
   const tvCount = items.length - movieCount;
   const favoriteCount = items.filter((item) => item.favorite).length;
+  const publicCount = items.filter((item) => item.isPublic).length;
+  const privateCount = items.length - publicCount;
+  const genres = useMemo(() => [...new Set(items.flatMap((item) => item.snapshot.genres))].sort((a, b) => a.localeCompare(b, "tr")), [items]);
+  const years = useMemo(() => [...new Set(items.map((item) => item.snapshot.year).filter((year): year is number => typeof year === "number"))].sort((a, b) => b - a), [items]);
 
   async function toggleFavorite(item: LibraryItem) {
     if (user && isOwner) await setLibraryFavorite(user.uid, item, !item.favorite);
@@ -63,11 +82,12 @@ export default function MoviesDemo() {
 
       {notice && <div className="mb-6 flex items-start justify-between gap-4 rounded-xl border border-emerald-300/15 bg-emerald-400/[0.07] px-4 py-3 text-sm text-emerald-100"><span>{notice}</span><button onClick={() => setNotice("")} aria-label="Bildirimi kapat"><FiX /></button></div>}
 
-      <div className="mb-9 grid gap-3 sm:grid-cols-3">
-        <StatCard value={items.length} label="Toplam yapım" /><StatCard value={movieCount} label="Film" /><StatCard value={tvCount} label="Dizi" />
+      <div className="mb-9 grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <StatCard value={items.length} label="Toplam yapım" /><StatCard value={movieCount} label="Film" /><StatCard value={tvCount} label="Dizi" /><StatCard value={favoriteCount} label="Favori" /><StatCard value={publicCount} label="Herkese açık" />
       </div>
 
-      <div className="sticky top-4 z-30 mb-9 rounded-2xl border border-white/10 bg-[#0b0e12]/85 p-3 shadow-2xl shadow-black/30 backdrop-blur-2xl md:top-6 md:flex md:items-center md:gap-3">
+      <div className="sticky top-4 z-30 mb-9 space-y-3 rounded-2xl border border-white/10 bg-[#0b0e12]/85 p-3 shadow-2xl shadow-black/30 backdrop-blur-2xl md:top-6">
+        <div className="md:flex md:items-center md:gap-3">
         <label className="relative block min-w-0 flex-1">
           <FiSearch className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-white/40" /><span className="sr-only">Arşivde ara</span>
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="İzlediklerinde ara..." className="h-12 w-full rounded-xl border border-white/10 bg-white/[0.045] pl-11 pr-11 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#a9b7c4]/60" />
@@ -78,6 +98,13 @@ export default function MoviesDemo() {
           const count = filter.id === "favorites" ? favoriteCount : filter.id === "movie" ? movieCount : filter.id === "tv" ? tvCount : items.length;
           return <button key={filter.id} type="button" onClick={() => setActiveFilter(filter.id)} className={`flex h-11 shrink-0 items-center gap-2 rounded-xl px-3.5 text-sm transition ${activeFilter === filter.id ? "bg-[#a9b7c4] font-medium text-[#0b0e12]" : "border border-white/10 bg-white/[0.035] text-white/65"}`}>{Icon && <Icon />}{filter.label}<span className={activeFilter === filter.id ? "text-black/50" : "text-white/30"}>{count}</span></button>;
         })}</div>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {isOwner && <Select label="Görünürlük" value={visibilityFilter} onChange={(value) => setVisibilityFilter(value as VisibilityFilter)} options={[["all", `Tümü (${items.length})`], ["public", `Herkese açık (${publicCount})`], ["private", `Gizli (${privateCount})`]]} />}
+          <Select label="Tür" value={genreFilter} onChange={setGenreFilter} options={[["all", "Tüm türler"], ...genres.map((genre) => [genre, genre] as [string, string])]} />
+          <Select label="Yıl" value={yearFilter} onChange={setYearFilter} options={[["all", "Tüm yıllar"], ...years.map((year) => [String(year), String(year)] as [string, string])]} />
+          <Select label="Sırala" value={sortMode} onChange={(value) => setSortMode(value as SortMode)} options={[["added", "Son eklenen"], ["title", "Ada göre"], ["year-desc", "Yeni yıl"], ["year-asc", "Eski yıl"]]} />
+        </div>
       </div>
 
       <div className="mb-4 flex items-end justify-between gap-4"><div><p className="text-xs font-medium uppercase tracking-[0.22em] text-[#a9b7c4]/60">Kişisel arşiv</p><h2 className="mt-1 text-xl font-semibold text-white sm:text-2xl">{sectionTitle(activeFilter)}</h2></div><span className="text-sm text-white/35">{visibleItems.length} sonuç</span></div>
@@ -151,8 +178,20 @@ function LibraryCard({ item, isOwner, onOpen, onFavorite, onPublic, onRemove }: 
 }
 
 function StatCard({ value, label }: { value: number; label: string }) { return <div className="rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-4"><strong className="block text-2xl font-semibold text-white">{value}</strong><span className="mt-0.5 block text-sm text-white/40">{label}</span></div>; }
+function Select({ label, value, options, onChange }: { label: string; value: string; options: [string, string][]; onChange: (value: string) => void }) {
+  return <label className="block">
+    <span className="mb-1 block text-[11px] font-medium uppercase tracking-[0.16em] text-white/30">{label}</span>
+    <select value={value} onChange={(event) => onChange(event.target.value)} className="h-11 w-full rounded-xl border border-white/10 bg-white/[0.045] px-3 text-sm text-white outline-none focus:border-[#a9b7c4]/60">
+      {options.map(([optionValue, optionLabel]) => <option key={optionValue} value={optionValue} className="bg-[#0b0e12] text-white">{optionLabel}</option>)}
+    </select>
+  </label>;
+}
 function EmptyState({ title, description }: { title: string; description: string }) { return <div className="grid min-h-64 place-items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.025] text-center"><div className="px-6"><FiSearch className="mx-auto mb-3 text-2xl text-white/25" /><p className="font-medium text-white/75">{title}</p><p className="mt-1 text-sm text-white/35">{description}</p></div></div>; }
 function normalize(value: string) { return value.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
 function sectionTitle(filter: Filter) { return filter === "favorites" ? "Favorilerim" : filter === "movie" ? "İzlediğim filmler" : filter === "tv" ? "İzlediğim diziler" : "Tüm izlediklerim"; }
 function libraryToDetailTarget(item: LibraryItem): MediaDetailTarget { return { id: item.tmdbId, title: item.snapshot.title, originalTitle: item.snapshot.originalTitle, year: item.snapshot.year, mediaType: item.mediaType, posterPath: item.snapshot.posterPath, favorite: item.favorite, imdbId: item.imdbId }; }
 async function ownerAuthHeaders() { const token = await auth.currentUser?.getIdToken(); if (!token) throw new Error("Oturum bulunamadı."); return { Authorization: `Bearer ${token}` }; }
+function timestampMillis(value: unknown) {
+  if (value && typeof value === "object" && "toMillis" in value) return (value as { toMillis: () => number }).toMillis();
+  return 0;
+}

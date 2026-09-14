@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../core/app_config.dart';
 import '../models/tmdb_search_item.dart';
 
@@ -11,25 +12,42 @@ class ImportMatch {
 }
 
 class MovieApiService {
+  static const _detailCacheTtl = Duration(hours: 12);
+  static const _episodeCacheTtl = Duration(hours: 24);
+
   Future<Map<String, dynamic>> details(int tmdbId, String mediaType) async {
-    final response = await http.get(
-      Uri.parse('${AppConfig.apiBaseUrl}/api/movies/$mediaType/$tmdbId'),
+    final key = 'movie_detail_${mediaType}_$tmdbId';
+    return _cachedJsonMap(
+      key: key,
+      ttl: _detailCacheTtl,
+      fetcher: () async {
+        final response = await http.get(
+          Uri.parse('${AppConfig.apiBaseUrl}/api/movies/$mediaType/$tmdbId'),
+        );
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        if (response.statusCode != 200) {
+          throw Exception(body['error'] ?? 'Detaylar alınamadı.');
+        }
+        return body;
+      },
     );
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
-    if (response.statusCode != 200) {
-      throw Exception(body['error'] ?? 'Detaylar alınamadı.');
-    }
-    return body;
   }
 
   Future<List<Map<String, dynamic>>> episodes(int tmdbId) async {
-    final response = await http.get(
-      Uri.parse('${AppConfig.apiBaseUrl}/api/movies/tv/$tmdbId/episodes'),
+    final body = await _cachedJsonMap(
+      key: 'movie_episodes_$tmdbId',
+      ttl: _episodeCacheTtl,
+      fetcher: () async {
+        final response = await http.get(
+          Uri.parse('${AppConfig.apiBaseUrl}/api/movies/tv/$tmdbId/episodes'),
+        );
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        if (response.statusCode != 200) {
+          throw Exception(body['error'] ?? 'Bölüm puanları alınamadı.');
+        }
+        return body;
+      },
     );
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
-    if (response.statusCode != 200) {
-      throw Exception(body['error'] ?? 'Bölüm puanları alınamadı.');
-    }
     return List<Map<String, dynamic>>.from(
       body['episodes'] as List? ?? const [],
     );
@@ -75,5 +93,27 @@ class MovieApiService {
     final token = await FirebaseAuth.instance.currentUser?.getIdToken();
     if (token == null) throw StateError('Oturum bulunamadı.');
     return {'authorization': 'Bearer $token'};
+  }
+
+  Future<Map<String, dynamic>> _cachedJsonMap({
+    required String key,
+    required Duration ttl,
+    required Future<Map<String, dynamic>> Function() fetcher,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(key);
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    if (raw != null) {
+      final cached = jsonDecode(raw) as Map<String, dynamic>;
+      final cachedAt = cached['cachedAt'] as int? ?? 0;
+      if (now - cachedAt < ttl.inMilliseconds) {
+        return Map<String, dynamic>.from(cached['value'] as Map);
+      }
+    }
+
+    final fresh = await fetcher();
+    await prefs.setString(key, jsonEncode({'cachedAt': now, 'value': fresh}));
+    return fresh;
   }
 }

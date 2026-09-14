@@ -31,7 +31,10 @@ export async function POST(request: Request) {
       );
       results.push(...matched);
     }
-    return NextResponse.json({ results });
+    return NextResponse.json(
+      { results },
+      { headers: { "Cache-Control": "private, max-age=86400" } },
+    );
   } catch (error) {
     if (error instanceof TmdbConfigurationError) {
       return NextResponse.json({ error: error.message }, { status: 503 });

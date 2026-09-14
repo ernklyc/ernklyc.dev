@@ -17,6 +17,10 @@ enum LibraryFilter { all, movie, tv, favorites }
 
 enum LibraryViewMode { grid, list }
 
+enum LibraryVisibilityFilter { all, public, private }
+
+enum LibrarySortMode { added, title, yearDesc, yearAsc }
+
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
   @override
@@ -29,6 +33,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
   final search = TextEditingController();
   LibraryFilter filter = LibraryFilter.all;
   LibraryViewMode viewMode = LibraryViewMode.grid;
+  LibraryVisibilityFilter visibilityFilter = LibraryVisibilityFilter.all;
+  LibrarySortMode sortMode = LibrarySortMode.added;
+  String genreFilter = 'all';
+  String yearFilter = 'all';
   bool importing = false;
   final shareIntent = ShareIntentService();
   StreamSubscription<String>? shareSubscription;
@@ -131,19 +139,40 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
   List<LibraryItem> visible(List<LibraryItem> items) {
     final query = search.text.trim().toLowerCase();
-    return items.where((item) {
+    final filtered = items.where((item) {
       final filterMatch =
           filter == LibraryFilter.all ||
           (filter == LibraryFilter.movie &&
               item.mediaType == MediaType.movie) ||
           (filter == LibraryFilter.tv && item.mediaType == MediaType.tv) ||
           (filter == LibraryFilter.favorites && item.favorite);
+      final visibilityMatch =
+          visibilityFilter == LibraryVisibilityFilter.all ||
+          (visibilityFilter == LibraryVisibilityFilter.public
+              ? item.isPublic
+              : !item.isPublic);
+      final genreMatch =
+          genreFilter == 'all' || item.genres.contains(genreFilter);
+      final yearMatch = yearFilter == 'all' || '${item.year}' == yearFilter;
       return filterMatch &&
+          visibilityMatch &&
+          genreMatch &&
+          yearMatch &&
           (query.isEmpty ||
               item.title.toLowerCase().contains(query) ||
               item.originalTitle.toLowerCase().contains(query) ||
               '${item.year}'.contains(query));
     }).toList();
+
+    filtered.sort(
+      (a, b) => switch (sortMode) {
+        LibrarySortMode.title => a.title.compareTo(b.title),
+        LibrarySortMode.yearDesc => (b.year ?? 0).compareTo(a.year ?? 0),
+        LibrarySortMode.yearAsc => (a.year ?? 9999).compareTo(b.year ?? 9999),
+        LibrarySortMode.added => b.id.compareTo(a.id),
+      },
+    );
+    return filtered;
   }
 
   Future<void> setShownPublic(List<LibraryItem> shown, bool value) async {
@@ -176,6 +205,12 @@ class _LibraryScreenState extends State<LibraryScreen> {
           .length;
       final favoriteCount = items.where((item) => item.favorite).length;
       final publicCount = items.where((item) => item.isPublic).length;
+      final privateCount = items.length - publicCount;
+      final genres = items.expand((item) => item.genres).toSet().toList()
+        ..sort();
+      final years =
+          items.map((item) => item.year).whereType<int>().toSet().toList()
+            ..sort((a, b) => b.compareTo(a));
       return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -266,6 +301,78 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       selected: {viewMode},
                       onSelectionChanged: (value) =>
                           setState(() => viewMode = value.first),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _EnumDropdown<LibraryVisibilityFilter>(
+                            label: 'Görünürlük',
+                            value: visibilityFilter,
+                            values: LibraryVisibilityFilter.values,
+                            labelFor: (value) => switch (value) {
+                              LibraryVisibilityFilter.all =>
+                                'Tümü (${items.length})',
+                              LibraryVisibilityFilter.public =>
+                                'Public ($publicCount)',
+                              LibraryVisibilityFilter.private =>
+                                'Gizli ($privateCount)',
+                            },
+                            onChanged: (value) =>
+                                setState(() => visibilityFilter = value),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: _EnumDropdown<LibrarySortMode>(
+                            label: 'Sırala',
+                            value: sortMode,
+                            values: LibrarySortMode.values,
+                            labelFor: (value) => switch (value) {
+                              LibrarySortMode.added => 'Son eklenen',
+                              LibrarySortMode.title => 'Ada göre',
+                              LibrarySortMode.yearDesc => 'Yeni yıl',
+                              LibrarySortMode.yearAsc => 'Eski yıl',
+                            },
+                            onChanged: (value) =>
+                                setState(() => sortMode = value),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _StringDropdown(
+                            label: 'Tür',
+                            value: genreFilter,
+                            items: ['all', ...genres],
+                            labelFor: (value) =>
+                                value == 'all' ? 'Tüm türler' : value,
+                            onChanged: (value) =>
+                                setState(() => genreFilter = value),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: _StringDropdown(
+                            label: 'Yıl',
+                            value: yearFilter,
+                            items: ['all', ...years.map((year) => '$year')],
+                            labelFor: (value) =>
+                                value == 'all' ? 'Tüm yıllar' : value,
+                            onChanged: (value) =>
+                                setState(() => yearFilter = value),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -377,6 +484,102 @@ class _StatsBar extends StatelessWidget {
         _StatChip(label: 'Public', value: publicCount, icon: Icons.public),
       ],
     ),
+  );
+}
+
+class _EnumDropdown<T extends Enum> extends StatelessWidget {
+  const _EnumDropdown({
+    required this.label,
+    required this.value,
+    required this.values,
+    required this.labelFor,
+    required this.onChanged,
+  });
+
+  final String label;
+  final T value;
+  final List<T> values;
+  final String Function(T value) labelFor;
+  final ValueChanged<T> onChanged;
+
+  @override
+  Widget build(BuildContext context) => _DropdownFrame(
+    label: label,
+    child: DropdownButtonHideUnderline(
+      child: DropdownButton<T>(
+        isExpanded: true,
+        value: value,
+        dropdownColor: const Color(0xFF11161C),
+        borderRadius: BorderRadius.circular(14),
+        items: values
+            .map(
+              (item) => DropdownMenuItem<T>(
+                value: item,
+                child: Text(labelFor(item), overflow: TextOverflow.ellipsis),
+              ),
+            )
+            .toList(),
+        onChanged: (next) {
+          if (next != null) onChanged(next);
+        },
+      ),
+    ),
+  );
+}
+
+class _StringDropdown extends StatelessWidget {
+  const _StringDropdown({
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.labelFor,
+    required this.onChanged,
+  });
+
+  final String label;
+  final String value;
+  final List<String> items;
+  final String Function(String value) labelFor;
+  final ValueChanged<String> onChanged;
+
+  @override
+  Widget build(BuildContext context) => _DropdownFrame(
+    label: label,
+    child: DropdownButtonHideUnderline(
+      child: DropdownButton<String>(
+        isExpanded: true,
+        value: items.contains(value) ? value : 'all',
+        dropdownColor: const Color(0xFF11161C),
+        borderRadius: BorderRadius.circular(14),
+        items: items
+            .map(
+              (item) => DropdownMenuItem<String>(
+                value: item,
+                child: Text(labelFor(item), overflow: TextOverflow.ellipsis),
+              ),
+            )
+            .toList(),
+        onChanged: (next) {
+          if (next != null) onChanged(next);
+        },
+      ),
+    ),
+  );
+}
+
+class _DropdownFrame extends StatelessWidget {
+  const _DropdownFrame({required this.label, required this.child});
+
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => InputDecorator(
+    decoration: InputDecoration(
+      labelText: label,
+      contentPadding: const EdgeInsets.fromLTRB(12, 4, 8, 4),
+    ),
+    child: child,
   );
 }
 

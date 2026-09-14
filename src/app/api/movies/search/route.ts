@@ -13,7 +13,10 @@ export async function GET(request: Request) {
   }
 
   try {
-    return NextResponse.json({ results: await searchLiveMedia(query) });
+    return NextResponse.json(
+      { results: await searchLiveMedia(query) },
+      { headers: { "Cache-Control": "private, max-age=300" } },
+    );
   } catch (error) {
     if (error instanceof TmdbConfigurationError) {
       return NextResponse.json({ error: error.message }, { status: 503 });
