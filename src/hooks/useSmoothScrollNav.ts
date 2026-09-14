@@ -18,6 +18,7 @@ export const navMenuItems: NavMenuItem[] = [
   { labelKey: "nav.skills", href: "#skills" },
   { labelKey: "nav.experience", href: "#experience" },
   { labelKey: "nav.projects", href: "#projects" },
+  { labelKey: "nav.movies", href: "/movies", isRoute: true },
   { labelKey: "nav.blog", href: "#blog" },
   { labelKey: "nav.contact", href: "#contact" },
 ];
