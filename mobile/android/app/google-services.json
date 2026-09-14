@@ -12,7 +12,20 @@
           "package_name": "dev.ernklyc.movie_log_mobile"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "551137076703-u2tj45hrvar1p079e6k2qcku3tar5h5c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.ernklyc.movie_log_mobile",
+            "certificate_hash": "1accc2fa6d55e506298a92fbe77b8a99e7e24f56"
+          }
+        },
+        {
+          "client_id": "551137076703-u7ki7e48790j51m7flc34f5tohi58iv6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC22kgditXD7aw-ykGLjvL52y-ydILb-r4"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "551137076703-u7ki7e48790j51m7flc34f5tohi58iv6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "551137076703-pou4nsvsgjf92m6hklt1937vlu71nvfb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dev.ernklyc.movieLogMobile"
+              }
+            }
+          ]
         }
       }
     }

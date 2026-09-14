@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,6 +12,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final email = TextEditingController(text: 'ernklyc@gmail.com');
   final password = TextEditingController();
   bool loading = false;
+  bool googleLoading = false;
   String? error;
 
   @override
@@ -38,6 +40,37 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } finally {
       if (mounted) setState(() => loading = false);
+    }
+  }
+
+  Future<void> loginWithGoogle() async {
+    setState(() {
+      googleLoading = true;
+      error = null;
+    });
+    try {
+      final googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        setState(() => error = 'Google girişi iptal edildi.');
+        return;
+      }
+
+      final googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } on FirebaseAuthException catch (exception) {
+      setState(
+        () => error = exception.code == 'account-exists-with-different-credential'
+            ? 'Bu mail farklı giriş yöntemiyle kayıtlı. Önce mevcut yöntemle girip Google hesabını bağlamak gerekiyor.'
+            : 'Google ile giriş yapılamadı: ${exception.code}',
+      );
+    } catch (exception) {
+      setState(() => error = 'Google ile giriş yapılamadı.');
+    } finally {
+      if (mounted) setState(() => googleLoading = false);
     }
   }
 
@@ -72,6 +105,44 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: Colors.white54),
                 ),
                 const SizedBox(height: 32),
+                OutlinedButton.icon(
+                  onPressed: loading || googleLoading ? null : loginWithGoogle,
+                  icon: googleLoading
+                      ? const SizedBox.square(
+                          dimension: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text(
+                          'G',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFFFFD54A),
+                          ),
+                        ),
+                  label: const Padding(
+                    padding: EdgeInsets.all(14),
+                    child: Text('Google ile giriş yap'),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: const BorderSide(color: Colors.white24),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                const Row(
+                  children: [
+                    Expanded(child: Divider(color: Colors.white12)),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: Text('veya e-posta', style: TextStyle(color: Colors.white38)),
+                    ),
+                    Expanded(child: Divider(color: Colors.white12)),
+                  ],
+                ),
+                const SizedBox(height: 18),
                 TextField(
                   controller: email,
                   keyboardType: TextInputType.emailAddress,
@@ -94,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 const SizedBox(height: 20),
                 FilledButton(
-                  onPressed: loading ? null : login,
+                  onPressed: loading || googleLoading ? null : login,
                   child: Padding(
                     padding: const EdgeInsets.all(14),
                     child: loading

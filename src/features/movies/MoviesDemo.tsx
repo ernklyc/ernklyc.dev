@@ -4,13 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/lib/firebase";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FiCheck, FiFilm, FiGlobe, FiHeart, FiLoader, FiLock, FiPlus, FiSearch, FiTrash2, FiTv, FiUpload, FiX } from "react-icons/fi";
+import { FiBookOpen, FiCheck, FiFilm, FiGlobe, FiHeart, FiLoader, FiLock, FiPlus, FiSearch, FiTrash2, FiTv, FiUpload, FiX } from "react-icons/fi";
 import LiveMediaDialog, { type MediaDetailTarget } from "./LiveMediaDialog";
 import { addManyToLibrary, addToLibrary, removeFromLibrary, setLibraryFavorite, setLibraryPublic } from "./library";
 import { mediaDocumentId, type LibraryItem, type MediaType, type TmdbSearchItem } from "./models";
 import { useMovieLibrary } from "./useMovieLibrary";
 
 type Filter = "all" | MediaType | "favorites";
+type PageTab = "archive" | "public" | "editorial";
 type VisibilityFilter = "all" | "public" | "private";
 type SortMode = "added" | "title" | "year-desc" | "year-asc";
 const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
@@ -22,6 +23,7 @@ const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
 
 export default function MoviesDemo() {
   const { user, items, loading, error, isOwner } = useMovieLibrary();
+  const [pageTab, setPageTab] = useState<PageTab>("archive");
   const [activeFilter, setActiveFilter] = useState<Filter>("all");
   const [visibilityFilter, setVisibilityFilter] = useState<VisibilityFilter>("all");
   const [genreFilter, setGenreFilter] = useState("all");
@@ -33,10 +35,11 @@ export default function MoviesDemo() {
   const [notice, setNotice] = useState("");
 
   const visibleItems = useMemo(() => {
-    const normalizedQuery = normalize(query.trim());
+      const normalizedQuery = normalize(query.trim());
     const filtered = items.filter((item) => {
       const matchesFilter = activeFilter === "all" || (activeFilter === "favorites" ? item.favorite : item.mediaType === activeFilter);
-      const matchesVisibility = !isOwner || visibilityFilter === "all" || (visibilityFilter === "public" ? item.isPublic : !item.isPublic);
+      const effectiveVisibility = pageTab === "public" ? "public" : visibilityFilter;
+      const matchesVisibility = !isOwner || effectiveVisibility === "all" || (effectiveVisibility === "public" ? item.isPublic : !item.isPublic);
       const matchesGenre = genreFilter === "all" || item.snapshot.genres.includes(genreFilter);
       const matchesYear = yearFilter === "all" || String(item.snapshot.year ?? "") === yearFilter;
       const matchesQuery = !normalizedQuery || normalize(item.snapshot.title).includes(normalizedQuery) || normalize(item.snapshot.originalTitle).includes(normalizedQuery) || String(item.snapshot.year ?? "").includes(normalizedQuery);
@@ -48,7 +51,7 @@ export default function MoviesDemo() {
       if (sortMode === "year-asc") return (a.snapshot.year ?? 9999) - (b.snapshot.year ?? 9999);
       return timestampMillis(b.addedAt) - timestampMillis(a.addedAt);
     });
-  }, [activeFilter, genreFilter, isOwner, items, query, sortMode, visibilityFilter, yearFilter]);
+  }, [activeFilter, genreFilter, isOwner, items, pageTab, query, sortMode, visibilityFilter, yearFilter]);
 
   const selectedItem = selectedId ? items.find((item) => item.id === selectedId) ?? null : null;
   const movieCount = items.filter((item) => item.mediaType === "movie").length;
@@ -82,9 +85,18 @@ export default function MoviesDemo() {
 
       {notice && <div className="mb-6 flex items-start justify-between gap-4 rounded-xl border border-emerald-300/15 bg-emerald-400/[0.07] px-4 py-3 text-sm text-emerald-100"><span>{notice}</span><button onClick={() => setNotice("")} aria-label="Bildirimi kapat"><FiX /></button></div>}
 
+      <div className="mb-6 flex gap-2 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.025] p-1.5">
+        <TabButton active={pageTab === "archive"} onClick={() => setPageTab("archive")} icon={FiFilm} label="Arşiv" />
+        <TabButton active={pageTab === "public"} onClick={() => { setPageTab("public"); setVisibilityFilter("public"); }} icon={FiGlobe} label="Herkese açık vitrin" />
+        <TabButton active={pageTab === "editorial"} onClick={() => setPageTab("editorial")} icon={FiBookOpen} label="Film notları" />
+      </div>
+
       <div className="mb-9 grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
         <StatCard value={items.length} label="Toplam yapım" /><StatCard value={movieCount} label="Film" /><StatCard value={tvCount} label="Dizi" /><StatCard value={favoriteCount} label="Favori" /><StatCard value={publicCount} label="Herkese açık" />
       </div>
+
+      {pageTab === "editorial" ? <EditorialTab publicCount={publicCount} favoriteCount={favoriteCount} />
+        : <>
 
       <div className="sticky top-4 z-30 mb-9 space-y-3 rounded-2xl border border-white/10 bg-[#0b0e12]/85 p-3 shadow-2xl shadow-black/30 backdrop-blur-2xl md:top-6">
         <div className="md:flex md:items-center md:gap-3">
@@ -113,9 +125,45 @@ export default function MoviesDemo() {
         : error ? <EmptyState title="Arşiv yüklenemedi" description={error} />
         : visibleItems.length ? <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 xl:gap-x-6">{visibleItems.map((item) => <LibraryCard key={item.id} item={item} isOwner={isOwner} onOpen={() => setSelectedId(item.id)} onFavorite={() => toggleFavorite(item)} onPublic={() => user && setLibraryPublic(user.uid, item, !item.isPublic)} onRemove={() => user && removeFromLibrary(user.uid, item)} />)}</div>
         : <EmptyState title={isOwner ? "Arşivin henüz boş" : "Henüz herkese açık yapım yok"} description={isOwner ? "TMDB’de arayıp izlediğin ilk filmi veya diziyi ekle." : "Eren bazı yapımları herkese açtığında burada görünecek."} />}
+      </>}
 
       {selectedItem && <LiveMediaDialog item={libraryToDetailTarget(selectedItem)} onClose={() => setSelectedId(null)} onFavorite={isOwner ? () => toggleFavorite(selectedItem) : undefined} />}
       {searchOpen && user && <SearchDialog uid={user.uid} existingIds={new Set(items.map((item) => item.id))} onClose={() => setSearchOpen(false)} onNotice={setNotice} />}
+    </div>
+  );
+}
+
+function TabButton({ active, onClick, icon: Icon, label }: { active: boolean; onClick: () => void; icon: typeof FiFilm; label: string }) {
+  return (
+    <button type="button" onClick={onClick} className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-xl px-4 text-sm transition ${active ? "bg-white text-[#0b0e12]" : "text-white/55 hover:bg-white/[0.055] hover:text-white/80"}`}>
+      <Icon />
+      {label}
+    </button>
+  );
+}
+
+function EditorialTab({ publicCount, favoriteCount }: { publicCount: number; favoriteCount: number }) {
+  const categories = ["Öneriler", "Beyazperde notları", "Yıllık listeler", "Kült filmler", "Dizi rehberleri", "Favorilerden seçkiler"];
+  return (
+    <div className="rounded-3xl border border-white/10 bg-white/[0.025] p-6 sm:p-8">
+      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#ffd54a]/70">Yakında</p>
+      <h2 className="mt-3 text-2xl font-semibold text-white">Film notları ve öneri vitrini</h2>
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-white/45">
+        Burası ileride blog gibi çalışacak: herkese açtığın {publicCount} yapımdan seçkiler, kategori bazlı öneriler,
+        “ne izlemeli?” listeleri ve kısa film/dizi notları burada ayrı bir vitrin olarak durabilir.
+      </p>
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {categories.map((category) => (
+          <div key={category} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <div className="mb-3 grid h-10 w-10 place-items-center rounded-xl bg-[#ffd54a] text-black"><FiBookOpen /></div>
+            <h3 className="font-medium text-white/85">{category}</h3>
+            <p className="mt-2 text-xs leading-5 text-white/35">Arşivdeki herkese açık filmlerden otomatik veya elle hazırlanmış içerik alanı.</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm text-white/45">
+        Şimdilik altyapı notu: favori sayısı {favoriteCount}. Sonraki adımda buraya gerçek yazı/listeler için ayrı Firestore koleksiyonu ekleyebiliriz.
+      </div>
     </div>
   );
 }
