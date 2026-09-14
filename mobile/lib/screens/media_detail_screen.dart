@@ -361,100 +361,141 @@ class _EpisodeHeatmap extends StatelessWidget {
   final Future<List<Map<String, dynamic>>> future;
 
   @override
-  Widget build(BuildContext context) =>
-      FutureBuilder<List<Map<String, dynamic>>>(
-        future: future,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _Heading('Bölüm puanları'),
-                LinearProgressIndicator(),
-                SizedBox(height: 8),
-                Text(
-                  'IMDb günlük verisi hazırlanıyor…',
-                  style: TextStyle(color: Colors.white38),
-                ),
-              ],
-            );
-          }
-          final episodes = snapshot.data!;
-          if (episodes.isEmpty) return const SizedBox.shrink();
-          final seasons =
-              episodes.map((e) => e['seasonNumber'] as int).toSet().toList()
-                ..sort();
-          final maxEpisode = episodes
-              .map((e) => e['episodeNumber'] as int)
-              .reduce((a, b) => a > b ? a : b);
-          final cells = {
-            for (final e in episodes)
-              '${e['seasonNumber']}-${e['episodeNumber']}': e,
-          };
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _Heading('Bölüm puanları · ${episodes.length}'),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: seasons
-                      .map(
-                        (season) => Row(
-                          children: [
-                            SizedBox(
-                              width: 36,
-                              child: Text(
-                                'S$season',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white54,
-                                ),
+  Widget build(
+    BuildContext context,
+  ) => FutureBuilder<List<Map<String, dynamic>>>(
+    future: future,
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) {
+        return const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _Heading('Bölüm puanları'),
+            LinearProgressIndicator(),
+            SizedBox(height: 8),
+            Text(
+              'IMDb günlük verisi hazırlanıyor…',
+              style: TextStyle(color: Colors.white38),
+            ),
+          ],
+        );
+      }
+      final episodes = snapshot.data!;
+      if (episodes.isEmpty) return const SizedBox.shrink();
+      final seasons =
+          episodes.map((e) => e['seasonNumber'] as int).toSet().toList()
+            ..sort();
+      final bySeason = {
+        for (final season in seasons)
+          season: episodes.where((e) => e['seasonNumber'] == season).toList()
+            ..sort(
+              (a, b) => (a['episodeNumber'] as int).compareTo(
+                b['episodeNumber'] as int,
+              ),
+            ),
+      };
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Heading('Bölüm puanları · ${episodes.length}'),
+          ...seasons.map(
+            (season) => Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.04),
+                border: Border.all(color: Colors.white12),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Sezon $season',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        '${bySeason[season]?.length ?? 0} bölüm',
+                        style: const TextStyle(color: Colors.white38),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ...?bySeason[season]?.map((episode) {
+                    final rating = (episode['averageRating'] as num).toDouble();
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.04),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 64,
+                            child: Text(
+                              'S$season · E${episode['episodeNumber']}',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                            ...List.generate(maxEpisode, (index) {
-                              final episode = cells['$season-${index + 1}'];
-                              final rating = (episode?['averageRating'] as num?)
-                                  ?.toDouble();
-                              return Container(
-                                width: 46,
-                                height: 38,
-                                margin: const EdgeInsets.all(2),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: rating == null
-                                      ? Colors.white10
-                                      : _ratingColor(rating),
-                                  borderRadius: BorderRadius.circular(7),
-                                ),
-                                child: rating == null
-                                    ? null
-                                    : Text(
-                                        rating.toStringAsFixed(1),
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                              );
-                            }),
-                          ],
-                        ),
-                      )
-                      .toList(),
-                ),
+                          ),
+                          Container(
+                            width: 48,
+                            height: 34,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: _ratingColor(rating),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              rating.toStringAsFixed(1),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              '${episode['numVotes']} oy · IMDb',
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.white38,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'Kaynak: IMDb non-commercial datasets',
-                style: TextStyle(fontSize: 11, color: Colors.white30),
-              ),
-            ],
-          );
-        },
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Kaynak: IMDb non-commercial datasets',
+            style: TextStyle(fontSize: 11, color: Colors.white30),
+          ),
+        ],
       );
+    },
+  );
 
   Color _ratingColor(double rating) {
     if (rating >= 9) return const Color(0xFF55A9DD);

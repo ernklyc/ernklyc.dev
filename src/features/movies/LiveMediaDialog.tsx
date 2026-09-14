@@ -499,25 +499,42 @@ function EpisodeHeatmap({ episodes }: { episodes: EpisodeRating[] | null }) {
   if (!episodes.length) return null;
 
   const seasons = [...new Set(episodes.map((episode) => episode.seasonNumber))];
-  const maxEpisode = Math.max(...episodes.map((episode) => episode.episodeNumber));
-  const byCell = new Map(episodes.map((episode) => [`${episode.seasonNumber}-${episode.episodeNumber}`, episode]));
+  const bySeason = new Map(
+    seasons.map((season) => [
+      season,
+      episodes
+        .filter((episode) => episode.seasonNumber === season)
+        .sort((a, b) => a.episodeNumber - b.episodeNumber),
+    ]),
+  );
 
   return (
-    <Section title={`Bölüm puanları · ${episodes.length}`} subtitle="IMDb puanı · hücreye dokununca IMDb açılır">
-      <div className="overflow-x-auto rounded-2xl border border-white/10 bg-black/25 p-4 [scrollbar-width:thin]">
-        <div className="grid min-w-max gap-1.5" style={{ gridTemplateColumns: `48px repeat(${maxEpisode}, 56px)` }}>
-          <span />
-          {Array.from({ length: maxEpisode }, (_, index) => <span key={index} className="pb-1 text-center text-[10px] text-white/35">E{index + 1}</span>)}
-          {seasons.flatMap((season) => [
-            <span key={`s-${season}`} className="grid place-items-center text-xs font-semibold text-white/55">S{season}</span>,
-            ...Array.from({ length: maxEpisode }, (_, index) => {
-              const episode = byCell.get(`${season}-${index + 1}`);
-              return episode ? (
-                <a key={`${season}-${index}`} href={`https://www.imdb.com/title/${episode.imdbId}/`} target="_blank" rel="noreferrer" title={`${episode.numVotes.toLocaleString("tr-TR")} oy`} className="grid h-10 place-items-center rounded-md text-xs font-bold text-black transition hover:scale-105" style={{ backgroundColor: ratingColor(episode.averageRating) }}>{episode.averageRating.toFixed(1)}</a>
-              ) : <span key={`${season}-${index}`} className="h-10 rounded-md bg-white/[0.025]" />;
-            }),
-          ])}
-        </div>
+    <Section title={`Bölüm puanları · ${episodes.length}`} subtitle="IMDb puanı · satıra dokununca IMDb açılır">
+      <div className="max-h-[70vh] space-y-3 overflow-y-auto rounded-2xl border border-white/10 bg-black/25 p-3 pr-2 [scrollbar-width:thin]">
+        {seasons.map((season) => (
+          <div key={season} className="rounded-xl border border-white/10 bg-white/[0.025] p-3">
+            <div className="mb-2 flex items-center justify-between gap-3">
+              <h4 className="text-sm font-semibold text-white">Sezon {season}</h4>
+              <span className="text-xs text-white/35">{bySeason.get(season)?.length ?? 0} bölüm</span>
+            </div>
+            <div className="space-y-1.5">
+              {(bySeason.get(season) ?? []).map((episode) => (
+                <a
+                  key={episode.imdbId}
+                  href={`https://www.imdb.com/title/${episode.imdbId}/`}
+                  target="_blank"
+                  rel="noreferrer"
+                  title={`${episode.numVotes.toLocaleString("tr-TR")} oy`}
+                  className="grid grid-cols-[72px_56px_1fr] items-center gap-3 rounded-lg border border-white/5 bg-white/[0.025] px-3 py-2 text-sm transition hover:border-white/15 hover:bg-white/[0.06]"
+                >
+                  <span className="font-medium text-white/70">S{season} · E{episode.episodeNumber}</span>
+                  <span className="grid h-9 place-items-center rounded-md text-xs font-bold text-black" style={{ backgroundColor: ratingColor(episode.averageRating) }}>{episode.averageRating.toFixed(1)}</span>
+                  <span className="truncate text-xs text-white/35">{episode.numVotes.toLocaleString("tr-TR")} oy · IMDb</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
       <p className="mt-3 text-[11px] text-white/30">Kaynak: IMDb non-commercial datasets. Puanlar günlük veri setinden gelir.</p>
     </Section>
