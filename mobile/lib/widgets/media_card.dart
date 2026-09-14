@@ -29,8 +29,12 @@ class MediaCard extends StatelessWidget {
               children: [
                 if (item.posterPath != null)
                   Image.network(
-                    'https://image.tmdb.org/t/p/w500${item.posterPath}',
+                    'https://image.tmdb.org/t/p/w342${item.posterPath}',
                     fit: BoxFit.cover,
+                    cacheWidth: 360,
+                    cacheHeight: 540,
+                    filterQuality: FilterQuality.low,
+                    gaplessPlayback: true,
                   )
                 else
                   const ColoredBox(
@@ -147,6 +151,10 @@ class MediaListTile extends StatelessWidget {
                   ? Image.network(
                       'https://image.tmdb.org/t/p/w185${item.posterPath}',
                       fit: BoxFit.cover,
+                      cacheWidth: 160,
+                      cacheHeight: 240,
+                      filterQuality: FilterQuality.low,
+                      gaplessPlayback: true,
                     )
                   : const ColoredBox(
                       color: Color(0xFF151A20),

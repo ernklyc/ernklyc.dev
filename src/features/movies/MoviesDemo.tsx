@@ -5,7 +5,7 @@ import { auth } from "@/lib/firebase";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { FiCheck, FiFilm, FiHeart, FiLoader, FiPlus, FiSearch, FiTrash2, FiTv, FiUpload, FiX } from "react-icons/fi";
 import LiveMediaDialog, { type MediaDetailTarget } from "./LiveMediaDialog";
-import { addManyToLibrary, addToLibrary, removeFromLibrary, repairLibraryPublicAndRatings, setLibraryFavorite } from "./library";
+import { addManyToLibrary, addToLibrary, removeFromLibrary, setLibraryFavorite } from "./library";
 import { mediaDocumentId, type LibraryItem, type MediaType, type TmdbSearchItem } from "./models";
 import { useMovieLibrary } from "./useMovieLibrary";
 
@@ -18,10 +18,10 @@ const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
   { id: "tv", label: "Diziler", icon: FiTv },
   { id: "favorites", label: "Favoriler", icon: FiHeart },
 ];
-const RATINGS_CACHE_KEY = "movie_archive_imdb_ratings_v1";
+const RATINGS_CACHE_KEY = "movie_archive_imdb_ratings_v2";
 const RATING_BATCH_SIZE = 100;
-const INITIAL_VISIBLE_COUNT = 60;
-const LOAD_MORE_COUNT = 60;
+const INITIAL_VISIBLE_COUNT = 40;
+const LOAD_MORE_COUNT = 40;
 
 export default function MoviesDemo() {
   const { user, items, loading, error, isOwner } = useMovieLibrary();
@@ -36,7 +36,7 @@ export default function MoviesDemo() {
   const [ratings, setRatings] = useState<RatingCache>(() => readRatingsCache());
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
   const [, startTransition] = useTransition();
-  const repairedSignatureRef = useRef("");
+  const fetchedRatingKeysRef = useRef(new Set<string>());
 
   const missingRatingIds = useMemo(() => [...new Set(items
     .filter((item) => item.imdbId && typeof item.snapshot.imdbRating !== "number" && !(item.imdbId in ratings))
@@ -46,6 +46,8 @@ export default function MoviesDemo() {
   useEffect(() => {
     const idsToFetch = missingRatingKey ? missingRatingKey.split("|") : [];
     if (!idsToFetch.length) return;
+    if (fetchedRatingKeysRef.current.has(missingRatingKey)) return;
+    fetchedRatingKeysRef.current.add(missingRatingKey);
 
     let cancelled = false;
     Promise.all(chunk(idsToFetch, RATING_BATCH_SIZE).map(async (imdbIds) => {
@@ -54,7 +56,7 @@ export default function MoviesDemo() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ imdbIds }),
       });
-      if (!response.ok) return Object.fromEntries(imdbIds.map((id) => [id, null]));
+      if (!response.ok) return {};
       const body = (await response.json()) as { ratings?: Record<string, { averageRating: number; numVotes: number }> };
       return Object.fromEntries(imdbIds.map((id) => [id, body.ratings?.[id] ?? null]));
     })).then((parts) => {
@@ -73,16 +75,6 @@ export default function MoviesDemo() {
   useEffect(() => {
     writeRatingsCache(ratings);
   }, [ratings]);
-
-  useEffect(() => {
-    if (!user || !isOwner || !items.length) return;
-    const repairItems = items.filter((item) => !item.isPublic || (item.imdbId && ratings[item.imdbId] && typeof item.snapshot.imdbRating !== "number"));
-    if (!repairItems.length) return;
-    const signature = repairItems.map((item) => `${item.id}:${item.isPublic ? 1 : 0}:${ratings[item.imdbId ?? ""]?.averageRating ?? ""}`).join("|");
-    if (signature === repairedSignatureRef.current) return;
-    repairedSignatureRef.current = signature;
-    repairLibraryPublicAndRatings(user.uid, repairItems, ratings).catch(() => undefined);
-  }, [isOwner, items, ratings, user]);
 
   const visibleItems = useMemo(() => {
       const normalizedQuery = normalize(query.trim());
@@ -221,8 +213,8 @@ function CsvImportButton({ uid, existingIds, onNotice }: { uid: string; existing
 }
 
 function LibraryCard({ item, imdbRating, isOwner, onOpen, onFavorite, onRemove }: { item: LibraryItem; imdbRating: number; isOwner: boolean; onOpen: () => void; onFavorite: () => void; onRemove: () => void }) {
-  return <article className="group min-w-0"><div role="button" tabIndex={0} onClick={onOpen} onKeyDown={(event) => event.key === "Enter" && onOpen()} className="relative aspect-[2/3] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#12161b] shadow-xl shadow-black/25 transition duration-500 group-hover:-translate-y-1 group-hover:border-white/25">
-    {item.snapshot.posterPath ? <Image src={`https://image.tmdb.org/t/p/w500${item.snapshot.posterPath}`} alt={`${item.snapshot.title} posteri`} fill sizes="(max-width:640px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-[1.035]" /> : <div className="grid h-full place-items-center text-4xl text-white/15"><FiFilm /></div>}<div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20" /><span className="absolute left-3 top-3 rounded-lg border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/80">{item.mediaType === "movie" ? "Film" : "Dizi"}</span>
+  return <article className="group min-w-0 [contain-intrinsic-size:260px_430px] [content-visibility:auto]"><div role="button" tabIndex={0} onClick={onOpen} onKeyDown={(event) => event.key === "Enter" && onOpen()} className="relative aspect-[2/3] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#12161b] shadow-xl shadow-black/20 transition duration-300 group-hover:-translate-y-0.5 group-hover:border-white/25">
+    {item.snapshot.posterPath ? <Image src={`https://image.tmdb.org/t/p/w342${item.snapshot.posterPath}`} alt={`${item.snapshot.title} posteri`} fill sizes="(max-width:640px) 50vw, 25vw" className="object-cover" /> : <div className="grid h-full place-items-center text-4xl text-white/15"><FiFilm /></div>}<div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20" /><span className="absolute left-3 top-3 rounded-lg border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/80">{item.mediaType === "movie" ? "Film" : "Dizi"}</span>
     {imdbRating >= 0 && <span className="absolute bottom-3 left-3 rounded-lg bg-[#f5c518] px-2.5 py-1 text-xs font-extrabold text-black">★ {imdbRating.toFixed(1)}</span>}
     <button onClick={(event) => { event.stopPropagation(); onFavorite(); }} disabled={!isOwner} className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border backdrop-blur-md ${item.favorite ? "border-rose-300/30 bg-rose-500/85 text-white" : "border-white/15 bg-black/45 text-white/70"}`} aria-label="Favori"><FiHeart className={item.favorite ? "fill-current" : ""} /></button>
     {isOwner && <div className="absolute bottom-3 left-3 right-3 flex justify-end gap-2 opacity-0 transition group-hover:opacity-100"><button onClick={(event) => { event.stopPropagation(); if (window.confirm(`${item.snapshot.title} arşivden kaldırılsın mı?`)) onRemove(); }} className="grid h-9 w-9 place-items-center rounded-full border border-rose-300/20 bg-black/70 text-rose-300" title="Arşivden kaldır"><FiTrash2 /></button></div>}

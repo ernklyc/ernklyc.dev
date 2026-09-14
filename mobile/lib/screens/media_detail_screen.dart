@@ -87,7 +87,7 @@ class _DetailBody extends StatelessWidget {
     ];
     final title = (metadata['title'] ?? metadata['name'] ?? item.title)
         .toString();
-    final backdrop = image(metadata['backdrop_path'] as String?, 'original');
+    final backdrop = image(metadata['backdrop_path'] as String?, 'w1280');
     final poster = image(
       metadata['poster_path'] as String? ?? item.posterPath,
       'w500',
@@ -104,7 +104,12 @@ class _DetailBody extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 if (backdrop != null)
-                  Image.network(backdrop, fit: BoxFit.cover),
+                  Image.network(
+                    backdrop,
+                    fit: BoxFit.cover,
+                    cacheWidth: 1080,
+                    filterQuality: FilterQuality.low,
+                  ),
                 const DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -124,6 +129,9 @@ class _DetailBody extends StatelessWidget {
                         width: 118,
                         height: 177,
                         fit: BoxFit.cover,
+                        cacheWidth: 240,
+                        cacheHeight: 360,
+                        filterQuality: FilterQuality.low,
                       ),
                     ),
                   ),
@@ -207,6 +215,9 @@ class _DetailBody extends StatelessWidget {
                                     provider['logo_path'] as String,
                                     'w92',
                                   )!,
+                                  cacheWidth: 92,
+                                  cacheHeight: 92,
+                                  filterQuality: FilterQuality.low,
                                 ),
                               ),
                         label: Text(provider['provider_name'].toString()),
@@ -337,6 +348,9 @@ class _PeopleRow extends StatelessWidget {
                             width: 120,
                             height: 160,
                             fit: BoxFit.cover,
+                            cacheWidth: 180,
+                            cacheHeight: 240,
+                            filterQuality: FilterQuality.low,
                           ),
                   ),
                   const SizedBox(height: 7),

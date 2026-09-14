@@ -19,8 +19,8 @@ enum LibraryViewMode { grid, list }
 
 enum LibrarySortMode { added, imdbDesc, title, yearDesc, yearAsc }
 
-const _initialVisibleItems = 80;
-const _loadMoreItems = 80;
+const _initialVisibleItems = 40;
+const _loadMoreItems = 40;
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -44,7 +44,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
   StreamSubscription<String>? shareSubscription;
   Map<String, double> imdbRatings = const {};
   String ratingsKey = '';
-  String repairKey = '';
   bool ratingsLoading = false;
 
   @override
@@ -210,21 +209,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
           if (!mounted) return;
           final merged = {...imdbRatings, ...ratings};
           setState(() => imdbRatings = merged);
-          _repairItems(items, merged);
         })
         .whenComplete(() => ratingsLoading = false);
-  }
-
-  void _repairItems(List<LibraryItem> items, Map<String, double> ratings) {
-    final key = items
-        .map(
-          (item) =>
-              '${item.id}:${item.isPublic ? 1 : 0}:${item.imdbRating ?? ratings[item.imdbId] ?? ''}',
-        )
-        .join('|');
-    if (key == repairKey) return;
-    repairKey = key;
-    library.repairPublicAndRatings(items, ratings).catchError((_) {});
   }
 
   @override
@@ -234,7 +220,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
       final items = snapshot.data ?? const <LibraryItem>[];
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _ensureRatings(items);
-        _repairItems(items, imdbRatings);
       });
       final shown = visible(items);
       final existingIds = items.map((item) => item.id).toSet();
