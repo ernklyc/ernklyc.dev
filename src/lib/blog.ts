@@ -6,7 +6,7 @@ import {
   limit as fbLimit,
   Timestamp,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, isFirebaseConfigured } from "@/lib/firebase";
 
 export interface BlogPost {
   slug: string;
@@ -64,6 +64,8 @@ function byNewestFirst(a: BlogPost, b: BlogPost): number {
  * yönetimiyle uğraşmamak adına daha pratik.
  */
 export async function getAllPosts(): Promise<BlogPost[]> {
+  if (!isFirebaseConfigured) return [];
+
   try {
     const postsRef = collection(db, "posts");
     const q = query(postsRef, where("status", "==", "published"));
@@ -83,6 +85,8 @@ export async function getAllPosts(): Promise<BlogPost[]> {
  * yüzünden var olan blogun navbardan kaybolması istenmez.
  */
 export async function hasPublishedPosts(): Promise<boolean> {
+  if (!isFirebaseConfigured) return true;
+
   try {
     const postsRef = collection(db, "posts");
     const q = query(postsRef, where("status", "==", "published"), fbLimit(1));
@@ -115,6 +119,8 @@ export async function getHomePosts(count = 8): Promise<BlogPost[]> {
 
 /** Slug'a göre tek bir yayınlanmış yazıyı getirir. */
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+  if (!isFirebaseConfigured) return null;
+
   try {
     const postsRef = collection(db, "posts");
     const q = query(

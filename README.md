@@ -21,6 +21,8 @@ panelinden yönetilir.
   uygulamaları otomatik listeler.
 - **Akıcı scroll** — Lenis ile GPU destekli, momentum'lu kaydırma.
 - **Çok dilli** — Türkçe / İngilizce arayüz.
+- **Film / dizi arşivi** — `/movies` altında Firebase ile web–Flutter senkronizasyonu,
+  TMDB arama/detay, IMDb CSV içe aktarma, favoriler ve public/private paylaşım.
 - **SEO & performans** — App Router, ISR, `sitemap.ts`/`robots.ts`, yapılandırılmış veri (JSON-LD).
 
 ## 🛠️ Teknoloji Yığını
@@ -32,6 +34,7 @@ panelinden yönetilir.
 | Animasyon | Framer Motion, GSAP, Lenis |
 | 3D / Görsel efektler | Three.js, React Three Fiber |
 | Backend / CMS | Firebase (Firestore, Authentication, App Check) |
+| Mobil | Flutter (Android / iOS) |
 | İçerik | react-markdown + remark-gfm |
 
 ## 🚀 Başlarken
@@ -78,6 +81,9 @@ src/
   contexts/         # Dil (tr/en) context'i
   hooks/            # Scroll, auth, form hook'ları
 ```
+
+Film arşivinin veri modeli, servis sınırları ve mobil çalıştırma notları için
+[docs/movie-archive.md](docs/movie-archive.md) dosyasına bakın.
 
 ## 📜 Scriptler
 

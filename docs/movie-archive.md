@@ -1,0 +1,62 @@
+# Film / Dizi Arşivi
+
+## Kesin mimari
+
+```text
+Next.js (/movies + korumalı API route'ları) ─┐
+                                             ├─ Firebase Auth + Firestore
+Flutter (Android / iOS) ─────────────────────┘
+              │
+              └─ Next.js API ─ TMDB + IMDb non-commercial datasets
+```
+
+- Web sitesi Next.js olarak kalır; Flutter Web kullanılmaz.
+- Web ve mobil aynı Firebase kullanıcısı ile aynı Firestore belgelerini gerçek zamanlı dinler.
+- TMDB erişim jetonu yalnızca Next.js sunucusunda bulunur. Mobil uygulamaya veya tarayıcı paketine gömülmez.
+- IMDb puanları TMDB puanından türetilmez. IMDb'nin günlük, kişisel/kar amacı gütmeyen veri setinden okunur.
+- Yönetim işlemleri hem Firebase ID token kontrolü hem Firestore kurallarıyla sahibin UID'sine kilitlidir.
+
+## Firestore modeli
+
+```text
+users/{ownerUid}/library/{movie_123|tv_456}
+```
+
+```json
+{
+  "tmdbId": 123,
+  "imdbId": "tt1234567",
+  "mediaType": "movie",
+  "favorite": false,
+  "isPublic": false,
+  "snapshot": {
+    "title": "Başlık",
+    "originalTitle": "Original title",
+    "year": 2026,
+    "posterPath": "/poster.jpg",
+    "genres": ["Dram"]
+  },
+  "addedAt": "server timestamp",
+  "updatedAt": "server timestamp"
+}
+```
+
+Belge kimliği `mediaType_tmdbId` biçimindedir. Bu nedenle aynı film veya dizi ikinci kez oluşamaz. `snapshot`, listeyi hızlı açmak için gereken küçük görünüm bilgisidir; tam metadata Firestore'a kopyalanmaz.
+
+## Akışlar
+
+- Arama: Firebase oturumu → korumalı `/api/movies/search` → TMDB multi search → kullanıcı arşive ekler.
+- Detay: `/api/movies/{movie|tv}/{tmdbId}` → TMDB detay, görseller, oyuncular, ekip, videolar, external ID ve TR sağlayıcıları + IMDb günlük puanı.
+- Dizi bölümleri: `/api/movies/tv/{tmdbId}/episodes` → IMDb episode/rating veri setleri → sezon/bölüm ısı haritası.
+- CSV: tarayıcı/mobil IMDb ID'lerini çıkarır → korumalı import endpoint'i TMDB `/find` ile eşleştirir → var olan deterministik belgeler atlanır → sonuç özeti gösterilir.
+- Android Share: paylaşılan düz metinden `tt...` çıkarılır → aynı import endpoint'iyle eşleştirilir → arşive eklenir.
+
+## Mobil çalıştırma
+
+Simülatörde yerel Next.js sunucusu varsayılan olarak kullanılır. Fiziksel cihaz veya yayın sürümünde canlı alan adı verilmelidir:
+
+```bash
+flutter run --dart-define=API_BASE_URL=https://ernklyc.dev
+```
+
+Android emülatör yerel geliştirmede `10.0.2.2:4173`, iOS simülatör `127.0.0.1:4173` kullanır.

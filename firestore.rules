@@ -22,5 +22,43 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null && request.auth.uid == "zYIbbfB5YpfCG6KHLJMpVlhT3B62";
     }
+
+    function isMovieLibraryOwner(uid) {
+      return request.auth != null
+        && request.auth.uid == uid
+        && uid == "zYIbbfB5YpfCG6KHLJMpVlhT3B62";
+    }
+
+    function validMediaType(value) {
+      return value == "movie" || value == "tv";
+    }
+
+    function validLibraryItem() {
+      return request.resource.data.keys().hasOnly([
+          "tmdbId", "imdbId", "mediaType", "favorite", "isPublic",
+          "snapshot", "addedAt", "updatedAt"
+        ])
+        && request.resource.data.tmdbId is int
+        && request.resource.data.tmdbId > 0
+        && validMediaType(request.resource.data.mediaType)
+        && (request.resource.data.imdbId == null || request.resource.data.imdbId is string)
+        && request.resource.data.favorite is bool
+        && request.resource.data.isPublic is bool
+        && request.resource.data.snapshot is map
+        && request.resource.data.snapshot.keys().hasOnly([
+          "title", "originalTitle", "year", "posterPath", "genres"
+        ])
+        && request.resource.data.snapshot.title is string
+        && request.resource.data.snapshot.originalTitle is string
+        && (request.resource.data.snapshot.year == null || request.resource.data.snapshot.year is int)
+        && (request.resource.data.snapshot.posterPath == null || request.resource.data.snapshot.posterPath is string)
+        && request.resource.data.snapshot.genres is list;
+    }
+
+    match /users/{uid}/library/{mediaId} {
+      allow get, list: if isMovieLibraryOwner(uid) || resource.data.isPublic == true;
+      allow create, update: if isMovieLibraryOwner(uid) && validLibraryItem();
+      allow delete: if isMovieLibraryOwner(uid);
+    }
   }
 }

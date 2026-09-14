@@ -1,9 +1,9 @@
 import { initializeApp, getApps, getApp, type FirebaseOptions } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, type Auth } from "firebase/auth";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
-const firebaseConfig: FirebaseOptions = {
+const configuredFirebaseOptions: FirebaseOptions = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
@@ -13,6 +13,24 @@ const firebaseConfig: FirebaseOptions = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+export const isFirebaseConfigured = Boolean(
+  configuredFirebaseOptions.apiKey &&
+    configuredFirebaseOptions.authDomain &&
+    configuredFirebaseOptions.projectId &&
+    configuredFirebaseOptions.appId,
+);
+
+// Firebase henüz kurulmamış yerel önizlemede SDK'nın modül yüklenirken hata
+// vermesini önler. Uygulama kodu isFirebaseConfigured ile ağ çağrılarını atlar.
+const firebaseConfig: FirebaseOptions = isFirebaseConfigured
+  ? configuredFirebaseOptions
+  : {
+      apiKey: "local-preview-disabled",
+      authDomain: "localhost",
+      projectId: "movie-log-local-preview",
+      appId: "1:0:web:local-preview",
+    };
+
 /**
  * Firebase app'i tek bir kez başlatır (Next.js'te hot-reload ve server/client
  * render'lar sırasında birden fazla initializeApp çağrısını önlemek için).
@@ -21,12 +39,7 @@ export const firebaseApp = getApps().length ? getApp() : initializeApp(firebaseC
 
 export const db = getFirestore(firebaseApp);
 
-/**
- * Auth sadece client tarafında kullanılır (admin panel login).
- * SSR sırasında da güvenle çağrılabilir çünkü getAuth window'a dokunmaz,
- * asıl window bağımlılığı onAuthStateChanged/signIn çağrılarında devreye girer.
- */
-export const auth = getAuth(firebaseApp);
+export const auth: Auth = getAuth(firebaseApp);
 
 /**
  * App Check (reCAPTCHA v3) — sadece tarayıcıda başlatılabilir, SSR'da
@@ -42,7 +55,7 @@ export const auth = getAuth(firebaseApp);
  */
 const recaptchaSiteKey = process.env.NEXT_PUBLIC_FIREBASE_RECAPTCHA_SITE_KEY;
 
-if (typeof window !== "undefined" && recaptchaSiteKey) {
+if (typeof window !== "undefined" && isFirebaseConfigured && recaptchaSiteKey) {
   if (process.env.NODE_ENV === "development") {
     (window as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN?: string | boolean }).FIREBASE_APPCHECK_DEBUG_TOKEN =
       process.env.NEXT_PUBLIC_APPCHECK_DEBUG_TOKEN || true;

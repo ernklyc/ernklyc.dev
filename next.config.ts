@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  agentRules: false,
   
   // Performance optimizations
   compress: true,
@@ -69,6 +70,11 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'media.licdn.com',
         pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'image.tmdb.org',
+        pathname: '/t/p/**',
       }
     ],
   },

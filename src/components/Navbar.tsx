@@ -27,6 +27,7 @@ export default function Navbar() {
 
   return (
     <motion.nav
+      data-site-navbar
       initial={{ y: 0 }}
       animate={{
         y: showNavbar ? 0 : -100,

@@ -274,4 +274,9 @@ body.locale-transitioning::-webkit-scrollbar-thumb {
   border-radius: 50%;
   z-index: -1;
 }
+body.movie-detail-open [data-site-navbar] {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-110%) !important;
+}
 

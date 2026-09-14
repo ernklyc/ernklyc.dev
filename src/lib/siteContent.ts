@@ -1,5 +1,5 @@
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { profile } from "@/data/profile";
 import { skills as staticSkills } from "@/data/skills";
 import { education as staticEducation } from "@/data/education";
@@ -96,6 +96,8 @@ const defaultExperience: ExperienceContent = {
 };
 
 async function readDoc(sectionId: string): Promise<Record<string, unknown> | null> {
+  if (!isFirebaseConfigured) return null;
+
   try {
     const snap = await getDoc(doc(db, "siteContent", sectionId));
     if (!snap.exists()) return null;

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "551137076703",
+    "project_id": "ernklyc-dev",
+    "storage_bucket": "ernklyc-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:551137076703:android:4159a6e9c605d3c922906a",
+        "android_client_info": {
+          "package_name": "dev.ernklyc.movie_log_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC22kgditXD7aw-ykGLjvL52y-ydILb-r4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

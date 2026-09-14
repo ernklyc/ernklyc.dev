@@ -35,7 +35,8 @@ export default function AdminLoginPage() {
     setSubmitting(true);
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
-      router.replace("/admin");
+      const requestedPath = new URLSearchParams(window.location.search).get("next");
+      router.replace(requestedPath?.startsWith("/") ? requestedPath : "/admin");
     } catch {
       setError(mapAuthError("auth/invalid-credential"));
     } finally {
