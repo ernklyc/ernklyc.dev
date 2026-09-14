@@ -15,6 +15,8 @@ import 'media_detail_screen.dart';
 
 enum LibraryFilter { all, movie, tv, favorites }
 
+enum LibraryViewMode { grid, list }
+
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
   @override
@@ -26,6 +28,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   final api = MovieApiService();
   final search = TextEditingController();
   LibraryFilter filter = LibraryFilter.all;
+  LibraryViewMode viewMode = LibraryViewMode.grid;
   bool importing = false;
   final shareIntent = ShareIntentService();
   StreamSubscription<String>? shareSubscription;
@@ -143,6 +146,21 @@ class _LibraryScreenState extends State<LibraryScreen> {
     }).toList();
   }
 
+  Future<void> setShownPublic(List<LibraryItem> shown, bool value) async {
+    if (shown.isEmpty) return;
+    await library.setManyPublic(shown, value);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          value
+              ? '${shown.length} kayıt herkese açıldı.'
+              : '${shown.length} kayıt gizliye alındı.',
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => StreamBuilder<List<LibraryItem>>(
     stream: library.watchLibrary(),
@@ -150,6 +168,14 @@ class _LibraryScreenState extends State<LibraryScreen> {
       final items = snapshot.data ?? const <LibraryItem>[];
       final shown = visible(items);
       final existingIds = items.map((item) => item.id).toSet();
+      final movieCount = items
+          .where((item) => item.mediaType == MediaType.movie)
+          .length;
+      final tvCount = items
+          .where((item) => item.mediaType == MediaType.tv)
+          .length;
+      final favoriteCount = items.where((item) => item.favorite).length;
+      final publicCount = items.where((item) => item.isPublic).length;
       return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -157,6 +183,23 @@ class _LibraryScreenState extends State<LibraryScreen> {
             style: TextStyle(fontWeight: FontWeight.w700),
           ),
           actions: [
+            PopupMenuButton<String>(
+              tooltip: 'Toplu işlemler',
+              onSelected: (value) {
+                if (value == 'public_on') setShownPublic(shown, true);
+                if (value == 'public_off') setShownPublic(shown, false);
+              },
+              itemBuilder: (_) => [
+                const PopupMenuItem(
+                  value: 'public_on',
+                  child: Text('Görünenleri herkese aç'),
+                ),
+                const PopupMenuItem(
+                  value: 'public_off',
+                  child: Text('Görünenleri gizliye al'),
+                ),
+              ],
+            ),
             IconButton(
               onPressed: importing ? null : () => importCsv(existingIds),
               tooltip: 'IMDb CSV içe aktar',
@@ -186,6 +229,45 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     prefixIcon: Icon(Icons.search),
                     hintText: 'Arşivinde ara...',
                   ),
+                ),
+              ),
+              _StatsBar(
+                total: items.length,
+                movies: movieCount,
+                tv: tvCount,
+                favorites: favoriteCount,
+                publicCount: publicCount,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 2, 16, 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${shown.length} kayıt gösteriliyor',
+                        style: const TextStyle(
+                          color: Colors.white54,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    SegmentedButton<LibraryViewMode>(
+                      showSelectedIcon: false,
+                      segments: const [
+                        ButtonSegment(
+                          value: LibraryViewMode.grid,
+                          icon: Icon(Icons.grid_view_rounded, size: 18),
+                        ),
+                        ButtonSegment(
+                          value: LibraryViewMode.list,
+                          icon: Icon(Icons.view_agenda_rounded, size: 18),
+                        ),
+                      ],
+                      selected: {viewMode},
+                      onSelectionChanged: (value) =>
+                          setState(() => viewMode = value.first),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(
@@ -231,33 +313,20 @@ class _LibraryScreenState extends State<LibraryScreen> {
                           ),
                         ),
                       )
-                    : GridView.builder(
-                        padding: const EdgeInsets.fromLTRB(14, 4, 14, 100),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: .58,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 18,
-                            ),
-                        itemCount: shown.length,
-                        itemBuilder: (context, index) {
-                          final item = shown[index];
-                          return MediaCard(
-                            item: item,
-                            onOpen: () => Navigator.push(
-                              context,
-                              MaterialPageRoute<void>(
-                                builder: (_) => MediaDetailScreen(item: item),
-                              ),
-                            ),
-                            onFavorite: () =>
-                                library.setFavorite(item, !item.favorite),
-                            onPublic: () =>
-                                library.setPublic(item, !item.isPublic),
-                            onRemove: () => library.remove(item),
-                          );
-                        },
+                    : _LibraryResults(
+                        items: shown,
+                        viewMode: viewMode,
+                        onOpen: (item) => Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (_) => MediaDetailScreen(item: item),
+                          ),
+                        ),
+                        onFavorite: (item) =>
+                            library.setFavorite(item, !item.favorite),
+                        onPublic: (item) =>
+                            library.setPublic(item, !item.isPublic),
+                        onRemove: library.remove,
                       ),
               ),
             ],
@@ -277,4 +346,137 @@ class _LibraryScreenState extends State<LibraryScreen> {
       );
     },
   );
+}
+
+class _StatsBar extends StatelessWidget {
+  const _StatsBar({
+    required this.total,
+    required this.movies,
+    required this.tv,
+    required this.favorites,
+    required this.publicCount,
+  });
+
+  final int total;
+  final int movies;
+  final int tv;
+  final int favorites;
+  final int publicCount;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    height: 72,
+    child: ListView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+      children: [
+        _StatChip(label: 'Toplam', value: total, icon: Icons.collections),
+        _StatChip(label: 'Film', value: movies, icon: Icons.movie_creation),
+        _StatChip(label: 'Dizi', value: tv, icon: Icons.live_tv),
+        _StatChip(label: 'Favori', value: favorites, icon: Icons.favorite),
+        _StatChip(label: 'Public', value: publicCount, icon: Icons.public),
+      ],
+    ),
+  );
+}
+
+class _StatChip extends StatelessWidget {
+  const _StatChip({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  final String label;
+  final int value;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 112,
+    margin: const EdgeInsets.only(right: 10),
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: 0.05),
+      border: Border.all(color: Colors.white12),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Row(
+      children: [
+        Icon(icon, size: 18, color: const Color(0xFFF5C518)),
+        const SizedBox(width: 8),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('$value', style: const TextStyle(fontWeight: FontWeight.w800)),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 11, color: Colors.white54),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+class _LibraryResults extends StatelessWidget {
+  const _LibraryResults({
+    required this.items,
+    required this.viewMode,
+    required this.onOpen,
+    required this.onFavorite,
+    required this.onPublic,
+    required this.onRemove,
+  });
+
+  final List<LibraryItem> items;
+  final LibraryViewMode viewMode;
+  final ValueChanged<LibraryItem> onOpen;
+  final ValueChanged<LibraryItem> onFavorite;
+  final ValueChanged<LibraryItem> onPublic;
+  final ValueChanged<LibraryItem> onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    if (viewMode == LibraryViewMode.list) {
+      return ListView.separated(
+        padding: const EdgeInsets.fromLTRB(14, 4, 14, 100),
+        itemCount: items.length,
+        separatorBuilder: (_, _) => const SizedBox(height: 10),
+        itemBuilder: (context, index) {
+          final item = items[index];
+          return MediaListTile(
+            item: item,
+            onOpen: () => onOpen(item),
+            onFavorite: () => onFavorite(item),
+            onPublic: () => onPublic(item),
+            onRemove: () => onRemove(item),
+          );
+        },
+      );
+    }
+
+    return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(14, 4, 14, 100),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: .58,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 18,
+      ),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return MediaCard(
+          item: item,
+          onOpen: () => onOpen(item),
+          onFavorite: () => onFavorite(item),
+          onPublic: () => onPublic(item),
+          onRemove: () => onRemove(item),
+        );
+      },
+    );
+  }
 }

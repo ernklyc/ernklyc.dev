@@ -117,6 +117,113 @@ class MediaCard extends StatelessWidget {
   );
 }
 
+class MediaListTile extends StatelessWidget {
+  const MediaListTile({
+    super.key,
+    required this.item,
+    required this.onFavorite,
+    required this.onPublic,
+    required this.onRemove,
+    required this.onOpen,
+  });
+
+  final LibraryItem item;
+  final VoidCallback onFavorite;
+  final VoidCallback onPublic;
+  final VoidCallback onRemove;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) => InkWell(
+    onTap: onOpen,
+    borderRadius: BorderRadius.circular(16),
+    child: Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.045),
+        border: Border.all(color: Colors.white12),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SizedBox(
+              width: 58,
+              height: 86,
+              child: item.posterPath != null
+                  ? Image.network(
+                      'https://image.tmdb.org/t/p/w185${item.posterPath}',
+                      fit: BoxFit.cover,
+                    )
+                  : const ColoredBox(
+                      color: Color(0xFF151A20),
+                      child: Icon(Icons.movie, size: 28),
+                    ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _Badge(item.mediaType == MediaType.movie ? 'FİLM' : 'DİZİ'),
+                    _SmallLabel('${item.year ?? '—'}'),
+                    if (item.isPublic) const _SmallLabel('PUBLIC'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                onPressed: onFavorite,
+                tooltip: 'Favori',
+                icon: Icon(
+                  item.favorite ? Icons.favorite : Icons.favorite_border,
+                  color: item.favorite ? Colors.redAccent : Colors.white70,
+                ),
+              ),
+              PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'public') onPublic();
+                  if (value == 'remove') onRemove();
+                },
+                itemBuilder: (_) => [
+                  PopupMenuItem(
+                    value: 'public',
+                    child: Text(item.isPublic ? 'Gizliye al' : 'Herkese aç'),
+                  ),
+                  const PopupMenuItem(
+                    value: 'remove',
+                    child: Text('Arşivden kaldır'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 class _Badge extends StatelessWidget {
   const _Badge(this.text);
   final String text;
@@ -136,6 +243,26 @@ class _Badge extends StatelessWidget {
           fontWeight: FontWeight.w700,
           letterSpacing: 1.1,
         ),
+      ),
+    ),
+  );
+}
+
+class _SmallLabel extends StatelessWidget {
+  const _SmallLabel(this.text);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: 0.08),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      child: Text(
+        text,
+        style: const TextStyle(fontSize: 10, color: Colors.white60),
       ),
     ),
   );

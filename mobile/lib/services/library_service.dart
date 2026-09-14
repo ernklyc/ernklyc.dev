@@ -68,5 +68,18 @@ class LibraryService {
       .doc(item.id)
       .update({'isPublic': value, 'updatedAt': FieldValue.serverTimestamp()});
 
+  Future<void> setManyPublic(List<LibraryItem> items, bool value) async {
+    for (var start = 0; start < items.length; start += 450) {
+      final batch = _firestore.batch();
+      for (final item in items.skip(start).take(450)) {
+        batch.update(_library.doc(item.id), {
+          'isPublic': value,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+      }
+      await batch.commit();
+    }
+  }
+
   Future<void> remove(LibraryItem item) => _library.doc(item.id).delete();
 }
