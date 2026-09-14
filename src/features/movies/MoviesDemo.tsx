@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { auth } from "@/lib/firebase";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FiBookOpen, FiCheck, FiFilm, FiGlobe, FiHeart, FiLoader, FiLock, FiPlus, FiSearch, FiTrash2, FiTv, FiUpload, FiX } from "react-icons/fi";
@@ -28,7 +27,7 @@ export default function MoviesDemo() {
   const [visibilityFilter, setVisibilityFilter] = useState<VisibilityFilter>("all");
   const [genreFilter, setGenreFilter] = useState("all");
   const [yearFilter, setYearFilter] = useState("all");
-  const [sortMode, setSortMode] = useState<SortMode>("added");
+  const [sortMode, setSortMode] = useState<SortMode>("imdb-desc");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -98,20 +97,18 @@ export default function MoviesDemo() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
-        <div>
-          <p className="text-sm font-medium text-white/80">{isOwner ? "Arşivin gerçek zamanlı bağlı" : "Eren’in izledikleri"}</p>
-          <p className="mt-1 text-xs text-white/35">{isOwner ? "Web ve mobil aynı Firestore arşivini kullanır." : "Yalnızca herkese açık yapımlar gösteriliyor."}</p>
-        </div>
-        {isOwner ? (
+      {isOwner && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+          <div>
+            <p className="text-sm font-medium text-white/80">Arşivin gerçek zamanlı bağlı</p>
+            <p className="mt-1 text-xs text-white/35">Web ve mobil aynı Firestore arşivini kullanır.</p>
+          </div>
           <div className="flex flex-wrap gap-2">
             <CsvImportButton uid={user!.uid} existingIds={new Set(items.map((item) => item.id))} onNotice={setNotice} />
             <button type="button" onClick={() => setSearchOpen(true)} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#a9b7c4] px-4 text-sm font-semibold text-[#0b0e12]"><FiPlus /> Yapım ekle</button>
           </div>
-        ) : (
-          <Link href="/admin/login?next=/movies" className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 px-4 text-sm text-white/70 hover:text-white"><FiLock /> Yönetici girişi</Link>
-        )}
-      </div>
+        </div>
+      )}
 
       {notice && <div className="mb-6 flex items-start justify-between gap-4 rounded-xl border border-emerald-300/15 bg-emerald-400/[0.07] px-4 py-3 text-sm text-emerald-100"><span>{notice}</span><button onClick={() => setNotice("")} aria-label="Bildirimi kapat"><FiX /></button></div>}
 

@@ -34,7 +34,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   LibraryFilter filter = LibraryFilter.all;
   LibraryViewMode viewMode = LibraryViewMode.grid;
   LibraryVisibilityFilter visibilityFilter = LibraryVisibilityFilter.all;
-  LibrarySortMode sortMode = LibrarySortMode.added;
+  LibrarySortMode sortMode = LibrarySortMode.imdbDesc;
   String genreFilter = 'all';
   String yearFilter = 'all';
   bool importing = false;
