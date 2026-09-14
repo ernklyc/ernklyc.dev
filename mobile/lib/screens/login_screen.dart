@@ -49,7 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
       error = null;
     });
     try {
-      final googleUser = await GoogleSignIn().signIn();
+      final googleSignIn = GoogleSignIn();
+      await googleSignIn.signOut();
+      final googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
         setState(() => error = 'Google girişi iptal edildi.');
         return;
