@@ -32,6 +32,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   LibraryFilter filter = LibraryFilter.all;
   LibraryViewMode viewMode = LibraryViewMode.grid;
   LibrarySortMode sortMode = LibrarySortMode.imdbDesc;
+  bool controlsExpanded = false;
   String genreFilter = 'all';
   String yearFilter = 'all';
   bool importing = false;
@@ -271,12 +272,6 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   ),
                 ),
               ),
-              _StatsBar(
-                total: items.length,
-                movies: movieCount,
-                tv: tvCount,
-                favorites: favoriteCount,
-              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 2, 16, 10),
                 child: Row(
@@ -290,6 +285,18 @@ class _LibraryScreenState extends State<LibraryScreen> {
                         ),
                       ),
                     ),
+                    TextButton.icon(
+                      onPressed: () =>
+                          setState(() => controlsExpanded = !controlsExpanded),
+                      icon: Icon(
+                        controlsExpanded
+                            ? Icons.expand_less
+                            : Icons.tune_rounded,
+                        size: 18,
+                      ),
+                      label: Text(controlsExpanded ? 'Gizle' : 'Filtrele'),
+                    ),
+                    const SizedBox(width: 8),
                     SegmentedButton<LibraryViewMode>(
                       showSelectedIcon: false,
                       segments: const [
@@ -309,14 +316,21 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
-                child: Column(
+              AnimatedCrossFade(
+                firstChild: const SizedBox.shrink(),
+                secondChild: Column(
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _EnumDropdown<LibrarySortMode>(
+                    _StatsBar(
+                      total: items.length,
+                      movies: movieCount,
+                      tv: tvCount,
+                      favorites: favoriteCount,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                      child: Column(
+                        children: [
+                          _EnumDropdown<LibrarySortMode>(
                             label: 'Sırala',
                             value: sortMode,
                             values: LibrarySortMode.values,
@@ -330,65 +344,75 @@ class _LibraryScreenState extends State<LibraryScreen> {
                             onChanged: (value) =>
                                 setState(() => sortMode = value),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _StringDropdown(
+                                  label: 'Tür',
+                                  value: genreFilter,
+                                  items: ['all', ...genres],
+                                  labelFor: (value) =>
+                                      value == 'all' ? 'Tüm türler' : value,
+                                  onChanged: (value) =>
+                                      setState(() => genreFilter = value),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _StringDropdown(
+                                  label: 'Yıl',
+                                  value: yearFilter,
+                                  items: [
+                                    'all',
+                                    ...years.map((year) => '$year'),
+                                  ],
+                                  labelFor: (value) =>
+                                      value == 'all' ? 'Tüm yıllar' : value,
+                                  onChanged: (value) =>
+                                      setState(() => yearFilter = value),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _StringDropdown(
-                            label: 'Tür',
-                            value: genreFilter,
-                            items: ['all', ...genres],
-                            labelFor: (value) =>
-                                value == 'all' ? 'Tüm türler' : value,
-                            onChanged: (value) =>
-                                setState(() => genreFilter = value),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: _StringDropdown(
-                            label: 'Yıl',
-                            value: yearFilter,
-                            items: ['all', ...years.map((year) => '$year')],
-                            labelFor: (value) =>
-                                value == 'all' ? 'Tüm yıllar' : value,
-                            onChanged: (value) =>
-                                setState(() => yearFilter = value),
-                          ),
-                        ),
-                      ],
+                    SizedBox(
+                      height: 44,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        children: LibraryFilter.values
+                            .map(
+                              (value) => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
+                                child: ChoiceChip(
+                                  selected: filter == value,
+                                  onSelected: (_) =>
+                                      setState(() => filter = value),
+                                  label: Text(switch (value) {
+                                    LibraryFilter.all => 'Tümü',
+                                    LibraryFilter.movie => 'Filmler',
+                                    LibraryFilter.tv => 'Diziler',
+                                    LibraryFilter.favorites => 'Favoriler',
+                                  }),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
                     ),
                   ],
                 ),
+                crossFadeState: controlsExpanded
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: const Duration(milliseconds: 180),
               ),
-              SizedBox(
-                height: 44,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  children: LibraryFilter.values
-                      .map(
-                        (value) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: ChoiceChip(
-                            selected: filter == value,
-                            onSelected: (_) => setState(() => filter = value),
-                            label: Text(switch (value) {
-                              LibraryFilter.all => 'Tümü',
-                              LibraryFilter.movie => 'Filmler',
-                              LibraryFilter.tv => 'Diziler',
-                              LibraryFilter.favorites => 'Favoriler',
-                            }),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
-              const SizedBox(height: 10),
+              SizedBox(height: controlsExpanded ? 10 : 2),
               Expanded(
                 child: snapshot.hasError
                     ? Center(

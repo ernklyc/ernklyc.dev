@@ -37,9 +37,13 @@ class LibraryItem {
     DocumentSnapshot<Map<String, dynamic>> document,
   ) {
     final data = document.data() ?? const <String, dynamic>{};
+    return LibraryItem.fromFirestoreMap(document.id, data);
+  }
+
+  factory LibraryItem.fromFirestoreMap(String id, Map<String, dynamic> data) {
     final snapshot = data['snapshot'] as Map<String, dynamic>? ?? const {};
     return LibraryItem(
-      id: document.id,
+      id: id,
       tmdbId: data['tmdbId'] as int,
       imdbId: data['imdbId'] as String?,
       mediaType: data['mediaType'] == 'tv' ? MediaType.tv : MediaType.movie,
@@ -54,4 +58,25 @@ class LibraryItem {
       isPublic: data['isPublic'] as bool? ?? false,
     );
   }
+
+  factory LibraryItem.fromCache(Map<String, dynamic> data) =>
+      LibraryItem.fromFirestoreMap(data['id'] as String? ?? '', data);
+
+  Map<String, dynamic> toCache() => {
+    'id': id,
+    'tmdbId': tmdbId,
+    'imdbId': imdbId,
+    'mediaType': mediaType.name,
+    'favorite': favorite,
+    'isPublic': isPublic,
+    'snapshot': {
+      'title': title,
+      'originalTitle': originalTitle,
+      'year': year,
+      'posterPath': posterPath,
+      'genres': genres,
+      'imdbRating': imdbRating,
+      'imdbVotes': imdbVotes,
+    },
+  };
 }

@@ -1,10 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../core/app_config.dart';
 import '../models/library_item.dart';
 import '../models/tmdb_search_item.dart';
 
 class LibraryService {
+  static const _cacheKey = 'movie_library_items_v2';
+
   LibraryService({FirebaseFirestore? firestore})
     : _firestore = firestore ?? FirebaseFirestore.instance;
   final FirebaseFirestore _firestore;
@@ -20,12 +26,39 @@ class LibraryService {
   CollectionReference<Map<String, dynamic>> get _library =>
       _firestore.collection('users').doc(_uid).collection('library');
 
-  Stream<List<LibraryItem>> watchLibrary() =>
-      _library.snapshots().map((snapshot) {
-        final items = snapshot.docs.map(LibraryItem.fromDocument).toList();
-        items.sort((a, b) => b.id.compareTo(a.id));
-        return items;
-      });
+  Stream<List<LibraryItem>> watchLibrary() async* {
+    final cached = await _cachedItems();
+    if (cached.isNotEmpty) yield cached;
+
+    yield* _library.snapshots().asyncMap((snapshot) async {
+      final items = snapshot.docs.map(LibraryItem.fromDocument).toList();
+      items.sort((a, b) => b.id.compareTo(a.id));
+      await _cacheItems(items);
+      return items;
+    });
+  }
+
+  Future<List<LibraryItem>> _cachedItems() async {
+    try {
+      final raw = (await SharedPreferences.getInstance()).getString(_cacheKey);
+      if (raw == null) return const [];
+      final decoded = jsonDecode(raw) as List;
+      return decoded
+          .whereType<Map>()
+          .map((item) => LibraryItem.fromCache(Map<String, dynamic>.from(item)))
+          .where((item) => item.id.isNotEmpty)
+          .toList();
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<void> _cacheItems(List<LibraryItem> items) async {
+    await (await SharedPreferences.getInstance()).setString(
+      _cacheKey,
+      jsonEncode(items.map((item) => item.toCache()).toList()),
+    );
+  }
 
   Future<bool> add(TmdbSearchItem media) =>
       _firestore.runTransaction((transaction) async {
@@ -63,23 +96,6 @@ class LibraryService {
   Future<void> setFavorite(LibraryItem item, bool value) => _library
       .doc(item.id)
       .update({'favorite': value, 'updatedAt': FieldValue.serverTimestamp()});
-
-  Future<void> setPublic(LibraryItem item, bool value) => _library
-      .doc(item.id)
-      .update({'isPublic': value, 'updatedAt': FieldValue.serverTimestamp()});
-
-  Future<void> setManyPublic(List<LibraryItem> items, bool value) async {
-    for (var start = 0; start < items.length; start += 450) {
-      final batch = _firestore.batch();
-      for (final item in items.skip(start).take(450)) {
-        batch.update(_library.doc(item.id), {
-          'isPublic': value,
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
-      }
-      await batch.commit();
-    }
-  }
 
   Future<void> repairPublicAndRatings(
     List<LibraryItem> items,

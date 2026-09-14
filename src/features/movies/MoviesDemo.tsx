@@ -17,6 +17,7 @@ const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
   { id: "tv", label: "Diziler", icon: FiTv },
   { id: "favorites", label: "Favoriler", icon: FiHeart },
 ];
+const RATINGS_CACHE_KEY = "movie_archive_imdb_ratings_v1";
 
 export default function MoviesDemo() {
   const { user, items, loading, error, isOwner } = useMovieLibrary();
@@ -28,27 +29,28 @@ export default function MoviesDemo() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [notice, setNotice] = useState("");
-  const [ratings, setRatings] = useState<Record<string, { averageRating: number; numVotes: number } | null>>({});
+  const [ratings, setRatings] = useState<Record<string, { averageRating: number; numVotes: number } | null>>(() => readRatingsCache());
   const repairedSignatureRef = useRef("");
 
+  const missingRatingIds = useMemo(() => [...new Set(items
+    .filter((item) => item.imdbId && typeof item.snapshot.imdbRating !== "number" && !(item.imdbId in ratings))
+    .map((item) => item.imdbId as string))].sort(), [items, ratings]);
+
   useEffect(() => {
-    const missingIds = [...new Set(items
-      .filter((item) => item.imdbId && typeof item.snapshot.imdbRating !== "number" && !(item.imdbId in ratings))
-      .map((item) => item.imdbId as string))];
-    if (!missingIds.length) return;
+    if (!missingRatingIds.length) return;
 
     let cancelled = false;
     fetch("/api/movies/ratings", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ imdbIds: missingIds }),
+      body: JSON.stringify({ imdbIds: missingRatingIds }),
     })
       .then((response) => response.ok ? response.json() : null)
       .then((body: { ratings?: Record<string, { averageRating: number; numVotes: number }> } | null) => {
         if (!cancelled) {
           setRatings((current) => ({
             ...current,
-            ...Object.fromEntries(missingIds.map((id) => [id, body?.ratings?.[id] ?? null])),
+            ...Object.fromEntries(missingRatingIds.map((id) => [id, body?.ratings?.[id] ?? null])),
           }));
         }
       })
@@ -57,16 +59,20 @@ export default function MoviesDemo() {
     return () => {
       cancelled = true;
     };
-  }, [items, ratings]);
+  }, [missingRatingIds]);
+
+  useEffect(() => {
+    writeRatingsCache(ratings);
+  }, [ratings]);
 
   useEffect(() => {
     if (!user || !isOwner || !items.length) return;
-    const signature = items
-      .map((item) => `${item.id}:${item.isPublic ? 1 : 0}:${item.snapshot.imdbRating ?? ratings[item.imdbId ?? ""]?.averageRating ?? ""}`)
-      .join("|");
+    const repairItems = items.filter((item) => !item.isPublic || (item.imdbId && ratings[item.imdbId] && typeof item.snapshot.imdbRating !== "number"));
+    if (!repairItems.length) return;
+    const signature = repairItems.map((item) => `${item.id}:${item.isPublic ? 1 : 0}:${ratings[item.imdbId ?? ""]?.averageRating ?? ""}`).join("|");
     if (signature === repairedSignatureRef.current) return;
     repairedSignatureRef.current = signature;
-    repairLibraryPublicAndRatings(user.uid, items, ratings).catch(() => undefined);
+    repairLibraryPublicAndRatings(user.uid, repairItems, ratings).catch(() => undefined);
   }, [isOwner, items, ratings, user]);
 
   const visibleItems = useMemo(() => {
@@ -225,6 +231,22 @@ function sectionTitle(filter: Filter) { return filter === "favorites" ? "Favoril
 function imdbRatingOf(item: LibraryItem, ratings: Record<string, { averageRating: number } | null>) { return item.snapshot.imdbRating ?? (item.imdbId ? ratings[item.imdbId]?.averageRating : undefined) ?? -1; }
 function libraryToDetailTarget(item: LibraryItem): MediaDetailTarget { return { id: item.tmdbId, title: item.snapshot.title, originalTitle: item.snapshot.originalTitle, year: item.snapshot.year, mediaType: item.mediaType, posterPath: item.snapshot.posterPath, favorite: item.favorite, imdbId: item.imdbId }; }
 async function ownerAuthHeaders() { const token = await auth.currentUser?.getIdToken(); if (!token) throw new Error("Oturum bulunamadı."); return { Authorization: `Bearer ${token}` }; }
+function readRatingsCache(): Record<string, { averageRating: number; numVotes: number } | null> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(window.localStorage.getItem(RATINGS_CACHE_KEY) ?? "{}") as Record<string, { averageRating: number; numVotes: number } | null>;
+  } catch {
+    return {};
+  }
+}
+function writeRatingsCache(ratings: Record<string, { averageRating: number; numVotes: number } | null>) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(RATINGS_CACHE_KEY, JSON.stringify(ratings));
+  } catch {
+    // localStorage can be unavailable in private browsing; ignore.
+  }
+}
 function timestampMillis(value: unknown) {
   if (value && typeof value === "object" && "toMillis" in value) return (value as { toMillis: () => number }).toMillis();
   return 0;
