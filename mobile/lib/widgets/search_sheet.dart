@@ -63,14 +63,28 @@ class _SearchSheetState extends State<SearchSheet> {
     if (widget.existingIds.contains(media.documentId)) return;
     setState(() => busyId = media.documentId);
     try {
-      final added = await library.add(media);
+      final details = await api.details(media.tmdbId, media.mediaType.name);
+      final metadata = details['metadata'] as Map<String, dynamic>? ?? const {};
+      final externalIds =
+          metadata['external_ids'] as Map<String, dynamic>? ?? const {};
+      final imdbRating = details['imdbRating'] as Map<String, dynamic>?;
+      final enriched = media.copyWith(
+        imdbId: externalIds['imdb_id'] as String? ?? media.imdbId,
+        genres: (metadata['genres'] as List? ?? const [])
+            .whereType<Map>()
+            .map((genre) => genre['name'].toString())
+            .toList(),
+        imdbRating: (imdbRating?['averageRating'] as num?)?.toDouble(),
+        imdbVotes: (imdbRating?['numVotes'] as num?)?.toInt(),
+      );
+      final added = await library.add(enriched);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               added
-                  ? '${media.title} eklendi.'
-                  : '${media.title} zaten arşivde.',
+                  ? '${enriched.title} eklendi.'
+                  : '${enriched.title} zaten arşivde.',
             ),
           ),
         );

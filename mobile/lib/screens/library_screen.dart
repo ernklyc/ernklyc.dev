@@ -19,7 +19,7 @@ enum LibraryViewMode { grid, list }
 
 enum LibraryVisibilityFilter { all, public, private }
 
-enum LibrarySortMode { added, title, yearDesc, yearAsc }
+enum LibrarySortMode { added, imdbDesc, title, yearDesc, yearAsc }
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -40,6 +40,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
   bool importing = false;
   final shareIntent = ShareIntentService();
   StreamSubscription<String>? shareSubscription;
+  Map<String, double> imdbRatings = const {};
+  String ratingsKey = '';
+  bool ratingsLoading = false;
 
   @override
   void initState() {
@@ -167,12 +170,38 @@ class _LibraryScreenState extends State<LibraryScreen> {
     filtered.sort(
       (a, b) => switch (sortMode) {
         LibrarySortMode.title => a.title.compareTo(b.title),
+        LibrarySortMode.imdbDesc => _ratingOf(b).compareTo(_ratingOf(a)),
         LibrarySortMode.yearDesc => (b.year ?? 0).compareTo(a.year ?? 0),
         LibrarySortMode.yearAsc => (a.year ?? 9999).compareTo(b.year ?? 9999),
         LibrarySortMode.added => b.id.compareTo(a.id),
       },
     );
     return filtered;
+  }
+
+  double _ratingOf(LibraryItem item) =>
+      item.imdbRating ??
+      (item.imdbId == null ? -1 : imdbRatings[item.imdbId] ?? -1);
+
+  void _ensureRatings(List<LibraryItem> items) {
+    final ids =
+        items
+            .where((item) => item.imdbRating == null && item.imdbId != null)
+            .map((item) => item.imdbId!)
+            .toSet()
+            .toList()
+          ..sort();
+    final key = ids.join('|');
+    if (key.isEmpty || key == ratingsKey || ratingsLoading) return;
+    ratingsKey = key;
+    ratingsLoading = true;
+    api
+        .ratings(ids)
+        .then((ratings) {
+          if (!mounted) return;
+          setState(() => imdbRatings = {...imdbRatings, ...ratings});
+        })
+        .whenComplete(() => ratingsLoading = false);
   }
 
   Future<void> setShownPublic(List<LibraryItem> shown, bool value) async {
@@ -195,6 +224,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
     stream: library.watchLibrary(),
     builder: (context, snapshot) {
       final items = snapshot.data ?? const <LibraryItem>[];
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _ensureRatings(items),
+      );
       final shown = visible(items);
       final existingIds = items.map((item) => item.id).toSet();
       final movieCount = items
@@ -336,6 +368,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                             values: LibrarySortMode.values,
                             labelFor: (value) => switch (value) {
                               LibrarySortMode.added => 'Son eklenen',
+                              LibrarySortMode.imdbDesc => 'IMDb puanı',
                               LibrarySortMode.title => 'Ada göre',
                               LibrarySortMode.yearDesc => 'Yeni yıl',
                               LibrarySortMode.yearAsc => 'Eski yıl',

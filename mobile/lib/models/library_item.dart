@@ -13,6 +13,8 @@ class LibraryItem {
     required this.year,
     required this.posterPath,
     required this.genres,
+    required this.imdbRating,
+    required this.imdbVotes,
     required this.favorite,
     required this.isPublic,
   });
@@ -26,6 +28,8 @@ class LibraryItem {
   final int? year;
   final String? posterPath;
   final List<String> genres;
+  final double? imdbRating;
+  final int? imdbVotes;
   final bool favorite;
   final bool isPublic;
 
@@ -44,6 +48,8 @@ class LibraryItem {
       year: snapshot['year'] as int?,
       posterPath: snapshot['posterPath'] as String?,
       genres: List<String>.from(snapshot['genres'] as List? ?? const []),
+      imdbRating: (snapshot['imdbRating'] as num?)?.toDouble(),
+      imdbVotes: (snapshot['imdbVotes'] as num?)?.toInt(),
       favorite: data['favorite'] as bool? ?? false,
       isPublic: data['isPublic'] as bool? ?? false,
     );

@@ -14,6 +14,8 @@ void main() {
       posterPath: null,
       overview: '',
       genres: [],
+      imdbRating: 8.7,
+      imdbVotes: 2300000,
     );
 
     expect(media.documentId, 'movie_157336');

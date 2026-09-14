@@ -112,13 +112,16 @@ export async function searchLiveMedia(query: string): Promise<TmdbSearchItem[]> 
 }
 
 export async function findMediaByImdbId(imdbId: string): Promise<TmdbSearchItem | null> {
-  const response = await tmdbFetch<TmdbFindResponse>(`/find/${imdbId}`, {
-    external_source: "imdb_id",
-  });
+  const [response, rating] = await Promise.all([
+    tmdbFetch<TmdbFindResponse>(`/find/${imdbId}`, {
+      external_source: "imdb_id",
+    }),
+    getImdbRating(imdbId).catch(() => null),
+  ]);
   const movie = response.movie_results?.[0];
-  if (movie) return normalizeSearchItem(movie, "movie", imdbId);
+  if (movie) return normalizeSearchItem(movie, "movie", imdbId, rating);
   const tv = response.tv_results?.[0];
-  if (tv) return normalizeSearchItem(tv, "tv", imdbId);
+  if (tv) return normalizeSearchItem(tv, "tv", imdbId, rating);
   return null;
 }
 
@@ -126,6 +129,7 @@ function normalizeSearchItem(
   item: TmdbSearchResult,
   mediaType: TmdbMediaType,
   imdbId: string | null,
+  imdbRating?: { averageRating: number; numVotes: number } | null,
 ): TmdbSearchItem {
   const title = item.title ?? item.name ?? "Başlıksız";
   const originalTitle = item.original_title ?? item.original_name ?? title;
@@ -144,5 +148,7 @@ function normalizeSearchItem(
     overview: item.overview ?? "",
     genreIds: item.genre_ids ?? [],
     genres: [],
+    imdbRating: imdbRating?.averageRating ?? null,
+    imdbVotes: imdbRating?.numVotes ?? null,
   };
 }

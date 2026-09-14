@@ -14,6 +14,7 @@ class ImportMatch {
 class MovieApiService {
   static const _detailCacheTtl = Duration(hours: 12);
   static const _episodeCacheTtl = Duration(hours: 24);
+  static const _ratingsCacheTtl = Duration(hours: 24);
 
   Future<Map<String, dynamic>> details(int tmdbId, String mediaType) async {
     final key = 'movie_detail_${mediaType}_$tmdbId';
@@ -65,6 +66,34 @@ class MovieApiService {
     return (body['results'] as List? ?? const [])
         .map((item) => TmdbSearchItem.fromJson(item as Map<String, dynamic>))
         .toList();
+  }
+
+  Future<Map<String, double>> ratings(List<String> imdbIds) async {
+    final uniqueIds = imdbIds.toSet().toList()..sort();
+    if (uniqueIds.isEmpty) return const {};
+
+    final body = await _cachedJsonMap(
+      key: 'movie_ratings_${uniqueIds.join('_')}',
+      ttl: _ratingsCacheTtl,
+      fetcher: () async {
+        final response = await http.post(
+          Uri.parse('${AppConfig.apiBaseUrl}/api/movies/ratings'),
+          headers: {'content-type': 'application/json'},
+          body: jsonEncode({'imdbIds': uniqueIds}),
+        );
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        if (response.statusCode != 200) {
+          throw Exception(body['error'] ?? 'IMDb puanları alınamadı.');
+        }
+        return body;
+      },
+    );
+
+    final ratings = body['ratings'] as Map<String, dynamic>? ?? const {};
+    return ratings.map((id, value) {
+      final rating = (value as Map<String, dynamic>)['averageRating'] as num;
+      return MapEntry(id, rating.toDouble());
+    });
   }
 
   Future<List<ImportMatch>> matchImdbIds(List<String> imdbIds) async {

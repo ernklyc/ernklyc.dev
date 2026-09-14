@@ -13,7 +13,7 @@ import { useMovieLibrary } from "./useMovieLibrary";
 type Filter = "all" | MediaType | "favorites";
 type PageTab = "archive" | "public" | "editorial";
 type VisibilityFilter = "all" | "public" | "private";
-type SortMode = "added" | "title" | "year-desc" | "year-asc";
+type SortMode = "added" | "imdb-desc" | "title" | "year-desc" | "year-asc";
 const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
   { id: "all", label: "Tümü" },
   { id: "movie", label: "Filmler", icon: FiFilm },
@@ -33,6 +33,35 @@ export default function MoviesDemo() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [notice, setNotice] = useState("");
+  const [ratings, setRatings] = useState<Record<string, { averageRating: number; numVotes: number } | null>>({});
+
+  useEffect(() => {
+    const missingIds = [...new Set(items
+      .filter((item) => item.imdbId && typeof item.snapshot.imdbRating !== "number" && !(item.imdbId in ratings))
+      .map((item) => item.imdbId as string))];
+    if (!missingIds.length) return;
+
+    let cancelled = false;
+    fetch("/api/movies/ratings", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ imdbIds: missingIds }),
+    })
+      .then((response) => response.ok ? response.json() : null)
+      .then((body: { ratings?: Record<string, { averageRating: number; numVotes: number }> } | null) => {
+        if (!cancelled) {
+          setRatings((current) => ({
+            ...current,
+            ...Object.fromEntries(missingIds.map((id) => [id, body?.ratings?.[id] ?? null])),
+          }));
+        }
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [items, ratings]);
 
   const visibleItems = useMemo(() => {
       const normalizedQuery = normalize(query.trim());
@@ -49,9 +78,10 @@ export default function MoviesDemo() {
       if (sortMode === "title") return a.snapshot.title.localeCompare(b.snapshot.title, "tr");
       if (sortMode === "year-desc") return (b.snapshot.year ?? 0) - (a.snapshot.year ?? 0);
       if (sortMode === "year-asc") return (a.snapshot.year ?? 9999) - (b.snapshot.year ?? 9999);
+      if (sortMode === "imdb-desc") return imdbRatingOf(b, ratings) - imdbRatingOf(a, ratings);
       return timestampMillis(b.addedAt) - timestampMillis(a.addedAt);
     });
-  }, [activeFilter, genreFilter, isOwner, items, pageTab, query, sortMode, visibilityFilter, yearFilter]);
+  }, [activeFilter, genreFilter, isOwner, items, pageTab, query, ratings, sortMode, visibilityFilter, yearFilter]);
 
   const selectedItem = selectedId ? items.find((item) => item.id === selectedId) ?? null : null;
   const movieCount = items.filter((item) => item.mediaType === "movie").length;
@@ -115,7 +145,7 @@ export default function MoviesDemo() {
           {isOwner && <Select label="Görünürlük" value={visibilityFilter} onChange={(value) => setVisibilityFilter(value as VisibilityFilter)} options={[["all", `Tümü (${items.length})`], ["public", `Herkese açık (${publicCount})`], ["private", `Gizli (${privateCount})`]]} />}
           <Select label="Tür" value={genreFilter} onChange={setGenreFilter} options={[["all", "Tüm türler"], ...genres.map((genre) => [genre, genre] as [string, string])]} />
           <Select label="Yıl" value={yearFilter} onChange={setYearFilter} options={[["all", "Tüm yıllar"], ...years.map((year) => [String(year), String(year)] as [string, string])]} />
-          <Select label="Sırala" value={sortMode} onChange={(value) => setSortMode(value as SortMode)} options={[["added", "Son eklenen"], ["title", "Ada göre"], ["year-desc", "Yeni yıl"], ["year-asc", "Eski yıl"]]} />
+          <Select label="Sırala" value={sortMode} onChange={(value) => setSortMode(value as SortMode)} options={[["added", "Son eklenen"], ["imdb-desc", "IMDb puanı"], ["title", "Ada göre"], ["year-desc", "Yeni yıl"], ["year-asc", "Eski yıl"]]} />
         </div>
       </div>
 
@@ -187,8 +217,8 @@ function SearchDialog({ uid, existingIds, onClose, onNotice }: { uid: string; ex
     if (existingIds.has(documentId)) { onNotice(`${media.title} zaten arşivinde.`); return; }
     setBusyId(documentId);
     try {
-      const detailResponse = await fetch(`/api/movies/${media.mediaType}/${media.tmdbId}`); const details = await detailResponse.json() as { metadata?: { external_ids?: { imdb_id?: string | null }; genres?: { name: string }[] } };
-      await addToLibrary(uid, { ...media, imdbId: details.metadata?.external_ids?.imdb_id ?? media.imdbId, genres: details.metadata?.genres?.map((genre) => genre.name) ?? media.genres });
+      const detailResponse = await fetch(`/api/movies/${media.mediaType}/${media.tmdbId}`); const details = await detailResponse.json() as { metadata?: { external_ids?: { imdb_id?: string | null }; genres?: { name: string }[] }; imdbRating?: { averageRating: number; numVotes: number } | null };
+      await addToLibrary(uid, { ...media, imdbId: details.metadata?.external_ids?.imdb_id ?? media.imdbId, genres: details.metadata?.genres?.map((genre) => genre.name) ?? media.genres, imdbRating: details.imdbRating?.averageRating ?? media.imdbRating, imdbVotes: details.imdbRating?.numVotes ?? media.imdbVotes });
       onNotice(`${media.title} izlediklerine eklendi.`);
     } catch (addError) { setError((addError as Error).message || "Yapım eklenemedi."); }
     finally { setBusyId(""); }
@@ -237,6 +267,7 @@ function Select({ label, value, options, onChange }: { label: string; value: str
 function EmptyState({ title, description }: { title: string; description: string }) { return <div className="grid min-h-64 place-items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.025] text-center"><div className="px-6"><FiSearch className="mx-auto mb-3 text-2xl text-white/25" /><p className="font-medium text-white/75">{title}</p><p className="mt-1 text-sm text-white/35">{description}</p></div></div>; }
 function normalize(value: string) { return value.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
 function sectionTitle(filter: Filter) { return filter === "favorites" ? "Favorilerim" : filter === "movie" ? "İzlediğim filmler" : filter === "tv" ? "İzlediğim diziler" : "Tüm izlediklerim"; }
+function imdbRatingOf(item: LibraryItem, ratings: Record<string, { averageRating: number } | null>) { return item.snapshot.imdbRating ?? (item.imdbId ? ratings[item.imdbId]?.averageRating : undefined) ?? -1; }
 function libraryToDetailTarget(item: LibraryItem): MediaDetailTarget { return { id: item.tmdbId, title: item.snapshot.title, originalTitle: item.snapshot.originalTitle, year: item.snapshot.year, mediaType: item.mediaType, posterPath: item.snapshot.posterPath, favorite: item.favorite, imdbId: item.imdbId }; }
 async function ownerAuthHeaders() { const token = await auth.currentUser?.getIdToken(); if (!token) throw new Error("Oturum bulunamadı."); return { Authorization: `Bearer ${token}` }; }
 function timestampMillis(value: unknown) {

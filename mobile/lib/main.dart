@@ -63,7 +63,10 @@ class MovieLogApp extends StatelessWidget {
                         const Text(
                           'Bu arşiv yalnızca sahibine açık.',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                         const SizedBox(height: 18),
                         FilledButton(

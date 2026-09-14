@@ -6,6 +6,8 @@ export type MediaSnapshot = {
   year: number | null;
   posterPath: string | null;
   genres: string[];
+  imdbRating?: number | null;
+  imdbVotes?: number | null;
 };
 
 export type LibraryItem = {
@@ -32,6 +34,8 @@ export type TmdbSearchItem = {
   overview: string;
   genreIds: number[];
   genres: string[];
+  imdbRating?: number | null;
+  imdbVotes?: number | null;
 };
 
 export const mediaDocumentId = (mediaType: MediaType, tmdbId: number) =>

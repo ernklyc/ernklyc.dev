@@ -65,7 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
       await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (exception) {
       setState(
-        () => error = exception.code == 'account-exists-with-different-credential'
+        () =>
+            error = exception.code == 'account-exists-with-different-credential'
             ? 'Bu mail farklı giriş yöntemiyle kayıtlı. Önce mevcut yöntemle girip Google hesabını bağlamak gerekiyor.'
             : 'Google ile giriş yapılamadı: ${exception.code}',
       );
@@ -139,7 +140,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     Expanded(child: Divider(color: Colors.white12)),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('veya e-posta', style: TextStyle(color: Colors.white38)),
+                      child: Text(
+                        'veya e-posta',
+                        style: TextStyle(color: Colors.white38),
+                      ),
                     ),
                     Expanded(child: Divider(color: Colors.white12)),
                   ],

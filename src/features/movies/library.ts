@@ -116,6 +116,8 @@ function libraryPayload(media: TmdbSearchItem) {
       year: media.year,
       posterPath: media.posterPath,
       genres: media.genres,
+      imdbRating: media.imdbRating ?? null,
+      imdbVotes: media.imdbVotes ?? null,
     },
     addedAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
