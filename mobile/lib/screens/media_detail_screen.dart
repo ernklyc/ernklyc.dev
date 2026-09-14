@@ -16,10 +16,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
     widget.item.tmdbId,
     widget.item.mediaType.name,
   );
-  late final Future<List<Map<String, dynamic>>>? episodes =
-      widget.item.mediaType == MediaType.tv
-      ? api.episodes(widget.item.tmdbId)
-      : null;
+  Future<List<Map<String, dynamic>>>? episodes;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -36,6 +33,11 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
           item: widget.item,
           data: snapshot.data!,
           episodes: episodes,
+          onLoadEpisodes: widget.item.mediaType == MediaType.tv
+              ? () => setState(
+                  () => episodes ??= api.episodes(widget.item.tmdbId),
+                )
+              : null,
         );
       },
     ),
@@ -47,10 +49,12 @@ class _DetailBody extends StatelessWidget {
     required this.item,
     required this.data,
     required this.episodes,
+    required this.onLoadEpisodes,
   });
   final LibraryItem item;
   final Map<String, dynamic> data;
   final Future<List<Map<String, dynamic>>>? episodes;
+  final VoidCallback? onLoadEpisodes;
 
   String? image(String? path, [String size = 'w780']) =>
       path == null ? null : 'https://image.tmdb.org/t/p/$size$path';
@@ -211,9 +215,15 @@ class _DetailBody extends StatelessWidget {
                   ),
                 ),
               ],
-              if (episodes != null) ...[
+              if (onLoadEpisodes != null) ...[
                 const SizedBox(height: 28),
-                _EpisodeHeatmap(future: episodes!),
+                episodes == null
+                    ? OutlinedButton.icon(
+                        onPressed: onLoadEpisodes,
+                        icon: const Icon(Icons.table_rows_rounded),
+                        label: const Text('Bölüm puanlarını yükle'),
+                      )
+                    : _EpisodeHeatmap(future: episodes!),
               ],
             ],
           ),

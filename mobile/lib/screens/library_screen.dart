@@ -19,6 +19,9 @@ enum LibraryViewMode { grid, list }
 
 enum LibrarySortMode { added, imdbDesc, title, yearDesc, yearAsc }
 
+const _initialVisibleItems = 80;
+const _loadMoreItems = 80;
+
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
   @override
@@ -36,6 +39,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   String genreFilter = 'all';
   String yearFilter = 'all';
   bool importing = false;
+  int visibleLimit = _initialVisibleItems;
   final shareIntent = ShareIntentService();
   StreamSubscription<String>? shareSubscription;
   Map<String, double> imdbRatings = const {};
@@ -172,6 +176,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
     return filtered;
   }
 
+  void _resetVisibleLimit() {
+    visibleLimit = _initialVisibleItems;
+  }
+
   double _ratingOf(LibraryItem item) =>
       item.imdbRating ??
       (item.imdbId == null ? -1 : imdbRatings[item.imdbId] ?? -1);
@@ -265,7 +273,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
                 child: TextField(
                   controller: search,
-                  onChanged: (_) => setState(() {}),
+                  onChanged: (_) => setState(_resetVisibleLimit),
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     hintText: 'Arşivinde ara...',
@@ -341,8 +349,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                               LibrarySortMode.yearDesc => 'Yeni yıl',
                               LibrarySortMode.yearAsc => 'Eski yıl',
                             },
-                            onChanged: (value) =>
-                                setState(() => sortMode = value),
+                            onChanged: (value) => setState(() {
+                              sortMode = value;
+                              _resetVisibleLimit();
+                            }),
                           ),
                           const SizedBox(height: 10),
                           Row(
@@ -354,8 +364,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                   items: ['all', ...genres],
                                   labelFor: (value) =>
                                       value == 'all' ? 'Tüm türler' : value,
-                                  onChanged: (value) =>
-                                      setState(() => genreFilter = value),
+                                  onChanged: (value) => setState(() {
+                                    genreFilter = value;
+                                    _resetVisibleLimit();
+                                  }),
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -369,8 +381,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                   ],
                                   labelFor: (value) =>
                                       value == 'all' ? 'Tüm yıllar' : value,
-                                  onChanged: (value) =>
-                                      setState(() => yearFilter = value),
+                                  onChanged: (value) => setState(() {
+                                    yearFilter = value;
+                                    _resetVisibleLimit();
+                                  }),
                                 ),
                               ),
                             ],
@@ -391,8 +405,10 @@ class _LibraryScreenState extends State<LibraryScreen> {
                                 ),
                                 child: ChoiceChip(
                                   selected: filter == value,
-                                  onSelected: (_) =>
-                                      setState(() => filter = value),
+                                  onSelected: (_) => setState(() {
+                                    filter = value;
+                                    _resetVisibleLimit();
+                                  }),
                                   label: Text(switch (value) {
                                     LibraryFilter.all => 'Tümü',
                                     LibraryFilter.movie => 'Filmler',
@@ -433,6 +449,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       )
                     : _LibraryResults(
                         items: shown,
+                        visibleLimit: visibleLimit,
                         viewMode: viewMode,
                         onOpen: (item) => Navigator.push(
                           context,
@@ -443,6 +460,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
                         onFavorite: (item) =>
                             library.setFavorite(item, !item.favorite),
                         onRemove: library.remove,
+                        onLoadMore: () =>
+                            setState(() => visibleLimit += _loadMoreItems),
                       ),
               ),
             ],
@@ -633,27 +652,39 @@ class _StatChip extends StatelessWidget {
 class _LibraryResults extends StatelessWidget {
   const _LibraryResults({
     required this.items,
+    required this.visibleLimit,
     required this.viewMode,
     required this.onOpen,
     required this.onFavorite,
     required this.onRemove,
+    required this.onLoadMore,
   });
 
   final List<LibraryItem> items;
+  final int visibleLimit;
   final LibraryViewMode viewMode;
   final ValueChanged<LibraryItem> onOpen;
   final ValueChanged<LibraryItem> onFavorite;
   final ValueChanged<LibraryItem> onRemove;
+  final VoidCallback onLoadMore;
 
   @override
   Widget build(BuildContext context) {
+    final visibleItems = items.take(visibleLimit).toList();
+    final hasMore = items.length > visibleItems.length;
     if (viewMode == LibraryViewMode.list) {
       return ListView.separated(
         padding: const EdgeInsets.fromLTRB(14, 4, 14, 100),
-        itemCount: items.length,
+        itemCount: visibleItems.length + (hasMore ? 1 : 0),
         separatorBuilder: (_, _) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
-          final item = items[index];
+          if (index >= visibleItems.length) {
+            return _LoadMoreButton(
+              remaining: items.length - visibleItems.length,
+              onPressed: onLoadMore,
+            );
+          }
+          final item = visibleItems[index];
           return MediaListTile(
             item: item,
             onOpen: () => onOpen(item),
@@ -672,9 +703,15 @@ class _LibraryResults extends StatelessWidget {
         crossAxisSpacing: 12,
         mainAxisSpacing: 18,
       ),
-      itemCount: items.length,
+      itemCount: visibleItems.length + (hasMore ? 1 : 0),
       itemBuilder: (context, index) {
-        final item = items[index];
+        if (index >= visibleItems.length) {
+          return _LoadMoreButton(
+            remaining: items.length - visibleItems.length,
+            onPressed: onLoadMore,
+          );
+        }
+        final item = visibleItems[index];
         return MediaCard(
           item: item,
           onOpen: () => onOpen(item),
@@ -684,4 +721,19 @@ class _LibraryResults extends StatelessWidget {
       },
     );
   }
+}
+
+class _LoadMoreButton extends StatelessWidget {
+  const _LoadMoreButton({required this.remaining, required this.onPressed});
+
+  final int remaining;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: OutlinedButton(
+      onPressed: onPressed,
+      child: Text('Daha fazla göster · $remaining kaldı'),
+    ),
+  );
 }

@@ -15,6 +15,7 @@ class MovieApiService {
   static const _detailCacheTtl = Duration(hours: 12);
   static const _episodeCacheTtl = Duration(hours: 24);
   static const _ratingsCacheTtl = Duration(hours: 24);
+  static const _ratingsBatchSize = 100;
 
   Future<Map<String, dynamic>> details(int tmdbId, String mediaType) async {
     final key = 'movie_detail_${mediaType}_$tmdbId';
@@ -72,14 +73,23 @@ class MovieApiService {
     final uniqueIds = imdbIds.toSet().toList()..sort();
     if (uniqueIds.isEmpty) return const {};
 
+    final merged = <String, double>{};
+    for (var start = 0; start < uniqueIds.length; start += _ratingsBatchSize) {
+      final chunk = uniqueIds.skip(start).take(_ratingsBatchSize).toList();
+      merged.addAll(await _ratingsChunk(chunk));
+    }
+    return merged;
+  }
+
+  Future<Map<String, double>> _ratingsChunk(List<String> imdbIds) async {
     final body = await _cachedJsonMap(
-      key: 'movie_ratings_${uniqueIds.join('_')}',
+      key: 'movie_ratings_${imdbIds.join('_')}',
       ttl: _ratingsCacheTtl,
       fetcher: () async {
         final response = await http.post(
           Uri.parse('${AppConfig.apiBaseUrl}/api/movies/ratings'),
           headers: {'content-type': 'application/json'},
-          body: jsonEncode({'imdbIds': uniqueIds}),
+          body: jsonEncode({'imdbIds': imdbIds}),
         );
         final body = jsonDecode(response.body) as Map<String, dynamic>;
         if (response.statusCode != 200) {

@@ -132,6 +132,8 @@ export default function LiveMediaDialog({
   const [mounted, setMounted] = useState(false);
   const [details, setDetails] = useState<LiveDetails | null>(null);
   const [episodes, setEpisodes] = useState<EpisodeRating[] | null>(null);
+  const [episodesRequested, setEpisodesRequested] = useState(false);
+  const [episodesLoading, setEpisodesLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => setMounted(true), []);
@@ -140,6 +142,8 @@ export default function LiveMediaDialog({
     const controller = new AbortController();
     setDetails(null);
     setEpisodes(null);
+    setEpisodesRequested(false);
+    setEpisodesLoading(false);
     setError("");
 
     fetch(`/api/movies/${item.mediaType}/${item.id}`, { signal: controller.signal })
@@ -155,17 +159,19 @@ export default function LiveMediaDialog({
     return () => controller.abort();
   }, [item.id, item.mediaType]);
 
-  useEffect(() => {
-    if (item.mediaType !== "tv") return;
+  function loadEpisodes() {
+    if (item.mediaType !== "tv" || episodesRequested) return;
     const controller = new AbortController();
+    setEpisodesRequested(true);
+    setEpisodesLoading(true);
     fetch(`/api/movies/tv/${item.id}/episodes`, { signal: controller.signal })
       .then(async (response) => {
         const body = (await response.json()) as { episodes?: EpisodeRating[] };
         if (response.ok) setEpisodes(body.episodes ?? []);
       })
-      .catch(() => {});
-    return () => controller.abort();
-  }, [item.id, item.mediaType]);
+      .catch(() => setEpisodes([]))
+      .finally(() => setEpisodesLoading(false));
+  }
 
   useEffect(() => {
     const closeWithEscape = (event: KeyboardEvent) => {
@@ -226,7 +232,7 @@ export default function LiveMediaDialog({
           </div>
         )}
 
-        {details && <DetailContent item={item} details={details} episodes={episodes} onFavorite={onFavorite} />}
+        {details && <DetailContent item={item} details={details} episodes={episodes} episodesLoading={episodesLoading} onLoadEpisodes={loadEpisodes} onFavorite={onFavorite} />}
       </div>
     </div>,
     document.body,
@@ -237,11 +243,15 @@ function DetailContent({
   item,
   details,
   episodes,
+  episodesLoading,
+  onLoadEpisodes,
   onFavorite,
 }: {
   item: MediaDetailTarget;
   details: LiveDetails;
   episodes: EpisodeRating[] | null;
+  episodesLoading: boolean;
+  onLoadEpisodes: () => void;
   onFavorite?: (item: MediaDetailTarget) => void;
 }) {
   const metadata = details.metadata;
@@ -458,9 +468,9 @@ function DetailContent({
           </Section>
         )}
 
-        {item.mediaType === "tv" && (
-          <EpisodeHeatmap episodes={episodes} />
-        )}
+          {item.mediaType === "tv" && (
+            <EpisodeHeatmap episodes={episodes} loading={episodesLoading} onLoad={onLoadEpisodes} />
+          )}
 
         <Section title="Türkiye’de izle">
           {providers.length > 0 ? (
@@ -492,9 +502,14 @@ function DetailContent({
   );
 }
 
-function EpisodeHeatmap({ episodes }: { episodes: EpisodeRating[] | null }) {
+function EpisodeHeatmap({ episodes, loading, onLoad }: { episodes: EpisodeRating[] | null; loading: boolean; onLoad: () => void }) {
   if (episodes === null) {
-    return <Section title="Bölüm puanları" subtitle="IMDb veri setinden hazırlanıyor"><div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/45"><FiLoader className="animate-spin" /> İlk açılışta biraz sürebilir…</div></Section>;
+    return <Section title="Bölüm puanları" subtitle="IMDb bölüm puanlarını yalnızca istersen yükleriz">
+      <button type="button" onClick={onLoad} disabled={loading} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-white/70 hover:bg-white/[0.08] disabled:opacity-60">
+        {loading ? <FiLoader className="animate-spin" /> : null}
+        {loading ? "Bölüm puanları yükleniyor…" : "Bölüm puanlarını yükle"}
+      </button>
+    </Section>;
   }
   if (!episodes.length) return null;
 

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { auth } from "@/lib/firebase";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { FiCheck, FiFilm, FiHeart, FiLoader, FiPlus, FiSearch, FiTrash2, FiTv, FiUpload, FiX } from "react-icons/fi";
 import LiveMediaDialog, { type MediaDetailTarget } from "./LiveMediaDialog";
 import { addManyToLibrary, addToLibrary, removeFromLibrary, repairLibraryPublicAndRatings, setLibraryFavorite } from "./library";
@@ -18,6 +18,9 @@ const filters: { id: Filter; label: string; icon?: typeof FiFilm }[] = [
   { id: "favorites", label: "Favoriler", icon: FiHeart },
 ];
 const RATINGS_CACHE_KEY = "movie_archive_imdb_ratings_v1";
+const RATING_BATCH_SIZE = 100;
+const INITIAL_VISIBLE_COUNT = 60;
+const LOAD_MORE_COUNT = 60;
 
 export default function MoviesDemo() {
   const { user, items, loading, error, isOwner } = useMovieLibrary();
@@ -30,6 +33,8 @@ export default function MoviesDemo() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [notice, setNotice] = useState("");
   const [ratings, setRatings] = useState<Record<string, { averageRating: number; numVotes: number } | null>>(() => readRatingsCache());
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
+  const [, startTransition] = useTransition();
   const repairedSignatureRef = useRef("");
 
   const missingRatingIds = useMemo(() => [...new Set(items
@@ -40,26 +45,27 @@ export default function MoviesDemo() {
     if (!missingRatingIds.length) return;
 
     let cancelled = false;
-    fetch("/api/movies/ratings", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ imdbIds: missingRatingIds }),
-    })
-      .then((response) => response.ok ? response.json() : null)
-      .then((body: { ratings?: Record<string, { averageRating: number; numVotes: number }> } | null) => {
-        if (!cancelled) {
-          setRatings((current) => ({
-            ...current,
-            ...Object.fromEntries(missingRatingIds.map((id) => [id, body?.ratings?.[id] ?? null])),
-          }));
-        }
-      })
-      .catch(() => undefined);
+    Promise.all(chunk(missingRatingIds, RATING_BATCH_SIZE).map(async (imdbIds) => {
+      const response = await fetch("/api/movies/ratings", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ imdbIds }),
+      });
+      if (!response.ok) return Object.fromEntries(imdbIds.map((id) => [id, null]));
+      const body = (await response.json()) as { ratings?: Record<string, { averageRating: number; numVotes: number }> };
+      return Object.fromEntries(imdbIds.map((id) => [id, body.ratings?.[id] ?? null]));
+    })).then((parts) => {
+      if (!cancelled) setRatings((current) => ({ ...current, ...Object.assign({}, ...parts) }));
+    }).catch(() => undefined);
 
     return () => {
       cancelled = true;
     };
   }, [missingRatingIds]);
+
+  useEffect(() => {
+    setVisibleCount(INITIAL_VISIBLE_COUNT);
+  }, [activeFilter, genreFilter, query, sortMode, yearFilter]);
 
   useEffect(() => {
     writeRatingsCache(ratings);
@@ -94,6 +100,7 @@ export default function MoviesDemo() {
   }, [activeFilter, genreFilter, items, query, ratings, sortMode, yearFilter]);
 
   const selectedItem = selectedId ? items.find((item) => item.id === selectedId) ?? null : null;
+  const renderedItems = visibleItems.slice(0, visibleCount);
   const movieCount = items.filter((item) => item.mediaType === "movie").length;
   const tvCount = items.length - movieCount;
   const favoriteCount = items.filter((item) => item.favorite).length;
@@ -149,7 +156,10 @@ export default function MoviesDemo() {
 
       {loading ? <div className="grid min-h-64 place-items-center text-white/45"><FiLoader className="animate-spin text-3xl" /></div>
         : error ? <EmptyState title="Arşiv yüklenemedi" description={error} />
-        : visibleItems.length ? <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 xl:gap-x-6">{visibleItems.map((item) => <LibraryCard key={item.id} item={item} imdbRating={imdbRatingOf(item, ratings)} isOwner={isOwner} onOpen={() => setSelectedId(item.id)} onFavorite={() => toggleFavorite(item)} onRemove={() => user && removeFromLibrary(user.uid, item)} />)}</div>
+        : visibleItems.length ? <>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 xl:gap-x-6">{renderedItems.map((item) => <LibraryCard key={item.id} item={item} imdbRating={imdbRatingOf(item, ratings)} isOwner={isOwner} onOpen={() => startTransition(() => setSelectedId(item.id))} onFavorite={() => toggleFavorite(item)} onRemove={() => user && removeFromLibrary(user.uid, item)} />)}</div>
+          {visibleItems.length > renderedItems.length && <div className="mt-10 flex justify-center"><button type="button" onClick={() => setVisibleCount((count) => count + LOAD_MORE_COUNT)} className="rounded-xl border border-white/15 px-5 py-3 text-sm text-white/70 hover:bg-white/[0.06]">Daha fazla göster · {visibleItems.length - renderedItems.length} kaldı</button></div>}
+        </>
         : <EmptyState title={isOwner ? "Arşivin henüz boş" : "Henüz yapım yok"} description={isOwner ? "TMDB’de arayıp izlediğin ilk filmi veya diziyi ekle." : "Eren arşive yapım eklediğinde burada görünecek."} />}
 
       {selectedItem && <LiveMediaDialog item={libraryToDetailTarget(selectedItem)} onClose={() => setSelectedId(null)} onFavorite={isOwner ? () => toggleFavorite(selectedItem) : undefined} />}
@@ -246,6 +256,11 @@ function writeRatingsCache(ratings: Record<string, { averageRating: number; numV
   } catch {
     // localStorage can be unavailable in private browsing; ignore.
   }
+}
+function chunk<T>(items: T[], size: number) {
+  const chunks: T[][] = [];
+  for (let index = 0; index < items.length; index += size) chunks.push(items.slice(index, index + size));
+  return chunks;
 }
 function timestampMillis(value: unknown) {
   if (value && typeof value === "object" && "toMillis" in value) return (value as { toMillis: () => number }).toMillis();
