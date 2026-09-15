@@ -117,6 +117,9 @@ type EpisodeRating = {
   numVotes: number;
 };
 
+const DETAIL_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+const EPISODE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
 const imageUrl = (path: string | null | undefined, size = "w500") =>
   path ? `https://image.tmdb.org/t/p/${size}${path}` : null;
 
@@ -140,7 +143,9 @@ export default function LiveMediaDialog({
 
   useEffect(() => {
     const controller = new AbortController();
-    setDetails(null);
+    const cacheKey = detailCacheKey(item.mediaType, item.id);
+    const cachedDetails = readTimedCache<LiveDetails>(cacheKey, DETAIL_CACHE_TTL_MS);
+    setDetails(cachedDetails);
     setEpisodes(null);
     setEpisodesRequested(false);
     setEpisodesLoading(false);
@@ -150,7 +155,9 @@ export default function LiveMediaDialog({
       .then(async (response) => {
         const body = (await response.json()) as LiveDetails | { error?: string };
         if (!response.ok) throw new Error("error" in body ? body.error : "Detaylar alınamadı.");
-        setDetails(body as LiveDetails);
+        const nextDetails = body as LiveDetails;
+        writeTimedCache(cacheKey, nextDetails);
+        setDetails(nextDetails);
       })
       .catch((requestError: Error) => {
         if (requestError.name !== "AbortError") setError(requestError.message);
@@ -161,13 +168,24 @@ export default function LiveMediaDialog({
 
   function loadEpisodes() {
     if (item.mediaType !== "tv" || episodesRequested) return;
+    const cacheKey = episodeCacheKey(item.id);
+    const cachedEpisodes = readTimedCache<EpisodeRating[]>(cacheKey, EPISODE_CACHE_TTL_MS);
+    if (cachedEpisodes) {
+      setEpisodesRequested(true);
+      setEpisodes(cachedEpisodes);
+      return;
+    }
     const controller = new AbortController();
     setEpisodesRequested(true);
     setEpisodesLoading(true);
     fetch(`/api/movies/tv/${item.id}/episodes`, { signal: controller.signal })
       .then(async (response) => {
         const body = (await response.json()) as { episodes?: EpisodeRating[] };
-        if (response.ok) setEpisodes(body.episodes ?? []);
+        if (response.ok) {
+          const nextEpisodes = body.episodes ?? [];
+          writeTimedCache(cacheKey, nextEpisodes);
+          setEpisodes(nextEpisodes);
+        }
       })
       .catch(() => setEpisodes([]))
       .finally(() => setEpisodesLoading(false));
@@ -214,14 +232,7 @@ export default function LiveMediaDialog({
           <FiX />
         </button>
 
-        {!details && !error && (
-          <div className="grid min-h-[70vh] place-items-center text-white/60">
-            <div className="text-center">
-              <FiLoader className="mx-auto mb-3 animate-spin text-3xl" />
-              <p>Güncel bilgiler TMDB’den getiriliyor…</p>
-            </div>
-          </div>
-        )}
+        {!details && !error && <DetailSkeleton item={item} />}
 
         {error && (
           <div className="grid min-h-[70vh] place-items-center px-6 text-center">
@@ -236,6 +247,43 @@ export default function LiveMediaDialog({
       </div>
     </div>,
     document.body,
+  );
+}
+
+function DetailSkeleton({ item }: { item: MediaDetailTarget }) {
+  return (
+    <div className="min-h-[70vh] animate-pulse">
+      <div className="relative min-h-[430px] overflow-hidden bg-white/[0.035]">
+        {item.posterPath && (
+          <Image src={imageUrl(item.posterPath, "w342")!} alt="" fill sizes="100vw" quality={40} className="object-cover opacity-20 blur-md" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0b0e12] via-[#0b0e12]/75 to-black/40" />
+        <div className="relative flex min-h-[430px] items-end gap-6 px-5 pb-8 pt-24 sm:px-9">
+          <div className="hidden aspect-[2/3] w-44 rounded-2xl bg-white/[0.08] sm:block" />
+          <div className="w-full max-w-3xl">
+            <div className="h-4 w-36 rounded-full bg-white/[0.08]" />
+            <div className="mt-5 h-12 w-3/4 rounded-2xl bg-white/[0.1]" />
+            <div className="mt-4 h-4 w-1/2 rounded-full bg-white/[0.07]" />
+            <div className="mt-7 flex gap-3">
+              <div className="h-10 w-28 rounded-xl bg-white/[0.08]" />
+              <div className="h-10 w-24 rounded-xl bg-white/[0.08]" />
+              <div className="h-10 w-32 rounded-xl bg-white/[0.08]" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="space-y-5 px-5 py-8 sm:px-9">
+        <div className="h-5 w-32 rounded-full bg-white/[0.08]" />
+        <div className="space-y-3">
+          <div className="h-4 rounded-full bg-white/[0.07]" />
+          <div className="h-4 w-5/6 rounded-full bg-white/[0.07]" />
+          <div className="h-4 w-2/3 rounded-full bg-white/[0.07]" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, index) => <div key={index} className="h-20 rounded-xl bg-white/[0.055]" />)}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -286,8 +334,8 @@ function DetailContent({
   const imdbRating = details.imdbRating ?? (typeof item.imdbRating === "number"
     ? { averageRating: item.imdbRating, numVotes: item.imdbVotes ?? 0 }
     : null);
-  const poster = imageUrl(metadata.poster_path ?? item.posterPath, "w500");
-  const backdrop = imageUrl(metadata.backdrop_path, "original");
+  const poster = imageUrl(metadata.poster_path ?? item.posterPath, "w342");
+  const backdrop = imageUrl(metadata.backdrop_path, "w1280");
   const dateFormatter = useMemo(
     () => new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long", year: "numeric" }),
     [],
@@ -297,13 +345,13 @@ function DetailContent({
     <div>
       <div className="relative min-h-[440px] overflow-hidden">
         {backdrop && (
-          <Image src={backdrop} alt="" fill priority sizes="100vw" className="object-cover opacity-45" />
+          <Image src={backdrop} alt="" fill priority sizes="100vw" quality={72} className="object-cover opacity-45" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b0e12] via-[#0b0e12]/45 to-black/25" />
         <div className="relative flex min-h-[440px] items-end gap-6 px-5 pb-8 pt-24 sm:px-9">
           {poster && (
             <div className="relative hidden aspect-[2/3] w-48 shrink-0 overflow-hidden rounded-2xl border border-white/15 shadow-2xl sm:block">
-              <Image src={poster} alt={`${title} posteri`} fill sizes="192px" className="object-cover" />
+              <Image src={poster} alt={`${title} posteri`} fill sizes="192px" quality={74} className="object-cover" />
             </div>
           )}
           <div className="max-w-3xl">
@@ -390,7 +438,7 @@ function DetailContent({
               >
                 <div className="relative aspect-[2/3] bg-white/5">
                   {person.profile_path ? (
-                    <Image src={imageUrl(person.profile_path, "w342")!} alt={person.name} fill sizes="180px" className="object-cover" />
+                    <Image src={imageUrl(person.profile_path, "w185")!} alt={person.name} fill sizes="180px" quality={70} className="object-cover" />
                   ) : (
                     <div className="grid h-full place-items-center text-3xl text-white/20">{person.name.charAt(0)}</div>
                   )}
@@ -442,7 +490,7 @@ function DetailContent({
             <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-5 [scrollbar-width:thin]">
               {gallery.map((image, index) => (
                 <a key={`${image.file_path}-${index}`} href={imageUrl(image.file_path, "original")!} target="_blank" rel="noreferrer" className="relative aspect-video w-72 shrink-0 snap-start overflow-hidden rounded-xl border border-white/10 bg-white/5 sm:w-96">
-                  <Image src={imageUrl(image.file_path, "w780")!} alt={`${title} görseli ${index + 1}`} fill sizes="384px" className="object-cover" />
+                  <Image src={imageUrl(image.file_path, "w500")!} alt={`${title} görseli ${index + 1}`} fill sizes="384px" quality={70} className="object-cover" />
                 </a>
               ))}
             </div>
@@ -641,4 +689,34 @@ function getCertification(metadata: Metadata) {
 function formatDate(value: string, formatter: Intl.DateTimeFormat) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : formatter.format(date);
+}
+
+function detailCacheKey(mediaType: MediaType, id: number) {
+  return `movie_detail_cache_v2_${mediaType}_${id}`;
+}
+
+function episodeCacheKey(id: number) {
+  return `movie_episode_cache_v2_${id}`;
+}
+
+function readTimedCache<T>(key: string, ttlMs: number): T | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return null;
+    const cached = JSON.parse(raw) as { cachedAt?: number; value?: T };
+    if (!cached.cachedAt || Date.now() - cached.cachedAt > ttlMs) return null;
+    return cached.value ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function writeTimedCache<T>(key: string, value: T) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify({ cachedAt: Date.now(), value }));
+  } catch {
+    // Storage can be full/blocked; live data still renders.
+  }
 }

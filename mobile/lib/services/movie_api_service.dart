@@ -15,6 +15,7 @@ class MovieApiService {
   static const _detailCacheTtl = Duration(hours: 12);
   static const _episodeCacheTtl = Duration(hours: 24);
   static const _ratingsCacheTtl = Duration(hours: 24);
+  static const _searchCacheTtl = Duration(minutes: 15);
   static const _ratingsBatchSize = 100;
 
   Future<Map<String, dynamic>> details(int tmdbId, String mediaType) async {
@@ -56,14 +57,22 @@ class MovieApiService {
   }
 
   Future<List<TmdbSearchItem>> search(String query) async {
-    final uri = Uri.parse(
-      '${AppConfig.apiBaseUrl}/api/movies/search',
-    ).replace(queryParameters: {'q': query});
-    final response = await http.get(uri, headers: await _authHeaders());
-    final body = jsonDecode(response.body) as Map<String, dynamic>;
-    if (response.statusCode != 200) {
-      throw Exception(body['error'] ?? 'Arama yapılamadı.');
-    }
+    final normalizedQuery = query.trim().toLowerCase();
+    final body = await _cachedJsonMap(
+      key: 'movie_search_$normalizedQuery',
+      ttl: _searchCacheTtl,
+      fetcher: () async {
+        final uri = Uri.parse(
+          '${AppConfig.apiBaseUrl}/api/movies/search',
+        ).replace(queryParameters: {'q': query});
+        final response = await http.get(uri, headers: await _authHeaders());
+        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        if (response.statusCode != 200) {
+          throw Exception(body['error'] ?? 'Arama yapılamadı.');
+        }
+        return body;
+      },
+    );
     return (body['results'] as List? ?? const [])
         .map((item) => TmdbSearchItem.fromJson(item as Map<String, dynamic>))
         .toList();
@@ -143,16 +152,21 @@ class MovieApiService {
     final raw = prefs.getString(key);
     final now = DateTime.now().millisecondsSinceEpoch;
 
+    Map<String, dynamic>? staleValue;
     if (raw != null) {
       final cached = jsonDecode(raw) as Map<String, dynamic>;
       final cachedAt = cached['cachedAt'] as int? ?? 0;
-      if (now - cachedAt < ttl.inMilliseconds) {
-        return Map<String, dynamic>.from(cached['value'] as Map);
-      }
+      staleValue = Map<String, dynamic>.from(cached['value'] as Map);
+      if (now - cachedAt < ttl.inMilliseconds) return staleValue;
     }
 
-    final fresh = await fetcher();
-    await prefs.setString(key, jsonEncode({'cachedAt': now, 'value': fresh}));
-    return fresh;
+    try {
+      final fresh = await fetcher();
+      await prefs.setString(key, jsonEncode({'cachedAt': now, 'value': fresh}));
+      return fresh;
+    } catch (_) {
+      if (staleValue != null) return staleValue;
+      rethrow;
+    }
   }
 }

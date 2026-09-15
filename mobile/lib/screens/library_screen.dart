@@ -32,6 +32,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
   final library = LibraryService();
   final api = MovieApiService();
   final search = TextEditingController();
+  Timer? archiveSearchDebounce;
+  String archiveQuery = '';
   LibraryFilter filter = LibraryFilter.all;
   LibraryViewMode viewMode = LibraryViewMode.grid;
   LibrarySortMode sortMode = LibrarySortMode.imdbDesc;
@@ -60,6 +62,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
   @override
   void dispose() {
+    archiveSearchDebounce?.cancel();
     shareSubscription?.cancel();
     search.dispose();
     super.dispose();
@@ -143,7 +146,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   }
 
   List<LibraryItem> visible(List<LibraryItem> items) {
-    final query = search.text.trim().toLowerCase();
+    final query = archiveQuery.trim().toLowerCase();
     final filtered = items.where((item) {
       final filterMatch =
           filter == LibraryFilter.all ||
@@ -266,7 +269,19 @@ class _LibraryScreenState extends State<LibraryScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
                 child: TextField(
                   controller: search,
-                  onChanged: (_) => setState(_resetVisibleLimit),
+                  onChanged: (value) {
+                    archiveSearchDebounce?.cancel();
+                    archiveSearchDebounce = Timer(
+                      const Duration(milliseconds: 160),
+                      () {
+                        if (!mounted) return;
+                        setState(() {
+                          archiveQuery = value;
+                          _resetVisibleLimit();
+                        });
+                      },
+                    );
+                  },
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     hintText: 'Arşivinde ara...',
@@ -428,7 +443,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                         child: Text('Arşiv yüklenemedi: ${snapshot.error}'),
                       )
                     : snapshot.connectionState == ConnectionState.waiting
-                    ? const Center(child: CircularProgressIndicator())
+                    ? _LibrarySkeleton(viewMode: viewMode)
                     : shown.isEmpty
                     ? const Center(
                         child: Padding(
@@ -663,28 +678,82 @@ class _LibraryResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final visibleItems = items.take(visibleLimit).toList();
-    final hasMore = items.length > visibleItems.length;
+    final visibleLength = items.length < visibleLimit
+        ? items.length
+        : visibleLimit;
+    final hasMore = items.length > visibleLength;
     if (viewMode == LibraryViewMode.list) {
       return ListView.separated(
+        cacheExtent: 900,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         padding: const EdgeInsets.fromLTRB(14, 4, 14, 100),
-        itemCount: visibleItems.length + (hasMore ? 1 : 0),
+        itemCount: visibleLength + (hasMore ? 1 : 0),
         separatorBuilder: (_, _) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
-          if (index >= visibleItems.length) {
+          if (index >= visibleLength) {
             return _LoadMoreButton(
-              remaining: items.length - visibleItems.length,
+              remaining: items.length - visibleLength,
               onPressed: onLoadMore,
             );
           }
-          final item = visibleItems[index];
-          return MediaListTile(
+          final item = items[index];
+          return RepaintBoundary(
+            child: MediaListTile(
+              item: item,
+              onOpen: () => onOpen(item),
+              onFavorite: () => onFavorite(item),
+              onRemove: () => onRemove(item),
+            ),
+          );
+        },
+      );
+    }
+
+    return GridView.builder(
+      cacheExtent: 900,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: const EdgeInsets.fromLTRB(14, 4, 14, 100),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: .58,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 18,
+      ),
+      itemCount: visibleLength + (hasMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index >= visibleLength) {
+          return _LoadMoreButton(
+            remaining: items.length - visibleLength,
+            onPressed: onLoadMore,
+          );
+        }
+        final item = items[index];
+        return RepaintBoundary(
+          child: MediaCard(
             item: item,
             onOpen: () => onOpen(item),
             onFavorite: () => onFavorite(item),
             onRemove: () => onRemove(item),
-          );
-        },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _LibrarySkeleton extends StatelessWidget {
+  const _LibrarySkeleton({required this.viewMode});
+
+  final LibraryViewMode viewMode;
+
+  @override
+  Widget build(BuildContext context) {
+    if (viewMode == LibraryViewMode.list) {
+      return ListView.separated(
+        padding: const EdgeInsets.fromLTRB(14, 4, 14, 100),
+        itemCount: 8,
+        separatorBuilder: (_, _) => const SizedBox(height: 10),
+        itemBuilder: (_, _) => const _SkeletonListTile(),
       );
     }
 
@@ -696,25 +765,83 @@ class _LibraryResults extends StatelessWidget {
         crossAxisSpacing: 12,
         mainAxisSpacing: 18,
       ),
-      itemCount: visibleItems.length + (hasMore ? 1 : 0),
-      itemBuilder: (context, index) {
-        if (index >= visibleItems.length) {
-          return _LoadMoreButton(
-            remaining: items.length - visibleItems.length,
-            onPressed: onLoadMore,
-          );
-        }
-        final item = visibleItems[index];
-        return MediaCard(
-          item: item,
-          onOpen: () => onOpen(item),
-          onFavorite: () => onFavorite(item),
-          onRemove: () => onRemove(item),
-        );
-      },
+      itemCount: 6,
+      itemBuilder: (_, _) => const _SkeletonPoster(),
     );
   }
 }
+
+class _SkeletonPoster extends StatelessWidget {
+  const _SkeletonPoster();
+
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Expanded(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: .06),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: const SizedBox.expand(),
+        ),
+      ),
+      const SizedBox(height: 10),
+      Container(width: 120, height: 14, decoration: _skeletonDecoration()),
+      const SizedBox(height: 6),
+      Container(width: 58, height: 10, decoration: _skeletonDecoration()),
+    ],
+  );
+}
+
+class _SkeletonListTile extends StatelessWidget {
+  const _SkeletonListTile();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    height: 106,
+    padding: const EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: .045),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Row(
+      children: [
+        Container(
+          width: 58,
+          height: 86,
+          decoration: _skeletonDecoration(radius: 10),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 180,
+                height: 15,
+                decoration: _skeletonDecoration(),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                width: 110,
+                height: 11,
+                decoration: _skeletonDecoration(),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+BoxDecoration _skeletonDecoration({double radius = 8}) => BoxDecoration(
+  color: Colors.white.withValues(alpha: .075),
+  borderRadius: BorderRadius.circular(radius),
+);
 
 class _LoadMoreButton extends StatelessWidget {
   const _LoadMoreButton({required this.remaining, required this.onPressed});

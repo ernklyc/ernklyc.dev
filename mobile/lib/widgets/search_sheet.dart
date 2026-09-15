@@ -20,6 +20,7 @@ class _SearchSheetState extends State<SearchSheet> {
   bool loading = false;
   String? busyId;
   String? error;
+  int searchSerial = 0;
 
   @override
   void dispose() {
@@ -41,21 +42,22 @@ class _SearchSheetState extends State<SearchSheet> {
   }
 
   Future<void> search(String query) async {
+    final serial = ++searchSerial;
     setState(() {
       loading = true;
       error = null;
     });
     try {
       final found = await api.search(query);
-      if (mounted) setState(() => results = found);
+      if (mounted && serial == searchSerial) setState(() => results = found);
     } catch (exception) {
-      if (mounted) {
+      if (mounted && serial == searchSerial) {
         setState(
           () => error = exception.toString().replaceFirst('Exception: ', ''),
         );
       }
     } finally {
-      if (mounted) setState(() => loading = false);
+      if (mounted && serial == searchSerial) setState(() => loading = false);
     }
   }
 
@@ -163,6 +165,9 @@ class _SearchSheetState extends State<SearchSheet> {
                             child: Image.network(
                               'https://image.tmdb.org/t/p/w185${media.posterPath}',
                               fit: BoxFit.cover,
+                              cacheWidth: 120,
+                              cacheHeight: 180,
+                              filterQuality: FilterQuality.low,
                             ),
                           ),
                   ),

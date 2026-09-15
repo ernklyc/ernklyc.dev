@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { auth } from "@/lib/firebase";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { FiCheck, FiFilm, FiHeart, FiLoader, FiPlus, FiSearch, FiTrash2, FiTv, FiUpload, FiX } from "react-icons/fi";
 import LiveMediaDialog, { type MediaDetailTarget } from "./LiveMediaDialog";
 import { addManyToLibrary, addToLibrary, removeFromLibrary, setLibraryFavorite } from "./library";
@@ -35,6 +35,7 @@ export default function MoviesDemo() {
   const [notice, setNotice] = useState("");
   const [ratings, setRatings] = useState<RatingCache>(() => readRatingsCache());
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
+  const deferredQuery = useDeferredValue(query);
   const [, startTransition] = useTransition();
   const fetchedRatingKeysRef = useRef(new Set<string>());
 
@@ -77,7 +78,7 @@ export default function MoviesDemo() {
   }, [ratings]);
 
   const visibleItems = useMemo(() => {
-      const normalizedQuery = normalize(query.trim());
+      const normalizedQuery = normalize(deferredQuery.trim());
     const filtered = items.filter((item) => {
       const matchesFilter = activeFilter === "all" || (activeFilter === "favorites" ? item.favorite : item.mediaType === activeFilter);
       const matchesGenre = genreFilter === "all" || item.snapshot.genres.includes(genreFilter);
@@ -92,7 +93,7 @@ export default function MoviesDemo() {
       if (sortMode === "imdb-desc") return compareByImdbRating(a, b, ratings);
       return timestampMillis(b.addedAt) - timestampMillis(a.addedAt);
     });
-  }, [activeFilter, genreFilter, items, query, ratings, sortMode, yearFilter]);
+  }, [activeFilter, deferredQuery, genreFilter, items, ratings, sortMode, yearFilter]);
 
   const selectedItem = selectedId ? items.find((item) => item.id === selectedId) ?? null : null;
   const renderedItems = visibleItems.slice(0, visibleCount);
@@ -101,10 +102,19 @@ export default function MoviesDemo() {
   const favoriteCount = items.filter((item) => item.favorite).length;
   const genres = useMemo(() => [...new Set(items.flatMap((item) => item.snapshot.genres))].sort((a, b) => a.localeCompare(b, "tr")), [items]);
   const years = useMemo(() => [...new Set(items.map((item) => item.snapshot.year).filter((year): year is number => typeof year === "number"))].sort((a, b) => b - a), [items]);
+  const existingIds = useMemo(() => new Set(items.map((item) => item.id)), [items]);
 
-  async function toggleFavorite(item: LibraryItem) {
+  const handleOpen = useCallback((id: string) => {
+    startTransition(() => setSelectedId(id));
+  }, [startTransition]);
+
+  const toggleFavorite = useCallback(async (item: LibraryItem) => {
     if (user && isOwner) await setLibraryFavorite(user.uid, item, !item.favorite);
-  }
+  }, [isOwner, user]);
+
+  const handleRemove = useCallback(async (item: LibraryItem) => {
+    if (user) await removeFromLibrary(user.uid, item);
+  }, [user]);
 
   return (
     <div>
@@ -115,7 +125,7 @@ export default function MoviesDemo() {
             <p className="mt-1 text-xs text-white/35">Web ve mobil aynı Firestore arşivini kullanır.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <CsvImportButton uid={user!.uid} existingIds={new Set(items.map((item) => item.id))} onNotice={setNotice} />
+            <CsvImportButton uid={user!.uid} existingIds={existingIds} onNotice={setNotice} />
             <button type="button" onClick={() => setSearchOpen(true)} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#a9b7c4] px-4 text-sm font-semibold text-[#0b0e12]"><FiPlus /> Yapım ekle</button>
           </div>
         </div>
@@ -152,13 +162,13 @@ export default function MoviesDemo() {
       {loading ? <div className="grid min-h-64 place-items-center text-white/45"><FiLoader className="animate-spin text-3xl" /></div>
         : error ? <EmptyState title="Arşiv yüklenemedi" description={error} />
         : visibleItems.length ? <>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 xl:gap-x-6">{renderedItems.map((item) => <LibraryCard key={item.id} item={item} imdbRating={imdbRatingOf(item, ratings)} isOwner={isOwner} onOpen={() => startTransition(() => setSelectedId(item.id))} onFavorite={() => toggleFavorite(item)} onRemove={() => user && removeFromLibrary(user.uid, item)} />)}</div>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-7 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 xl:gap-x-6">{renderedItems.map((item) => <LibraryCard key={item.id} item={item} imdbRating={imdbRatingOf(item, ratings)} isOwner={isOwner} onOpen={handleOpen} onFavorite={toggleFavorite} onRemove={handleRemove} />)}</div>
           {visibleItems.length > renderedItems.length && <div className="mt-10 flex justify-center"><button type="button" onClick={() => setVisibleCount((count) => count + LOAD_MORE_COUNT)} className="rounded-xl border border-white/15 px-5 py-3 text-sm text-white/70 hover:bg-white/[0.06]">Daha fazla göster · {visibleItems.length - renderedItems.length} kaldı</button></div>}
         </>
         : <EmptyState title={isOwner ? "Arşivin henüz boş" : "Henüz yapım yok"} description={isOwner ? "TMDB’de arayıp izlediğin ilk filmi veya diziyi ekle." : "Eren arşive yapım eklediğinde burada görünecek."} />}
 
       {selectedItem && <LiveMediaDialog item={libraryToDetailTarget(selectedItem)} onClose={() => setSelectedId(null)} onFavorite={isOwner ? () => toggleFavorite(selectedItem) : undefined} />}
-      {searchOpen && user && <SearchDialog uid={user.uid} existingIds={new Set(items.map((item) => item.id))} onClose={() => setSearchOpen(false)} onNotice={setNotice} />}
+      {searchOpen && user && <SearchDialog uid={user.uid} existingIds={existingIds} onClose={() => setSearchOpen(false)} onNotice={setNotice} />}
     </div>
   );
 }
@@ -212,14 +222,14 @@ function CsvImportButton({ uid, existingIds, onNotice }: { uid: string; existing
   return <><input ref={inputRef} type="file" accept=".csv,text/csv" className="hidden" onChange={(event) => importCsv(event.target.files?.[0])} /><button type="button" disabled={busy} onClick={() => inputRef.current?.click()} className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 px-4 text-sm text-white/70 disabled:opacity-50">{busy ? <FiLoader className="animate-spin" /> : <FiUpload />} IMDb CSV</button></>;
 }
 
-function LibraryCard({ item, imdbRating, isOwner, onOpen, onFavorite, onRemove }: { item: LibraryItem; imdbRating: number; isOwner: boolean; onOpen: () => void; onFavorite: () => void; onRemove: () => void }) {
-  return <article className="group min-w-0 [contain-intrinsic-size:260px_430px] [content-visibility:auto]"><div role="button" tabIndex={0} onClick={onOpen} onKeyDown={(event) => event.key === "Enter" && onOpen()} className="relative aspect-[2/3] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#12161b] shadow-xl shadow-black/20 transition duration-300 group-hover:-translate-y-0.5 group-hover:border-white/25">
+const LibraryCard = memo(function LibraryCard({ item, imdbRating, isOwner, onOpen, onFavorite, onRemove }: { item: LibraryItem; imdbRating: number; isOwner: boolean; onOpen: (id: string) => void; onFavorite: (item: LibraryItem) => void; onRemove: (item: LibraryItem) => void }) {
+  return <article className="group min-w-0 [contain-intrinsic-size:260px_430px] [content-visibility:auto]"><div role="button" tabIndex={0} onClick={() => onOpen(item.id)} onKeyDown={(event) => event.key === "Enter" && onOpen(item.id)} className="relative aspect-[2/3] cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#12161b] shadow-xl shadow-black/20 transition duration-300 group-hover:-translate-y-0.5 group-hover:border-white/25">
     {item.snapshot.posterPath ? <Image src={`https://image.tmdb.org/t/p/w342${item.snapshot.posterPath}`} alt={`${item.snapshot.title} posteri`} fill sizes="(max-width:640px) 50vw, 25vw" className="object-cover" /> : <div className="grid h-full place-items-center text-4xl text-white/15"><FiFilm /></div>}<div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20" /><span className="absolute left-3 top-3 rounded-lg border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/80">{item.mediaType === "movie" ? "Film" : "Dizi"}</span>
     {imdbRating >= 0 && <span className="absolute bottom-3 left-3 rounded-lg bg-[#f5c518] px-2.5 py-1 text-xs font-extrabold text-black">★ {imdbRating.toFixed(1)}</span>}
-    <button onClick={(event) => { event.stopPropagation(); onFavorite(); }} disabled={!isOwner} className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border backdrop-blur-md ${item.favorite ? "border-rose-300/30 bg-rose-500/85 text-white" : "border-white/15 bg-black/45 text-white/70"}`} aria-label="Favori"><FiHeart className={item.favorite ? "fill-current" : ""} /></button>
-    {isOwner && <div className="absolute bottom-3 left-3 right-3 flex justify-end gap-2 opacity-0 transition group-hover:opacity-100"><button onClick={(event) => { event.stopPropagation(); if (window.confirm(`${item.snapshot.title} arşivden kaldırılsın mı?`)) onRemove(); }} className="grid h-9 w-9 place-items-center rounded-full border border-rose-300/20 bg-black/70 text-rose-300" title="Arşivden kaldır"><FiTrash2 /></button></div>}
+    <button onClick={(event) => { event.stopPropagation(); onFavorite(item); }} disabled={!isOwner} className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border backdrop-blur-md ${item.favorite ? "border-rose-300/30 bg-rose-500/85 text-white" : "border-white/15 bg-black/45 text-white/70"}`} aria-label="Favori"><FiHeart className={item.favorite ? "fill-current" : ""} /></button>
+    {isOwner && <div className="absolute bottom-3 left-3 right-3 flex justify-end gap-2 opacity-0 transition group-hover:opacity-100"><button onClick={(event) => { event.stopPropagation(); if (window.confirm(`${item.snapshot.title} arşivden kaldırılsın mı?`)) onRemove(item); }} className="grid h-9 w-9 place-items-center rounded-full border border-rose-300/20 bg-black/70 text-rose-300" title="Arşivden kaldır"><FiTrash2 /></button></div>}
   </div><div className="px-1 pt-3"><h3 className="truncate font-medium text-white/90">{item.snapshot.title}</h3><p className="mt-1 flex items-center gap-2 text-xs text-white/35"><span>{item.snapshot.year ?? "—"}</span></p></div></article>;
-}
+});
 
 function StatCard({ value, label }: { value: number; label: string }) { return <div className="rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-4"><strong className="block text-2xl font-semibold text-white">{value}</strong><span className="mt-0.5 block text-sm text-white/40">{label}</span></div>; }
 function Select({ label, value, options, onChange }: { label: string; value: string; options: [string, string][]; onChange: (value: string) => void }) {
