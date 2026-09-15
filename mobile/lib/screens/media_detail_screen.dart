@@ -96,7 +96,7 @@ class _DetailBody extends StatelessWidget {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
-          expandedHeight: 360,
+          expandedHeight: 280,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
             title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -121,13 +121,13 @@ class _DetailBody extends StatelessWidget {
                 ),
                 if (poster != null)
                   Align(
-                    alignment: const Alignment(-.72, .2),
+                    alignment: const Alignment(-.78, .16),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(14),
                       child: Image.network(
                         poster,
-                        width: 118,
-                        height: 177,
+                        width: 96,
+                        height: 144,
                         fit: BoxFit.cover,
                         cacheWidth: 240,
                         cacheHeight: 360,
@@ -140,7 +140,7 @@ class _DetailBody extends StatelessWidget {
           ),
         ),
         SliverPadding(
-          padding: const EdgeInsets.fromLTRB(18, 20, 18, 40),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
           sliver: SliverList.list(
             children: [
               Wrap(
@@ -158,27 +158,10 @@ class _DetailBody extends StatelessWidget {
                 ],
               ),
               if (rating != null) ...[
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Color(0xFFF5C518)),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${(rating['averageRating'] as num).toStringAsFixed(1)} IMDb',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      '${rating['numVotes']} oy',
-                      style: const TextStyle(color: Colors.white38),
-                    ),
-                  ],
-                ),
+                const SizedBox(height: 14),
+                _RatingLine(rating: rating),
               ],
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               const _Heading('Hikâye'),
               Text(
                 (metadata['overview'] as String?)?.isNotEmpty == true
@@ -186,16 +169,19 @@ class _DetailBody extends StatelessWidget {
                     : 'Türkçe açıklama bulunmuyor.',
                 style: const TextStyle(height: 1.65, color: Colors.white70),
               ),
-              const SizedBox(height: 26),
+              const SizedBox(height: 20),
               _Facts(metadata: metadata, crew: crew),
-              const SizedBox(height: 28),
+              const SizedBox(height: 22),
               _PeopleRow(title: 'Oyuncular · ${cast.length}', people: cast),
               if (crew.isNotEmpty) ...[
-                const SizedBox(height: 28),
-                _PeopleRow(title: 'Yapım ekibi · ${crew.length}', people: crew),
+                const SizedBox(height: 14),
+                _CompactPanel(
+                  title: 'Yapım ekibi · ${crew.length}',
+                  child: _PeopleRow(title: 'Ekip', people: crew, compact: true),
+                ),
               ],
               if (providers.isNotEmpty) ...[
-                const SizedBox(height: 28),
+                const SizedBox(height: 22),
                 const _Heading('Türkiye’de izle'),
                 SizedBox(
                   height: 72,
@@ -227,7 +213,7 @@ class _DetailBody extends StatelessWidget {
                 ),
               ],
               if (onLoadEpisodes != null) ...[
-                const SizedBox(height: 28),
+                const SizedBox(height: 22),
                 episodes == null
                     ? OutlinedButton.icon(
                         onPressed: onLoadEpisodes,
@@ -274,13 +260,13 @@ class _Facts extends StatelessWidget {
         ),
     ];
     return Wrap(
-      spacing: 10,
-      runSpacing: 10,
+      spacing: 8,
+      runSpacing: 8,
       children: items
           .map(
             (entry) => Container(
-              width: 156,
-              padding: const EdgeInsets.all(14),
+              width: 150,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: .04),
                 borderRadius: BorderRadius.circular(14),
@@ -308,18 +294,80 @@ class _Facts extends StatelessWidget {
   }
 }
 
+class _RatingLine extends StatelessWidget {
+  const _RatingLine({required this.rating});
+
+  final Map<String, dynamic> rating;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    decoration: BoxDecoration(
+      color: const Color(0xFFF5C518).withValues(alpha: .1),
+      border: Border.all(color: const Color(0xFFF5C518).withValues(alpha: .25)),
+      borderRadius: BorderRadius.circular(14),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.star, color: Color(0xFFF5C518), size: 20),
+        const SizedBox(width: 6),
+        Text(
+          '${(rating['averageRating'] as num).toStringAsFixed(1)} IMDb',
+          style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          '${rating['numVotes']} oy',
+          style: const TextStyle(fontSize: 12, color: Colors.white54),
+        ),
+      ],
+    ),
+  );
+}
+
+class _CompactPanel extends StatelessWidget {
+  const _CompactPanel({required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Theme(
+    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+    child: ExpansionTile(
+      tilePadding: const EdgeInsets.symmetric(horizontal: 12),
+      childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+      collapsedBackgroundColor: Colors.white.withValues(alpha: .035),
+      backgroundColor: Colors.white.withValues(alpha: .045),
+      collapsedShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+      children: [child],
+    ),
+  );
+}
+
 class _PeopleRow extends StatelessWidget {
-  const _PeopleRow({required this.title, required this.people});
+  const _PeopleRow({
+    required this.title,
+    required this.people,
+    this.compact = false,
+  });
   final String title;
   final List<Map<String, dynamic>> people;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      _Heading(title),
+      if (!compact) _Heading(title),
+      if (compact) const SizedBox(height: 4),
       SizedBox(
-        height: 220,
+        height: compact ? 164 : 190,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: people.length,
@@ -327,26 +375,28 @@ class _PeopleRow extends StatelessWidget {
           itemBuilder: (_, index) {
             final person = people[index];
             final path = person['profile_path'] as String?;
+            final width = compact ? 92.0 : 104.0;
+            final height = compact ? 118.0 : 138.0;
             return SizedBox(
-              width: 120,
+              width: width,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: path == null
-                        ? const ColoredBox(
+                        ? ColoredBox(
                             color: Color(0xFF151A20),
                             child: SizedBox(
-                              width: 120,
-                              height: 160,
-                              child: Icon(Icons.person),
+                              width: width,
+                              height: height,
+                              child: const Icon(Icons.person),
                             ),
                           )
                         : Image.network(
                             'https://image.tmdb.org/t/p/w342$path',
-                            width: 120,
-                            height: 160,
+                            width: width,
+                            height: height,
                             fit: BoxFit.cover,
                             cacheWidth: 180,
                             cacheHeight: 240,

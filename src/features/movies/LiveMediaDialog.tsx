@@ -253,12 +253,12 @@ export default function LiveMediaDialog({
 function DetailSkeleton({ item }: { item: MediaDetailTarget }) {
   return (
     <div className="min-h-[70vh] animate-pulse">
-      <div className="relative min-h-[430px] overflow-hidden bg-white/[0.035]">
+      <div className="relative min-h-[340px] overflow-hidden bg-white/[0.035]">
         {item.posterPath && (
           <Image src={imageUrl(item.posterPath, "w342")!} alt="" fill sizes="100vw" quality={40} className="object-cover opacity-20 blur-md" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b0e12] via-[#0b0e12]/75 to-black/40" />
-        <div className="relative flex min-h-[430px] items-end gap-6 px-5 pb-8 pt-24 sm:px-9">
+        <div className="relative flex min-h-[340px] items-end gap-5 px-5 pb-7 pt-20 sm:px-9">
           <div className="hidden aspect-[2/3] w-44 rounded-2xl bg-white/[0.08] sm:block" />
           <div className="w-full max-w-3xl">
             <div className="h-4 w-36 rounded-full bg-white/[0.08]" />
@@ -343,14 +343,14 @@ function DetailContent({
 
   return (
     <div>
-      <div className="relative min-h-[440px] overflow-hidden">
+      <div className="relative min-h-[360px] overflow-hidden">
         {backdrop && (
           <Image src={backdrop} alt="" fill priority sizes="100vw" quality={72} className="object-cover opacity-45" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-[#0b0e12] via-[#0b0e12]/45 to-black/25" />
-        <div className="relative flex min-h-[440px] items-end gap-6 px-5 pb-8 pt-24 sm:px-9">
+        <div className="relative flex min-h-[360px] items-end gap-5 px-5 pb-7 pt-20 sm:px-8">
           {poster && (
-            <div className="relative hidden aspect-[2/3] w-48 shrink-0 overflow-hidden rounded-2xl border border-white/15 shadow-2xl sm:block">
+            <div className="relative hidden aspect-[2/3] w-36 shrink-0 overflow-hidden rounded-2xl border border-white/15 shadow-2xl md:block">
               <Image src={poster} alt={`${title} posteri`} fill sizes="192px" quality={74} className="object-cover" />
             </div>
           )}
@@ -358,21 +358,21 @@ function DetailContent({
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#a9b7c4]">
               {item.mediaType === "movie" ? "Film" : "Dizi"} · Canlı TMDB bilgisi
             </p>
-            <h2 className="mt-3 text-4xl font-semibold tracking-tight text-white sm:text-6xl">{title}</h2>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-5xl">{title}</h2>
             {originalTitle && originalTitle !== title && (
               <p className="mt-2 text-white/45">{originalTitle}</p>
             )}
-            <div className="mt-5 flex flex-wrap gap-2 text-sm text-white/70">
+            <div className="mt-4 flex flex-wrap gap-2 text-sm text-white/70">
               {releaseDate && <InfoPill>{formatDate(releaseDate, dateFormatter)}</InfoPill>}
               {runtime && <InfoPill>{formatRuntime(runtime)}</InfoPill>}
               {metadata.number_of_seasons && <InfoPill>{metadata.number_of_seasons} sezon</InfoPill>}
               {metadata.number_of_episodes && <InfoPill>{metadata.number_of_episodes} bölüm</InfoPill>}
               {metadata.genres?.map((genre) => <InfoPill key={genre.id}>{genre.name}</InfoPill>)}
             </div>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-5 flex flex-wrap items-center gap-3">
               {imdbRating && (
-                <div className="rounded-xl border border-[#f5c518]/25 bg-[#f5c518]/10 px-4 py-2">
-                  <span className="text-2xl font-bold text-[#f5c518]">★ {imdbRating.averageRating.toFixed(1)}</span>
+                <div className="rounded-xl border border-[#f5c518]/25 bg-[#f5c518]/10 px-3.5 py-2">
+                  <span className="text-xl font-bold text-[#f5c518]">★ {imdbRating.averageRating.toFixed(1)}</span>
                   <span className="ml-2 text-xs text-white/45">IMDb · {imdbRating.numVotes.toLocaleString("tr-TR")} oy</span>
                 </div>
               )}
@@ -381,7 +381,7 @@ function DetailContent({
                   href={`https://www.youtube.com/watch?v=${trailer.key}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-12 items-center gap-2 rounded-xl bg-white px-4 font-medium text-black"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-4 font-medium text-black"
                 >
                   <FiPlay /> Fragman
                 </a>
@@ -389,7 +389,7 @@ function DetailContent({
               {onFavorite && <button
                 type="button"
                 onClick={() => onFavorite(item)}
-                className={`inline-flex h-12 items-center gap-2 rounded-xl border px-4 ${
+                className={`inline-flex h-11 items-center gap-2 rounded-xl border px-4 ${
                   item.favorite ? "border-rose-300/30 bg-rose-500/20 text-rose-200" : "border-white/15 text-white/70"
                 }`}
               >
@@ -401,29 +401,19 @@ function DetailContent({
         </div>
       </div>
 
-      <div className="space-y-10 px-5 pb-12 sm:px-9">
-        {metadata.tagline && <p className="text-xl italic text-white/65">“{metadata.tagline}”</p>}
+      <div className="space-y-7 px-5 pb-10 sm:px-8">
+        {metadata.tagline && <p className="text-base italic text-white/65 sm:text-lg">“{metadata.tagline}”</p>}
         <Section title="Hikâye">
           <p className="max-w-4xl text-sm leading-7 text-white/60 sm:text-base">{metadata.overview || "Türkçe açıklama henüz bulunmuyor."}</p>
         </Section>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Fact label={item.mediaType === "movie" ? "Yönetmen" : "Yaratıcı"} value={(item.mediaType === "movie" ? directors : creators).map((person) => person.name).join(", ") || "—"} />
           <Fact label="Yayın tarihi" value={releaseDate ? formatDate(releaseDate, dateFormatter) : "—"} />
-          {metadata.last_air_date && <Fact label="Son yayın tarihi" value={formatDate(metadata.last_air_date, dateFormatter)} />}
           <Fact label="Durum" value={metadata.status || "—"} />
+          {metadata.production_countries?.length || metadata.origin_country?.length ? <Fact label="Ülke" value={metadata.production_countries?.map((country) => country.name).join(", ") || metadata.origin_country?.join(", ") || "—"} /> : null}
           {certification && <Fact label="Yaş sınırı" value={certification} />}
-          <Fact label="Orijinal dil" value={metadata.original_language?.toUpperCase() || "—"} />
-          <Fact label="Yapım ülkeleri" value={metadata.production_countries?.map((country) => country.name).join(", ") || metadata.origin_country?.join(", ") || "—"} />
-          <Fact label="Konuşulan diller" value={metadata.spoken_languages?.map((language) => language.name || language.english_name).join(", ") || "—"} />
-          <Fact label="Yapım şirketleri" value={metadata.production_companies?.map((company) => company.name).join(", ") || "—"} />
-          {metadata.networks?.length ? <Fact label="Kanallar / ağlar" value={metadata.networks.map((network) => network.name).join(", ")} /> : null}
-          {metadata.belongs_to_collection && <Fact label="Koleksiyon" value={metadata.belongs_to_collection.name} />}
-          {typeof metadata.budget === "number" && metadata.budget > 0 && <Fact label="Bütçe" value={formatMoney(metadata.budget)} />}
-          {typeof metadata.revenue === "number" && metadata.revenue > 0 && <Fact label="Hasılat" value={formatMoney(metadata.revenue)} />}
-          {item.mediaType === "tv" && <Fact label="Yapım devam ediyor mu?" value={metadata.in_production ? "Evet" : "Hayır"} />}
           <Fact label="IMDb ID" value={metadata.external_ids?.imdb_id || item.imdbId || "—"} />
-          <Fact label="Son güncelleme" value={formatDate(details.fetchedAt, dateFormatter)} />
         </div>
 
         <Section title={`Oyuncular · ${cast.length}`} subtitle="TMDB’de kayıtlı tüm oyuncular">
@@ -452,7 +442,41 @@ function DetailContent({
           </div>
         </Section>
 
-        {allCrew.length > 0 && (
+        <Section title="Türkiye’de izle">
+          {providers.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {providers.map((provider) => (
+                <div key={provider.provider_id} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-1.5 pr-3">
+                  {provider.logo_path && <Image src={imageUrl(provider.logo_path, "w92")!} alt="" width={34} height={34} className="rounded-lg" />}
+                  <span className="text-sm text-white/75">{provider.provider_name}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-white/40">Türkiye için güncel sağlayıcı kaydı bulunamadı.</p>
+          )}
+        </Section>
+
+        {item.mediaType === "tv" && (
+          <EpisodeHeatmap episodes={episodes} loading={episodesLoading} onLoad={onLoadEpisodes} />
+        )}
+
+        <CollapsibleSection title="Detay arşivi" subtitle="Ekip, teknik bilgiler, görseller ve dış bağlantılar">
+          <div className="space-y-7">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {metadata.last_air_date && <Fact label="Son yayın tarihi" value={formatDate(metadata.last_air_date, dateFormatter)} />}
+              <Fact label="Orijinal dil" value={metadata.original_language?.toUpperCase() || "—"} />
+              <Fact label="Konuşulan diller" value={metadata.spoken_languages?.map((language) => language.name || language.english_name).join(", ") || "—"} />
+              <Fact label="Yapım şirketleri" value={metadata.production_companies?.map((company) => company.name).join(", ") || "—"} />
+              {metadata.networks?.length ? <Fact label="Kanallar / ağlar" value={metadata.networks.map((network) => network.name).join(", ")} /> : null}
+              {metadata.belongs_to_collection && <Fact label="Koleksiyon" value={metadata.belongs_to_collection.name} />}
+              {typeof metadata.budget === "number" && metadata.budget > 0 && <Fact label="Bütçe" value={formatMoney(metadata.budget)} />}
+              {typeof metadata.revenue === "number" && metadata.revenue > 0 && <Fact label="Hasılat" value={formatMoney(metadata.revenue)} />}
+              {item.mediaType === "tv" && <Fact label="Yapım devam ediyor mu?" value={metadata.in_production ? "Evet" : "Hayır"} />}
+              <Fact label="Son güncelleme" value={formatDate(details.fetchedAt, dateFormatter)} />
+            </div>
+
+            {allCrew.length > 0 && (
           <Section title={`Yapım ekibi · ${allCrew.length}`} subtitle="TMDB’de kayıtlı tüm ekip">
             <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-5 [scrollbar-width:thin]">
               {allCrew.map((person) => (
@@ -497,7 +521,7 @@ function DetailContent({
           </Section>
         )}
 
-        {item.mediaType === "tv" && metadata.seasons && (
+            {item.mediaType === "tv" && metadata.seasons && (
           <Section title={`Sezonlar · ${metadata.number_of_seasons ?? metadata.seasons.length}`}>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {metadata.seasons.map((season) => (
@@ -516,26 +540,7 @@ function DetailContent({
           </Section>
         )}
 
-          {item.mediaType === "tv" && (
-            <EpisodeHeatmap episodes={episodes} loading={episodesLoading} onLoad={onLoadEpisodes} />
-          )}
-
-        <Section title="Türkiye’de izle">
-          {providers.length > 0 ? (
-            <div className="flex flex-wrap gap-3">
-              {providers.map((provider) => (
-                <div key={provider.provider_id} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-2 pr-4">
-                  {provider.logo_path && <Image src={imageUrl(provider.logo_path, "w92")!} alt="" width={42} height={42} className="rounded-lg" />}
-                  <span className="text-sm text-white/75">{provider.provider_name}</span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-white/40">Türkiye için güncel sağlayıcı kaydı bulunamadı.</p>
-          )}
-        </Section>
-
-        <div className="flex flex-wrap gap-3 border-t border-white/10 pt-7">
+            <div className="flex flex-wrap gap-2 border-t border-white/10 pt-5">
           {(metadata.external_ids?.imdb_id || item.imdbId) && <ExternalLink href={`https://www.imdb.com/title/${metadata.external_ids?.imdb_id || item.imdbId}/`}>IMDb</ExternalLink>}
           <ExternalLink href={`https://www.themoviedb.org/${item.mediaType}/${item.id}`}>TMDB</ExternalLink>
           {providerInfo?.link && <ExternalLink href={providerInfo.link}>İzleme seçenekleri</ExternalLink>}
@@ -544,7 +549,9 @@ function DetailContent({
           {metadata.external_ids?.instagram_id && <ExternalLink href={`https://www.instagram.com/${metadata.external_ids.instagram_id}/`}>Instagram</ExternalLink>}
           {metadata.external_ids?.facebook_id && <ExternalLink href={`https://www.facebook.com/${metadata.external_ids.facebook_id}`}>Facebook</ExternalLink>}
           {metadata.external_ids?.twitter_id && <ExternalLink href={`https://x.com/${metadata.external_ids.twitter_id}`}>X</ExternalLink>}
-        </div>
+            </div>
+          </div>
+        </CollapsibleSection>
       </div>
     </div>
   );
@@ -621,6 +628,21 @@ function Section({ title, subtitle, children }: { title: string; subtitle?: stri
       </div>
       {children}
     </section>
+  );
+}
+
+function CollapsibleSection({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+  return (
+    <details className="group rounded-2xl border border-white/10 bg-white/[0.025] p-4 open:bg-white/[0.035]">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+        <span>
+          <span className="block text-lg font-semibold text-white">{title}</span>
+          {subtitle && <span className="mt-1 block text-xs text-white/35">{subtitle}</span>}
+        </span>
+        <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-white/45 group-open:bg-white/10">Aç</span>
+      </summary>
+      <div className="mt-6">{children}</div>
+    </details>
   );
 }
 

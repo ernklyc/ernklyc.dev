@@ -119,35 +119,34 @@ export default function MoviesDemo() {
   return (
     <div>
       {isOwner && (
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
           <div>
-            <p className="text-sm font-medium text-white/80">Arşivin gerçek zamanlı bağlı</p>
-            <p className="mt-1 text-xs text-white/35">Web ve mobil aynı Firestore arşivini kullanır.</p>
+            <p className="text-sm font-medium text-white/80">MoTLog arşivi</p>
+            <p className="mt-0.5 text-xs text-white/35">Web ve mobil senkron.</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <CsvImportButton uid={user!.uid} existingIds={existingIds} onNotice={setNotice} />
-            <button type="button" onClick={() => setSearchOpen(true)} className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#a9b7c4] px-4 text-sm font-semibold text-[#0b0e12]"><FiPlus /> Yapım ekle</button>
+            <button type="button" onClick={() => setSearchOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-xl bg-[#f5c518] px-4 text-sm font-semibold text-black"><FiPlus /> Ekle</button>
           </div>
         </div>
       )}
 
       {notice && <div className="mb-6 flex items-start justify-between gap-4 rounded-xl border border-emerald-300/15 bg-emerald-400/[0.07] px-4 py-3 text-sm text-emerald-100"><span>{notice}</span><button onClick={() => setNotice("")} aria-label="Bildirimi kapat"><FiX /></button></div>}
 
-      <div className="mb-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard value={items.length} label="Toplam yapım" /><StatCard value={movieCount} label="Film" /><StatCard value={tvCount} label="Dizi" /><StatCard value={favoriteCount} label="Favori" />
-      </div>
-
-      <div className="sticky top-4 z-30 mb-9 space-y-3 rounded-2xl border border-white/10 bg-[#0b0e12]/85 p-3 shadow-2xl shadow-black/30 backdrop-blur-2xl md:top-6">
+      <div className="sticky top-4 z-30 mb-6 space-y-3 rounded-2xl border border-white/10 bg-[#0b0e12]/88 p-3 shadow-xl shadow-black/25 backdrop-blur-2xl md:top-6">
+        <div className="flex flex-wrap items-center gap-2 text-xs text-white/55">
+          <StatPill value={items.length} label="Toplam" /><StatPill value={movieCount} label="Film" /><StatPill value={tvCount} label="Dizi" /><StatPill value={favoriteCount} label="Favori" />
+        </div>
         <div className="md:flex md:items-center md:gap-3">
         <label className="relative block min-w-0 flex-1">
           <FiSearch className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-white/40" /><span className="sr-only">Arşivde ara</span>
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="İzlediklerinde ara..." className="h-12 w-full rounded-xl border border-white/10 bg-white/[0.045] pl-11 pr-11 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#a9b7c4]/60" />
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Film, dizi, yıl ara..." className="h-11 w-full rounded-xl border border-white/10 bg-white/[0.045] pl-11 pr-11 text-sm text-white outline-none placeholder:text-white/35 focus:border-[#f5c518]/60" />
           {query && <button type="button" onClick={() => setQuery("")} aria-label="Aramayı temizle" className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-lg text-white/50 hover:bg-white/10"><FiX /></button>}
         </label>
         <div className="mt-3 flex gap-2 overflow-x-auto md:mt-0">{filters.map((filter) => {
           const Icon = filter.icon;
           const count = filter.id === "favorites" ? favoriteCount : filter.id === "movie" ? movieCount : filter.id === "tv" ? tvCount : items.length;
-          return <button key={filter.id} type="button" onClick={() => setActiveFilter(filter.id)} className={`flex h-11 shrink-0 items-center gap-2 rounded-xl px-3.5 text-sm transition ${activeFilter === filter.id ? "bg-[#a9b7c4] font-medium text-[#0b0e12]" : "border border-white/10 bg-white/[0.035] text-white/65"}`}>{Icon && <Icon />}{filter.label}<span className={activeFilter === filter.id ? "text-black/50" : "text-white/30"}>{count}</span></button>;
+          return <button key={filter.id} type="button" onClick={() => setActiveFilter(filter.id)} className={`flex h-10 shrink-0 items-center gap-2 rounded-xl px-3 text-sm transition ${activeFilter === filter.id ? "bg-[#f5c518] font-medium text-black" : "border border-white/10 bg-white/[0.035] text-white/65"}`}>{Icon && <Icon />}{filter.label}<span className={activeFilter === filter.id ? "text-black/50" : "text-white/30"}>{count}</span></button>;
         })}</div>
         </div>
         <div className="grid gap-2 sm:grid-cols-3">
@@ -231,7 +230,7 @@ const LibraryCard = memo(function LibraryCard({ item, imdbRating, isOwner, onOpe
   </div><div className="px-1 pt-3"><h3 className="truncate font-medium text-white/90">{item.snapshot.title}</h3><p className="mt-1 flex items-center gap-2 text-xs text-white/35"><span>{item.snapshot.year ?? "—"}</span></p></div></article>;
 });
 
-function StatCard({ value, label }: { value: number; label: string }) { return <div className="rounded-2xl border border-white/10 bg-white/[0.035] px-5 py-4"><strong className="block text-2xl font-semibold text-white">{value}</strong><span className="mt-0.5 block text-sm text-white/40">{label}</span></div>; }
+function StatPill({ value, label }: { value: number; label: string }) { return <span className="rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5"><strong className="mr-1.5 text-white/85">{value}</strong>{label}</span>; }
 function Select({ label, value, options, onChange }: { label: string; value: string; options: [string, string][]; onChange: (value: string) => void }) {
   return <label className="block">
     <span className="mb-1 block text-[11px] font-medium uppercase tracking-[0.16em] text-white/30">{label}</span>
