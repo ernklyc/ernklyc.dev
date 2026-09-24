@@ -17,6 +17,7 @@ class MovieApiService {
   static const _ratingsCacheTtl = Duration(hours: 24);
   static const _searchCacheTtl = Duration(minutes: 15);
   static const _ratingsBatchSize = 100;
+  static const _guideCacheTtl = Duration(hours: 24);
 
   Future<Map<String, dynamic>> details(int tmdbId, String mediaType) async {
     final key = 'movie_detail_${mediaType}_$tmdbId';
@@ -67,6 +68,40 @@ class MovieApiService {
     );
     return List<Map<String, dynamic>>.from(
       body['episodes'] as List? ?? const [],
+    );
+  }
+
+  /// DoesTheDogDie topluluk oylarından ebeveyn rehberi (sunucu işler, anahtar sunucuda kalır).
+  Future<Map<String, dynamic>> parentsGuide(int tmdbId, String mediaType) {
+    return _cachedJsonMap(
+      key: 'movie_parents_guide_${mediaType}_$tmdbId',
+      ttl: _guideCacheTtl,
+      fetcher: () async {
+        final response = await http
+            .get(
+              Uri.parse(
+                '${AppConfig.apiBaseUrl}/api/movies/parents-guide/$mediaType/$tmdbId',
+              ),
+            )
+            .timeout(
+              const Duration(seconds: 60),
+              onTimeout: () => throw Exception(
+                'Ebeveyn rehberi zamanında gelmedi. Tekrar dene.',
+              ),
+            );
+        Map<String, dynamic> body;
+        try {
+          body = jsonDecode(response.body) as Map<String, dynamic>;
+        } catch (_) {
+          throw Exception(
+            'Ebeveyn rehberi alınamadı (${response.statusCode}).',
+          );
+        }
+        if (response.statusCode != 200) {
+          throw Exception(body['error'] ?? 'Ebeveyn rehberi alınamadı.');
+        }
+        return body;
+      },
     );
   }
 

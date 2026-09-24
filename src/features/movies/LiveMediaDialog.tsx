@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiExternalLink, FiHeart, FiLoader, FiPlay, FiX } from "react-icons/fi";
 import type { MediaType } from "./models";
+import type { GuideCategory, ParentsGuide } from "@/features/movies/server/parents-guide";
 
 export type MediaDetailTarget = {
   id: number;
@@ -456,6 +457,8 @@ function DetailContent({
           )}
         </Section>
 
+        <ParentsGuideSection mediaType={item.mediaType} id={item.id} />
+
         {item.mediaType === "tv" && (
           <EpisodeHeatmap episodes={episodes} loading={episodesLoading} error={episodesError} onLoad={onLoadEpisodes} />
         )}
@@ -556,6 +559,120 @@ function DetailContent({
   );
 }
 
+const GUIDE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+function guideCacheKey(mediaType: MediaType, id: number) {
+  return `movie_parents_guide_cache_v1_${mediaType}_${id}`;
+}
+
+function ParentsGuideSection({ mediaType, id }: { mediaType: MediaType; id: number }) {
+  const [guide, setGuide] = useState<ParentsGuide | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setGuide(null);
+    setLoading(false);
+    setError("");
+  }, [mediaType, id]);
+
+  function load() {
+    if (guide || loading) return;
+    const cacheKey = guideCacheKey(mediaType, id);
+    const cached = readTimedCache<ParentsGuide>(cacheKey, GUIDE_CACHE_TTL_MS);
+    if (cached) {
+      setGuide(cached);
+      return;
+    }
+    setError("");
+    setLoading(true);
+    fetch(`/api/movies/parents-guide/${mediaType}/${id}`)
+      .then(async (response) => {
+        const body = (await response.json().catch(() => ({}))) as ParentsGuide & { error?: string };
+        if (!response.ok) throw new Error(body.error ?? "Ebeveyn rehberi alınamadı.");
+        writeTimedCache(cacheKey, body);
+        setGuide(body);
+      })
+      .catch((requestError: Error) => setError(requestError.message || "Ebeveyn rehberi alınamadı."))
+      .finally(() => setLoading(false));
+  }
+
+  return (
+    <CollapsibleSection
+      title="Ebeveyn rehberi"
+      subtitle="Topluluk oylarına göre içerik uyarıları · açınca yüklenir"
+      onToggle={(open) => open && load()}
+    >
+      {loading && <p className="flex items-center gap-2 text-sm text-white/45"><FiLoader className="animate-spin" /> Ebeveyn rehberi yükleniyor…</p>}
+      {error && (
+        <div className="space-y-3">
+          <p className="text-sm text-red-400">{error}</p>
+          <button type="button" onClick={load} className="rounded-xl border border-white/15 bg-white/[0.04] px-4 py-2 text-sm text-white/70 hover:bg-white/[0.08]">Tekrar dene</button>
+        </div>
+      )}
+      {guide && !guide.available && <p className="text-sm text-white/45">Bu yapım için topluluk verisi bulunamadı (DoesTheDogDie).</p>}
+      {guide?.available && (
+        <div className="space-y-3">
+          <p className="text-xs leading-5 text-white/40">
+            Her konu için “var” ve “yok” diyen oy sayısı gösterilir. IMDb’deki gibi hafif/orta/şiddetli derecesi yoktur.
+            Konuya dokunursan topluluk notları açılır; <strong className="text-white/55">notlar spoiler içerebilir</strong>.
+          </p>
+          {guide.categories.map((category) => <GuideCategoryRow key={category.id} category={category} />)}
+          <p className="pt-1 text-[11px] text-white/30">
+            Veri: <a href={guide.source.url} target="_blank" rel="noreferrer" className="underline hover:text-white/60">{guide.source.name}</a> · {guide.source.votes.toLocaleString("tr-TR")} oy · topluluk tarafından girilir, hatalı olabilir.
+          </p>
+        </div>
+      )}
+    </CollapsibleSection>
+  );
+}
+
+function GuideCategoryRow({ category }: { category: GuideCategory }) {
+  const statusStyle = {
+    present: "border-amber-300/25 bg-amber-400/10 text-amber-200",
+    none: "border-emerald-300/20 bg-emerald-400/10 text-emerald-200",
+    unknown: "border-white/10 bg-white/[0.04] text-white/40",
+  }[category.status];
+  const statusText = {
+    present: `Var · ${category.topics.length} konu`,
+    none: "Bildirilmedi",
+    unknown: "Yeterli oy yok",
+  }[category.status];
+
+  return (
+    <details className="group/cat rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3" open={false}>
+      <summary className={`flex list-none items-center justify-between gap-3 ${category.topics.length ? "cursor-pointer" : "cursor-default"}`}>
+        <span className="text-sm font-semibold text-white/85">{category.label}</span>
+        <span className={`shrink-0 rounded-full border px-3 py-1 text-xs ${statusStyle}`}>{statusText}</span>
+      </summary>
+      {category.topics.length > 0 && (
+        <ul className="mt-3 space-y-1.5">
+          {category.topics.map((topic) => (
+            <li key={topic.id}>
+              {topic.notes.length ? (
+                <details className="rounded-lg border border-white/5 bg-white/[0.025] px-3 py-2">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm text-white/75">
+                    <span>{topic.label}</span>
+                    <span className="shrink-0 text-xs text-white/35">{topic.yes} evet · {topic.no} hayır</span>
+                  </summary>
+                  <ul className="mt-2 space-y-2 border-t border-white/5 pt-2">
+                    {topic.notes.map((note, index) => <li key={index} className="text-xs leading-5 text-white/50">“{note.text}”</li>)}
+                  </ul>
+                </details>
+              ) : (
+                <div className="flex items-center justify-between gap-3 rounded-lg border border-white/5 bg-white/[0.025] px-3 py-2 text-sm text-white/75">
+                  <span>{topic.label}</span>
+                  <span className="shrink-0 text-xs text-white/35">{topic.yes} evet · {topic.no} hayır</span>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </details>
+  );
+}
+
 function EpisodeHeatmap({ episodes, loading, error, onLoad }: { episodes: EpisodeRating[] | null; loading: boolean; error: string; onLoad: () => void }) {
   if (episodes === null) {
     return <Section title="Bölüm puanları" subtitle="IMDb bölüm puanlarını yalnızca istersen yükleriz">
@@ -631,9 +748,9 @@ function Section({ title, subtitle, children }: { title: string; subtitle?: stri
   );
 }
 
-function CollapsibleSection({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) {
+function CollapsibleSection({ title, subtitle, children, onToggle }: { title: string; subtitle?: string; children: React.ReactNode; onToggle?: (open: boolean) => void }) {
   return (
-    <details className="group rounded-2xl border border-white/10 bg-white/[0.025] p-4 open:bg-white/[0.035]">
+    <details onToggle={onToggle ? (event) => onToggle(event.currentTarget.open) : undefined} className="group rounded-2xl border border-white/10 bg-white/[0.025] p-4 open:bg-white/[0.035]">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
         <span>
           <span className="block text-lg font-semibold text-white">{title}</span>

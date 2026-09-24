@@ -152,3 +152,20 @@ function normalizeSearchItem(
     imdbVotes: imdbRating?.numVotes ?? null,
   };
 }
+
+/** Harici içerik kaynaklarında (ör. DoesTheDogDie) başlıkla arama yapmak için İngilizce/orijinal adlar. */
+export async function getSearchTitles(mediaType: TmdbMediaType, tmdbId: number) {
+  const data = await tmdbFetch<{
+    title?: string;
+    name?: string;
+    original_title?: string;
+    original_name?: string;
+    release_date?: string;
+    first_air_date?: string;
+  }>(`/${mediaType}/${tmdbId}`, { language: "en-US" });
+  const names = [data.title ?? data.name, data.original_title ?? data.original_name].filter(
+    (name): name is string => Boolean(name),
+  );
+  const year = Number((data.release_date ?? data.first_air_date ?? "").slice(0, 4));
+  return { titles: [...new Set(names)], year: Number.isSafeInteger(year) ? year : null };
+}

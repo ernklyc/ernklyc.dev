@@ -60,3 +60,11 @@ flutter run --dart-define=API_BASE_URL=https://ernklyc.dev
 ```
 
 Android emülatör yerel geliştirmede `10.0.2.2:4173`, iOS simülatör `127.0.0.1:4173` kullanır.
+
+## Ebeveyn rehberi
+
+- Kaynak: DoesTheDogDie.com topluluk oyları (ücretsiz API seviyesi; ticari olmayan kullanım, atıf zorunlu, 5.000 istek/ay, 30 istek/dk).
+- Akış: detay ekranında "Ebeveyn rehberi" açılınca `/api/movies/parents-guide/{movie|tv}/{tmdbId}` çağrılır → TMDB'den İngilizce/orijinal başlık → DoesTheDogDie `dddsearch` (TMDB ID + tür eşleşmesi) → `media/{id}`.
+- DoesTheDogDie'de IMDb'deki gibi hafif/orta/şiddetli derecesi yoktur; sadece "var mı" evet/hayır oyları ve yorumlar vardır. Bu yüzden derece uydurulmaz, kategori başına "Var / Bildirilmedi / Yeterli oy yok" gösterilir. Bir konu için en az 3 evet ve %60 evet oranı aranır.
+- Kotayı korumak için sonuç sunucuda ve CDN'de 30 gün (bulunamayanlar 7 gün) önbelleğe alınır; örnek başına saatte en fazla 60 yeni sorgu yapılır.
+- Anahtar yalnızca sunucuda (`DDD_API_KEY`, Vercel env) durur; mobil/tarayıcı paketine girmez.

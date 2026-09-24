@@ -27,6 +27,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
     widget.item.mediaType.name,
   );
   Future<List<Map<String, dynamic>>>? episodes;
+  Future<Map<String, dynamic>>? guide;
   late bool added = widget.alreadyAdded;
   bool adding = false;
 
@@ -86,6 +87,15 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
           data: snapshot.data!,
           episodes: episodes,
           topAction: _addAction,
+          guide: guide,
+          onLoadGuide: () {
+            setState(() {
+              guide = api.parentsGuide(
+                widget.item.tmdbId,
+                widget.item.mediaType.name,
+              );
+            });
+          },
           onLoadEpisodes: widget.item.mediaType == MediaType.tv
               ? () {
                   setState(() {
@@ -106,12 +116,16 @@ class _DetailBody extends StatelessWidget {
     required this.episodes,
     required this.onLoadEpisodes,
     required this.topAction,
+    required this.guide,
+    required this.onLoadGuide,
   });
   final LibraryItem item;
   final Map<String, dynamic> data;
   final Future<List<Map<String, dynamic>>>? episodes;
   final VoidCallback? onLoadEpisodes;
   final Widget? topAction;
+  final Future<Map<String, dynamic>>? guide;
+  final VoidCallback onLoadGuide;
 
   String? image(String? path, [String size = 'w780']) =>
       path == null ? null : 'https://image.tmdb.org/t/p/$size$path';
@@ -374,6 +388,8 @@ class _DetailBody extends StatelessWidget {
                       )
                       .toList(),
                 ),
+              const SizedBox(height: 22),
+              _GuidePanel(guide: guide, onLoad: onLoadGuide),
               if (onLoadEpisodes != null) ...[
                 const SizedBox(height: 22),
                 _EpisodesPanel(episodes: episodes, onLoad: onLoadEpisodes!),
@@ -513,6 +529,230 @@ class _FactTile extends StatelessWidget {
       ],
     ),
   );
+}
+
+/// Ebeveyn rehberi: DoesTheDogDie topluluk oyları, IMDb kategorileriyle gruplu.
+class _GuidePanel extends StatelessWidget {
+  const _GuidePanel({required this.guide, required this.onLoad});
+  final Future<Map<String, dynamic>>? guide;
+  final VoidCallback onLoad;
+
+  @override
+  Widget build(BuildContext context) => _Panel(
+    title: 'Ebeveyn rehberi',
+    subtitle: 'Topluluk oylarına göre içerik uyarıları · açınca yüklenir',
+    onExpansionChanged: (open) {
+      if (open && guide == null) onLoad();
+    },
+    child: guide == null
+        ? const _GuideLoading()
+        : FutureBuilder<Map<String, dynamic>>(
+            future: guide,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      snapshot.error.toString().replaceFirst('Exception: ', ''),
+                      style: const TextStyle(color: Colors.redAccent),
+                    ),
+                    const SizedBox(height: 8),
+                    OutlinedButton.icon(
+                      onPressed: onLoad,
+                      icon: const Icon(Icons.refresh_rounded),
+                      label: const Text('Tekrar dene'),
+                    ),
+                  ],
+                );
+              }
+              if (!snapshot.hasData) return const _GuideLoading();
+              final data = snapshot.data!;
+              if (data['available'] != true) {
+                return const Text(
+                  'Bu yapım için topluluk verisi bulunamadı (DoesTheDogDie).',
+                  style: TextStyle(color: Colors.white38),
+                );
+              }
+              final source = Map<String, dynamic>.from(
+                data['source'] as Map? ?? const {},
+              );
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Her konu için “var” ve “yok” diyen oy sayısı gösterilir. IMDb’deki gibi hafif/orta/şiddetli derecesi yoktur. Konuya dokunursan topluluk notları açılır; notlar spoiler içerebilir.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 1.5,
+                      color: Colors.white38,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  for (final category in _maps(data['categories']))
+                    _GuideCategory(category: category),
+                  const SizedBox(height: 4),
+                  InkWell(
+                    onTap: () => _open(source['url'].toString()),
+                    child: Text(
+                      'Veri: ${source['name']} · ${_thousands(source['votes'] as num? ?? 0)} oy · topluluk tarafından girilir, hatalı olabilir.',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.white30,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+  );
+}
+
+class _GuideLoading extends StatelessWidget {
+  const _GuideLoading();
+  @override
+  Widget build(BuildContext context) => const Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      LinearProgressIndicator(),
+      SizedBox(height: 8),
+      Text(
+        'Ebeveyn rehberi yükleniyor…',
+        style: TextStyle(color: Colors.white38),
+      ),
+    ],
+  );
+}
+
+class _GuideCategory extends StatelessWidget {
+  const _GuideCategory({required this.category});
+  final Map<String, dynamic> category;
+
+  @override
+  Widget build(BuildContext context) {
+    final topics = _maps(category['topics']);
+    final status = category['status'] as String? ?? 'unknown';
+    final (statusText, statusColor) = switch (status) {
+      'present' => ('Var · ${topics.length} konu', const Color(0xFFF2D15D)),
+      'none' => ('Bildirilmedi', const Color(0xFF65BD7D)),
+      _ => ('Yeterli oy yok', Colors.white38),
+    };
+    final chip = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: statusColor.withValues(alpha: .12),
+        border: Border.all(color: statusColor.withValues(alpha: .35)),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        statusText,
+        style: TextStyle(fontSize: 12, color: statusColor),
+      ),
+    );
+    final title = Text(
+      category['label'].toString(),
+      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+    );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: topics.isEmpty
+            ? Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                decoration: _guideBox,
+                child: Row(
+                  children: [
+                    Expanded(child: title),
+                    chip,
+                  ],
+                ),
+              )
+            : ExpansionTile(
+                tilePadding: const EdgeInsets.symmetric(horizontal: 14),
+                childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                collapsedBackgroundColor: Colors.white.withValues(alpha: .03),
+                backgroundColor: Colors.white.withValues(alpha: .03),
+                collapsedShape: _guideShape,
+                shape: _guideShape,
+                title: title,
+                trailing: chip,
+                children: [
+                  for (final topic in topics) _GuideTopic(topic: topic),
+                ],
+              ),
+      ),
+    );
+  }
+}
+
+final _guideShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(12),
+  side: const BorderSide(color: Colors.white10),
+);
+final _guideBox = BoxDecoration(
+  color: Colors.white.withValues(alpha: .03),
+  borderRadius: BorderRadius.circular(12),
+  border: Border.all(color: Colors.white10),
+);
+
+class _GuideTopic extends StatelessWidget {
+  const _GuideTopic({required this.topic});
+  final Map<String, dynamic> topic;
+
+  @override
+  Widget build(BuildContext context) {
+    final notes = _maps(topic['notes']);
+    final votes = Text(
+      '${topic['yes']} evet · ${topic['no']} hayır',
+      style: const TextStyle(fontSize: 11, color: Colors.white38),
+    );
+    final label = Text(
+      topic['label'].toString(),
+      style: const TextStyle(fontSize: 13, color: Colors.white70),
+    );
+    if (notes.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        child: Row(
+          children: [
+            Expanded(child: label),
+            votes,
+          ],
+        ),
+      );
+    }
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.symmetric(horizontal: 8),
+        childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+        title: label,
+        trailing: votes,
+        expandedAlignment: Alignment.centerLeft,
+        expandedCrossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final note in notes)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                '“${note['text']}”',
+                style: const TextStyle(
+                  fontSize: 12,
+                  height: 1.5,
+                  color: Colors.white54,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 /// Web'deki "Bölüm puanları" bölümü: aç/kapa, açılınca yüklenir, sezonlar da aç/kapa.
