@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import '../models/library_item.dart';
 import '../models/tmdb_search_item.dart';
+import '../screens/media_detail_screen.dart';
 import '../services/library_service.dart';
 import '../services/movie_api_service.dart';
 
@@ -19,6 +21,7 @@ class _SearchSheetState extends State<SearchSheet> {
   List<TmdbSearchItem> results = const [];
   bool loading = false;
   String? busyId;
+  final addedIds = <String>{};
   String? error;
   int searchSerial = 0;
 
@@ -61,9 +64,42 @@ class _SearchSheetState extends State<SearchSheet> {
     }
   }
 
-  Future<void> add(TmdbSearchItem media) async {
-    if (widget.existingIds.contains(media.documentId)) return;
-    setState(() => busyId = media.documentId);
+  bool exists(TmdbSearchItem media) =>
+      widget.existingIds.contains(media.documentId) ||
+      addedIds.contains(media.documentId);
+
+  void openDetail(TmdbSearchItem media) {
+    FocusScope.of(context).unfocus();
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => MediaDetailScreen(
+          item: LibraryItem(
+            id: media.documentId,
+            tmdbId: media.tmdbId,
+            imdbId: media.imdbId,
+            mediaType: media.mediaType,
+            title: media.title,
+            originalTitle: media.originalTitle,
+            year: media.year,
+            posterPath: media.posterPath,
+            genres: media.genres,
+            imdbRating: media.imdbRating,
+            imdbVotes: media.imdbVotes,
+            favorite: false,
+            isPublic: true,
+          ),
+          alreadyAdded: exists(media),
+          onAdd: () => add(media),
+        ),
+      ),
+    );
+  }
+
+  /// Yapım arşivdeyse (yeni eklendi ya da zaten vardı) true, hata olursa false.
+  Future<bool> add(TmdbSearchItem media) async {
+    if (exists(media)) return true;
+    if (mounted) setState(() => busyId = media.documentId);
     try {
       final details = await api.details(media.tmdbId, media.mediaType.name);
       final metadata = details['metadata'] as Map<String, dynamic>? ?? const {};
@@ -80,6 +116,7 @@ class _SearchSheetState extends State<SearchSheet> {
         imdbVotes: (imdbRating?['numVotes'] as num?)?.toInt(),
       );
       final added = await library.add(enriched);
+      addedIds.add(media.documentId);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -91,6 +128,7 @@ class _SearchSheetState extends State<SearchSheet> {
           ),
         );
       }
+      return true;
     } catch (exception) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -101,6 +139,7 @@ class _SearchSheetState extends State<SearchSheet> {
           ),
         );
       }
+      return false;
     } finally {
       if (mounted) setState(() => busyId = null);
     }
@@ -159,8 +198,9 @@ class _SearchSheetState extends State<SearchSheet> {
               separatorBuilder: (_, _) => const SizedBox(height: 8),
               itemBuilder: (context, index) {
                 final media = results[index];
-                final exists = widget.existingIds.contains(media.documentId);
+                final inArchive = exists(media);
                 return ListTile(
+                  onTap: () => openDetail(media),
                   tileColor: Colors.white.withValues(alpha: .04),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -190,7 +230,7 @@ class _SearchSheetState extends State<SearchSheet> {
                     '${media.mediaType.name == 'movie' ? 'Film' : 'Dizi'} · ${media.year ?? '—'}',
                   ),
                   trailing: IconButton.filled(
-                    onPressed: exists || busyId == media.documentId
+                    onPressed: inArchive || busyId == media.documentId
                         ? null
                         : () => add(media),
                     icon: busyId == media.documentId
@@ -198,7 +238,7 @@ class _SearchSheetState extends State<SearchSheet> {
                             dimension: 18,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : Icon(exists ? Icons.check : Icons.add),
+                        : Icon(inArchive ? Icons.check : Icons.add),
                   ),
                 );
               },
