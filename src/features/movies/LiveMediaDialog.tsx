@@ -617,7 +617,7 @@ function ParentsGuideSection({ mediaType, id }: { mediaType: MediaType; id: numb
             Her konu için “var” ve “yok” diyen oy sayısı gösterilir. IMDb’deki gibi hafif/orta/şiddetli derecesi yoktur.
             Konuya dokunursan topluluk notları açılır; <strong className="text-white/55">notlar spoiler içerebilir</strong>.
           </p>
-          {guide.categories.map((category) => <GuideCategoryRow key={category.id} category={category} />)}
+          {guide.categories.map((category) => <GuideCategoryRow key={category.id} category={category} mediaType={mediaType} id={id} />)}
           <p className="pt-1 text-[11px] text-white/30">
             Veri: <a href={guide.source.url} target="_blank" rel="noreferrer" className="underline hover:text-white/60">{guide.source.name}</a> · {guide.source.votes.toLocaleString("tr-TR")} oy · topluluk tarafından girilir, hatalı olabilir.
           </p>
@@ -627,7 +627,45 @@ function ParentsGuideSection({ mediaType, id }: { mediaType: MediaType; id: numb
   );
 }
 
-function GuideCategoryRow({ category }: { category: GuideCategory }) {
+function GuideTopicNotes({ topic, mediaType, id }: { topic: GuideCategory["topics"][number]; mediaType: MediaType; id: number }) {
+  const [translations, setTranslations] = useState<(string | null)[] | null>(null);
+  const [requested, setRequested] = useState(false);
+
+  function load() {
+    if (requested) return;
+    setRequested(true);
+    fetch(`/api/movies/parents-guide/${mediaType}/${id}/translate?topic=${topic.id}`)
+      .then(async (response) => {
+        if (!response.ok) throw new Error("çeviri alınamadı");
+        const body = (await response.json()) as { translations?: (string | null)[] };
+        setTranslations(body.translations ?? []);
+      })
+      .catch(() => setRequested(false));
+  }
+
+  return (
+    <details onToggle={(event) => event.currentTarget.open && load()} className="rounded-lg border border-white/5 bg-white/[0.025] px-3 py-2">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm text-white/75">
+        <span>
+          {topic.label}
+          <span className="mt-0.5 block text-[11px] text-white/35">{topic.notes.length} topluluk notu · dokun</span>
+        </span>
+        <span className="shrink-0 text-xs text-white/35">{topic.yes} evet · {topic.no} hayır</span>
+      </summary>
+      <ul className="mt-2 space-y-3 border-t border-white/5 pt-2">
+        {topic.notes.map((note, index) => (
+          <li key={index} className="text-left text-xs leading-5">
+            <p className="text-white/50">“{note.text}”</p>
+            {translations?.[index] && <p className="mt-1 text-white/75"><span className="mr-1 text-[10px] uppercase tracking-wide text-white/30">TR</span>{translations[index]}</p>}
+          </li>
+        ))}
+      </ul>
+      {translations?.some(Boolean) && <p className="mt-2 text-[10px] text-white/25">Otomatik çeviri (MyMemory) — hatalı olabilir.</p>}
+    </details>
+  );
+}
+
+function GuideCategoryRow({ category, mediaType, id }: { category: GuideCategory; mediaType: MediaType; id: number }) {
   const statusStyle = {
     present: "border-amber-300/25 bg-amber-400/10 text-amber-200",
     none: "border-emerald-300/20 bg-emerald-400/10 text-emerald-200",
@@ -650,18 +688,7 @@ function GuideCategoryRow({ category }: { category: GuideCategory }) {
           {category.topics.map((topic) => (
             <li key={topic.id}>
               {topic.notes.length ? (
-                <details className="rounded-lg border border-white/5 bg-white/[0.025] px-3 py-2">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm text-white/75">
-                    <span>
-                      {topic.label}
-                      <span className="mt-0.5 block text-[11px] text-white/35">{topic.notes.length} topluluk notu · dokun</span>
-                    </span>
-                    <span className="shrink-0 text-xs text-white/35">{topic.yes} evet · {topic.no} hayır</span>
-                  </summary>
-                  <ul className="mt-2 space-y-2 border-t border-white/5 pt-2">
-                    {topic.notes.map((note, index) => <li key={index} className="text-xs leading-5 text-white/50">“{note.text}”</li>)}
-                  </ul>
-                </details>
+                <GuideTopicNotes topic={topic} mediaType={mediaType} id={id} />
               ) : (
                 <div className="flex items-center justify-between gap-3 rounded-lg border border-white/5 bg-white/[0.025] px-3 py-2 text-sm text-white/75">
                   <span>

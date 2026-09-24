@@ -18,6 +18,7 @@ class MovieApiService {
   static const _searchCacheTtl = Duration(minutes: 15);
   static const _ratingsBatchSize = 100;
   static const _guideCacheTtl = Duration(hours: 24);
+  static const _translationCacheTtl = Duration(days: 30);
 
   Future<Map<String, dynamic>> details(int tmdbId, String mediaType) async {
     final key = 'movie_detail_${mediaType}_$tmdbId';
@@ -123,6 +124,40 @@ class MovieApiService {
       throw Exception(body['error'] ?? 'Kullanım bilgisi alınamadı.');
     }
     return body;
+  }
+
+  /// Bir konunun topluluk notlarının Türkçe çevirisi (not sırasıyla; çevrilemeyen null).
+  Future<List<String?>> translateNotes(
+    String mediaType,
+    int tmdbId,
+    int topicId,
+  ) async {
+    final body = await _cachedJsonMap(
+      key: 'movie_guide_tr_${mediaType}_${tmdbId}_$topicId',
+      ttl: _translationCacheTtl,
+      fetcher: () async {
+        final response = await http
+            .get(
+              Uri.parse(
+                '${AppConfig.apiBaseUrl}/api/movies/parents-guide/$mediaType/$tmdbId/translate?topic=$topicId',
+              ),
+            )
+            .timeout(const Duration(seconds: 40));
+        final decoded = jsonDecode(response.body) as Map<String, dynamic>;
+        if (response.statusCode != 200) {
+          throw Exception(decoded['error'] ?? 'Çeviri alınamadı.');
+        }
+        final list = (decoded['translations'] as List? ?? const []);
+        // Hiçbiri çevrilemediyse önbelleğe yazma; sonra tekrar denenebilsin.
+        if (list.isNotEmpty && list.every((e) => e == null)) {
+          throw Exception('Çeviri şu an kullanılamıyor.');
+        }
+        return decoded;
+      },
+    );
+    return (body['translations'] as List? ?? const [])
+        .map((e) => e as String?)
+        .toList();
   }
 
   Future<List<TmdbSearchItem>> search(String query) async {

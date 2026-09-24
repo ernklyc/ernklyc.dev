@@ -68,3 +68,5 @@ Android emülatör yerel geliştirmede `10.0.2.2:4173`, iOS simülatör `127.0.0
 - DoesTheDogDie'de IMDb'deki gibi hafif/orta/şiddetli derecesi yoktur; sadece "var mı" evet/hayır oyları ve yorumlar vardır. Bu yüzden derece uydurulmaz, kategori başına "Var / Bildirilmedi / Yeterli oy yok" gösterilir. Bir konu için en az 3 evet ve %60 evet oranı aranır.
 - Kotayı korumak için sonuç sunucuda ve CDN'de 30 gün (bulunamayanlar 7 gün) önbelleğe alınır; örnek başına saatte en fazla 60 yeni sorgu yapılır.
 - Anahtar yalnızca sunucuda (`DDD_API_KEY`, Vercel env) durur; mobil/tarayıcı paketine girmez.
+- Notların Türkçesi: kullanıcı bir konuya dokununca `/api/movies/parents-guide/{type}/{id}/translate?topic={id}` yalnızca o konunun gerçek notlarını MyMemory ile çevirir (ücretsiz, anahtarsız; anonim ~5.000 karakter/gün). Sonuçlar 30 gün önbelleğe alınır, günlük bütçe dolarsa çeviri sessizce kapanır ve orijinal not görünmeye devam eder. `MYMEMORY_EMAIL` tanımlanırsa limit yükselir.
+- Kota göstergesi: `/api/movies/usage` (yalnızca sahip). DoesTheDogDie istekleri Firestore'daki `apiUsage/{YYYY-MM}` sayacında tutulur. TMDB'nin aylık kotası yoktur.

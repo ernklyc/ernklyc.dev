@@ -389,7 +389,12 @@ class _DetailBody extends StatelessWidget {
                       .toList(),
                 ),
               const SizedBox(height: 22),
-              _GuidePanel(guide: guide, onLoad: onLoadGuide),
+              _GuidePanel(
+                guide: guide,
+                onLoad: onLoadGuide,
+                mediaType: item.mediaType.name,
+                tmdbId: item.tmdbId,
+              ),
               if (onLoadEpisodes != null) ...[
                 const SizedBox(height: 22),
                 _EpisodesPanel(episodes: episodes, onLoad: onLoadEpisodes!),
@@ -534,9 +539,16 @@ class _FactTile extends StatelessWidget {
 
 /// Ebeveyn rehberi: DoesTheDogDie topluluk oyları, IMDb kategorileriyle gruplu.
 class _GuidePanel extends StatelessWidget {
-  const _GuidePanel({required this.guide, required this.onLoad});
+  const _GuidePanel({
+    required this.guide,
+    required this.onLoad,
+    required this.mediaType,
+    required this.tmdbId,
+  });
   final Future<Map<String, dynamic>>? guide;
   final VoidCallback onLoad;
+  final String mediaType;
+  final int tmdbId;
 
   @override
   Widget build(BuildContext context) => _Panel(
@@ -591,7 +603,11 @@ class _GuidePanel extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   for (final category in _maps(data['categories']))
-                    _GuideCategory(category: category),
+                    _GuideCategory(
+                      category: category,
+                      mediaType: mediaType,
+                      tmdbId: tmdbId,
+                    ),
                   const SizedBox(height: 4),
                   InkWell(
                     onTap: () => _open(source['url'].toString()),
@@ -628,8 +644,14 @@ class _GuideLoading extends StatelessWidget {
 }
 
 class _GuideCategory extends StatelessWidget {
-  const _GuideCategory({required this.category});
+  const _GuideCategory({
+    required this.category,
+    required this.mediaType,
+    required this.tmdbId,
+  });
   final Map<String, dynamic> category;
+  final String mediaType;
+  final int tmdbId;
 
   @override
   Widget build(BuildContext context) {
@@ -686,7 +708,12 @@ class _GuideCategory extends StatelessWidget {
                 title: title,
                 trailing: chip,
                 children: [
-                  for (final topic in topics) _GuideTopic(topic: topic),
+                  for (final topic in topics)
+                    _GuideTopic(
+                      topic: topic,
+                      mediaType: mediaType,
+                      tmdbId: tmdbId,
+                    ),
                 ],
               ),
       ),
@@ -704,12 +731,27 @@ final _guideBox = BoxDecoration(
   border: Border.all(color: Colors.white10),
 );
 
-class _GuideTopic extends StatelessWidget {
-  const _GuideTopic({required this.topic});
+class _GuideTopic extends StatefulWidget {
+  const _GuideTopic({
+    required this.topic,
+    required this.mediaType,
+    required this.tmdbId,
+  });
   final Map<String, dynamic> topic;
+  final String mediaType;
+  final int tmdbId;
+
+  @override
+  State<_GuideTopic> createState() => _GuideTopicState();
+}
+
+class _GuideTopicState extends State<_GuideTopic> {
+  final api = MovieApiService();
+  Future<List<String?>>? translations;
 
   @override
   Widget build(BuildContext context) {
+    final topic = widget.topic;
     final notes = _maps(topic['notes']);
     final votes = Text(
       '${topic['yes']} evet · ${topic['no']} hayır',
@@ -745,6 +787,17 @@ class _GuideTopic extends StatelessWidget {
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
+        onExpansionChanged: (open) {
+          if (open && translations == null) {
+            setState(() {
+              translations = api.translateNotes(
+                widget.mediaType,
+                widget.tmdbId,
+                (topic['id'] as num).toInt(),
+              );
+            });
+          }
+        },
         tilePadding: const EdgeInsets.symmetric(horizontal: 8),
         childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
         title: label,
@@ -756,18 +809,58 @@ class _GuideTopic extends StatelessWidget {
         expandedAlignment: Alignment.centerLeft,
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (final note in notes)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                '“${note['text']}”',
-                style: const TextStyle(
-                  fontSize: 12,
-                  height: 1.5,
-                  color: Colors.white54,
-                ),
-              ),
-            ),
+          FutureBuilder<List<String?>>(
+            future: translations,
+            builder: (context, snapshot) {
+              final tr = snapshot.data ?? const <String?>[];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (var i = 0; i < notes.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              '“${notes[i]['text']}”',
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                height: 1.5,
+                                color: Colors.white54,
+                              ),
+                            ),
+                          ),
+                          if (i < tr.length && tr[i] != null) ...[
+                            const SizedBox(height: 4),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'TR  ${tr[i]}',
+                                textAlign: TextAlign.left,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  height: 1.5,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  if (tr.any((e) => e != null))
+                    const Text(
+                      'Otomatik çeviri (MyMemory) — hatalı olabilir.',
+                      style: TextStyle(fontSize: 10, color: Colors.white24),
+                    ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
