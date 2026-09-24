@@ -1,3 +1,4 @@
+import bakedEpisodeRatings from "@/features/movies/generated/episode-ratings.json";
 import { createGunzip } from "node:zlib";
 import { Readable } from "node:stream";
 import { createInterface } from "node:readline";
@@ -93,8 +94,34 @@ export async function getImdbRating(imdbId: string | null | undefined) {
   return (await getImdbRatings([imdbId])).get(imdbId) ?? null;
 }
 
+/**
+ * Build sırasında (scripts/bake-episode-ratings.mjs) arşivdeki diziler için önceden hesaplanmış
+ * puanlar. IMDb veri setleri her istekte ~64 MB indirildiği için canlı hesap ~20 sn sürer; gömülü
+ * veri anında döner. Eski veri yanıltmasın diye 21 günden eskiyse kullanılmaz.
+ */
+const BAKED_MAX_AGE_MS = 21 * 24 * 60 * 60 * 1000;
+
+function getBakedEpisodeRatings(seriesImdbId: string): ImdbEpisodeRating[] | null {
+  const baked = bakedEpisodeRatings as unknown as {
+    generatedAt: string | null;
+    shows: Record<string, [number, number, string, number, number][]>;
+  };
+  if (!baked.generatedAt || Date.now() - Date.parse(baked.generatedAt) > BAKED_MAX_AGE_MS) return null;
+  const rows = baked.shows[seriesImdbId];
+  if (!rows?.length) return null;
+  return rows.map(([seasonNumber, episodeNumber, imdbId, averageRating, numVotes]) => ({
+    imdbId,
+    seasonNumber,
+    episodeNumber,
+    averageRating,
+    numVotes,
+  }));
+}
+
 export async function getImdbEpisodeRatings(seriesImdbId: string) {
   if (!isImdbTitleId(seriesImdbId)) return [];
+  const baked = getBakedEpisodeRatings(seriesImdbId);
+  if (baked) return baked;
   const cached = episodeCache.get(seriesImdbId);
   if (cached && cached.expiresAt > Date.now()) return cached.value;
 
