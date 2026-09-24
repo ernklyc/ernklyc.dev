@@ -24,6 +24,7 @@ function getNavigation(pathname: string) {
   if (pathname === "/admin/posts/new") return { title: "Yeni Yazı", backHref: "/admin" };
   if (pathname.match(/^\/admin\/posts\/.*\/edit$/)) return { title: "Yazıyı Düzenle", backHref: "/admin" };
   if (pathname === "/admin/content") return { title: "Site İçeriği", backHref: "/admin" };
+  if (pathname === "/admin/movies") return { title: "Film Arşivi", backHref: "/admin" };
   const contentMatch = pathname.match(/^\/admin\/content\/([^/]+)/);
   if (contentMatch) {
     return {

@@ -45,9 +45,17 @@ export default function AdminDashboardPage() {
 
       <Link
         href="/admin/content"
-        className="mb-8 flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-300"
+        className="mb-3 flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-300"
       >
         <span>Site içeriğini düzenle (Hero, Hakkımda, Yeteneklerim, Deneyim)</span>
+        <span aria-hidden="true">→</span>
+      </Link>
+
+      <Link
+        href="/admin/movies"
+        className="mb-8 flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-white/20 px-4 py-3 text-sm text-gray-300 hover:text-white transition-all duration-300"
+      >
+        <span>Film arşivini yönet (film / dizi ekle, IMDb CSV içe aktar)</span>
         <span aria-hidden="true">→</span>
       </Link>
 

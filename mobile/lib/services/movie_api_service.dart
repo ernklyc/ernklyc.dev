@@ -41,10 +41,24 @@ class MovieApiService {
       key: 'movie_episodes_$tmdbId',
       ttl: _episodeCacheTtl,
       fetcher: () async {
-        final response = await http.get(
-          Uri.parse('${AppConfig.apiBaseUrl}/api/movies/tv/$tmdbId/episodes'),
-        );
-        final body = jsonDecode(response.body) as Map<String, dynamic>;
+        final response = await http
+            .get(
+              Uri.parse(
+                '${AppConfig.apiBaseUrl}/api/movies/tv/$tmdbId/episodes',
+              ),
+            )
+            .timeout(
+              const Duration(seconds: 90),
+              onTimeout: () => throw Exception(
+                'Bölüm puanları zamanında gelmedi. Tekrar dene.',
+              ),
+            );
+        Map<String, dynamic> body;
+        try {
+          body = jsonDecode(response.body) as Map<String, dynamic>;
+        } catch (_) {
+          throw Exception('Bölüm puanları alınamadı (${response.statusCode}).');
+        }
         if (response.statusCode != 200) {
           throw Exception(body['error'] ?? 'Bölüm puanları alınamadı.');
         }

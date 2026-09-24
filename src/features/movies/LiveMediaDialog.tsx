@@ -135,8 +135,8 @@ export default function LiveMediaDialog({
   const [mounted, setMounted] = useState(false);
   const [details, setDetails] = useState<LiveDetails | null>(null);
   const [episodes, setEpisodes] = useState<EpisodeRating[] | null>(null);
-  const [episodesRequested, setEpisodesRequested] = useState(false);
   const [episodesLoading, setEpisodesLoading] = useState(false);
+  const [episodesError, setEpisodesError] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => setMounted(true), []);
@@ -147,8 +147,8 @@ export default function LiveMediaDialog({
     const cachedDetails = readTimedCache<LiveDetails>(cacheKey, DETAIL_CACHE_TTL_MS);
     setDetails(cachedDetails);
     setEpisodes(null);
-    setEpisodesRequested(false);
     setEpisodesLoading(false);
+    setEpisodesError("");
     setError("");
 
     fetch(`/api/movies/${item.mediaType}/${item.id}`, { signal: controller.signal })
@@ -167,27 +167,24 @@ export default function LiveMediaDialog({
   }, [item.id, item.mediaType]);
 
   function loadEpisodes() {
-    if (item.mediaType !== "tv" || episodesRequested) return;
+    if (item.mediaType !== "tv" || episodesLoading) return;
+    setEpisodesError("");
     const cacheKey = episodeCacheKey(item.id);
     const cachedEpisodes = readTimedCache<EpisodeRating[]>(cacheKey, EPISODE_CACHE_TTL_MS);
     if (cachedEpisodes) {
-      setEpisodesRequested(true);
       setEpisodes(cachedEpisodes);
       return;
     }
-    const controller = new AbortController();
-    setEpisodesRequested(true);
     setEpisodesLoading(true);
-    fetch(`/api/movies/tv/${item.id}/episodes`, { signal: controller.signal })
+    fetch(`/api/movies/tv/${item.id}/episodes`)
       .then(async (response) => {
-        const body = (await response.json()) as { episodes?: EpisodeRating[] };
-        if (response.ok) {
-          const nextEpisodes = body.episodes ?? [];
-          writeTimedCache(cacheKey, nextEpisodes);
-          setEpisodes(nextEpisodes);
-        }
+        const body = (await response.json().catch(() => ({}))) as { episodes?: EpisodeRating[]; error?: string };
+        if (!response.ok) throw new Error(body.error ?? "IMDb bölüm puanları alınamadı.");
+        const nextEpisodes = body.episodes ?? [];
+        writeTimedCache(cacheKey, nextEpisodes);
+        setEpisodes(nextEpisodes);
       })
-      .catch(() => setEpisodes([]))
+      .catch((requestError: Error) => setEpisodesError(requestError.message || "IMDb bölüm puanları alınamadı."))
       .finally(() => setEpisodesLoading(false));
   }
 
@@ -243,7 +240,7 @@ export default function LiveMediaDialog({
           </div>
         )}
 
-        {details && <DetailContent item={item} details={details} episodes={episodes} episodesLoading={episodesLoading} onLoadEpisodes={loadEpisodes} onFavorite={onFavorite} />}
+        {details && <DetailContent item={item} details={details} episodes={episodes} episodesLoading={episodesLoading} episodesError={episodesError} onLoadEpisodes={loadEpisodes} onFavorite={onFavorite} />}
       </div>
     </div>,
     document.body,
@@ -292,6 +289,7 @@ function DetailContent({
   details,
   episodes,
   episodesLoading,
+  episodesError,
   onLoadEpisodes,
   onFavorite,
 }: {
@@ -299,6 +297,7 @@ function DetailContent({
   details: LiveDetails;
   episodes: EpisodeRating[] | null;
   episodesLoading: boolean;
+  episodesError: string;
   onLoadEpisodes: () => void;
   onFavorite?: (item: MediaDetailTarget) => void;
 }) {
@@ -458,7 +457,7 @@ function DetailContent({
         </Section>
 
         {item.mediaType === "tv" && (
-          <EpisodeHeatmap episodes={episodes} loading={episodesLoading} onLoad={onLoadEpisodes} />
+          <EpisodeHeatmap episodes={episodes} loading={episodesLoading} error={episodesError} onLoad={onLoadEpisodes} />
         )}
 
         <CollapsibleSection title="Detay arşivi" subtitle="Ekip, teknik bilgiler, görseller ve dış bağlantılar">
@@ -557,13 +556,14 @@ function DetailContent({
   );
 }
 
-function EpisodeHeatmap({ episodes, loading, onLoad }: { episodes: EpisodeRating[] | null; loading: boolean; onLoad: () => void }) {
+function EpisodeHeatmap({ episodes, loading, error, onLoad }: { episodes: EpisodeRating[] | null; loading: boolean; error: string; onLoad: () => void }) {
   if (episodes === null) {
     return <Section title="Bölüm puanları" subtitle="IMDb bölüm puanlarını yalnızca istersen yükleriz">
       <button type="button" onClick={onLoad} disabled={loading} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-white/70 hover:bg-white/[0.08] disabled:opacity-60">
         {loading ? <FiLoader className="animate-spin" /> : null}
-        {loading ? "Bölüm puanları yükleniyor…" : "Bölüm puanlarını yükle"}
+        {loading ? "Bölüm puanları yükleniyor…" : error ? "Tekrar dene" : "Bölüm puanlarını yükle"}
       </button>
+      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
     </Section>;
   }
   if (!episodes.length) return null;
