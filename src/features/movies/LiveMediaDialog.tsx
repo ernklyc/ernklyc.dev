@@ -119,7 +119,7 @@ type EpisodeRating = {
 };
 
 const DETAIL_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
-const EPISODE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const EPISODE_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
 const imageUrl = (path: string | null | undefined, size = "w500") =>
   path ? `https://image.tmdb.org/t/p/${size}${path}` : null;

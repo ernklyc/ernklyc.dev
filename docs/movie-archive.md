@@ -70,3 +70,11 @@ Android emülatör yerel geliştirmede `10.0.2.2:4173`, iOS simülatör `127.0.0
 - Anahtar yalnızca sunucuda (`DDD_API_KEY`, Vercel env) durur; mobil/tarayıcı paketine girmez.
 - Notların Türkçesi: kullanıcı bir konuya dokununca `/api/movies/parents-guide/{type}/{id}/translate?topic={id}` yalnızca o konunun gerçek notlarını MyMemory ile çevirir (ücretsiz, anahtarsız; anonim ~5.000 karakter/gün). Sonuçlar 30 gün önbelleğe alınır, günlük bütçe dolarsa çeviri sessizce kapanır ve orijinal not görünmeye devam eder. `MYMEMORY_EMAIL` tanımlanırsa limit yükselir.
 - Kota göstergesi: `/api/movies/usage` (yalnızca sahip). DoesTheDogDie istekleri Firestore'daki `apiUsage/{YYYY-MM}` sayacında tutulur. TMDB'nin aylık kotası yoktur.
+
+## Bölüm puanları: hız ve tazelik
+
+- Arşivdeki diziler build'de (`scripts/bake-episode-ratings.mjs`, `prebuild`) tek geçişte hesaplanıp `src/features/movies/generated/episode-ratings.json` içine gömülür; API bu veriyi anında döner.
+- Arşivde olmayan diziler canlı hesaplanır: episode (55 MB) ve puan (9 MB) dosyaları PARALEL indirilir, kısa pencerede (1,2 sn) gelen farklı diziler TEK geçişte birleştirilir, aynı diziye gelen eşzamanlı istekler tek hesabı paylaşır. İndirme hatalarında/zaman aşımında (25 sn) 2 kez denenir; başarısız olursa `502` döner ve istemcide "Tekrar dene" çıkar. Akış hataları yakalanmamış istisna olmaz (`pipeline`), süreç düşmez.
+- Bayat veri göstermemek için tazelik dizinin TMDB durumuna bağlıdır: yayındaki dizide gömülü veri en fazla 2 gün, bellek önbelleği ve HTTP `s-maxage` 6 saat; biten/iptal edilmiş dizide 30 gün / 7 gün / 3 gün. `stale-while-revalidate` kullanılmaz; istemci önbelleği 6 saat.
+- Yayındaki dizilerin gömülü verisi 2 günden eskiyse canlı hesaba düşülür (yavaş ama taze). Sürekli hızlı + taze için günlük yeniden deploy (Vercel Deploy Hook) önerilir.
+- Test için `IMDB_DATASET_TIMEOUT_MS` ile zaman aşımı kısaltılabilir.

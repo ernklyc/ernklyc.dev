@@ -13,7 +13,7 @@ class ImportMatch {
 
 class MovieApiService {
   static const _detailCacheTtl = Duration(hours: 12);
-  static const _episodeCacheTtl = Duration(hours: 24);
+  static const _episodeCacheTtl = Duration(hours: 6);
   static const _ratingsCacheTtl = Duration(hours: 24);
   static const _searchCacheTtl = Duration(minutes: 15);
   static const _ratingsBatchSize = 100;

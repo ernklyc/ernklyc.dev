@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getImdbEpisodeRatings } from "@/features/movies/server/imdb";
-import { getExternalImdbId, TmdbConfigurationError } from "@/features/movies/server/tmdb";
+import { episodeFreshness, getImdbEpisodeRatings } from "@/features/movies/server/imdb";
+import { getTvIdentity, TmdbConfigurationError } from "@/features/movies/server/tmdb";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -14,13 +14,15 @@ export async function GET(_request: Request, context: RouteContext) {
   }
 
   try {
-    const imdbId = await getExternalImdbId("tv", tmdbId);
+    const { imdbId, airing } = await getTvIdentity(tmdbId);
     if (!imdbId) return NextResponse.json({ imdbId: null, episodes: [] });
 
-    const episodes = await getImdbEpisodeRatings(imdbId);
+    const freshness = episodeFreshness(airing);
+    const episodes = await getImdbEpisodeRatings(imdbId, freshness);
+    // stale-while-revalidate YOK: süre dolunca bayat veri değil, taze veri sunulur.
     return NextResponse.json(
-      { imdbId, episodes, fetchedAt: new Date().toISOString() },
-      { headers: { "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=604800" } },
+      { imdbId, airing, episodes, fetchedAt: new Date().toISOString() },
+      { headers: { "Cache-Control": `public, s-maxage=${freshness.httpMaxAgeSec}` } },
     );
   } catch (error) {
     if (error instanceof TmdbConfigurationError) {

@@ -169,3 +169,12 @@ export async function getSearchTitles(mediaType: TmdbMediaType, tmdbId: number) 
   const year = Number((data.release_date ?? data.first_air_date ?? "").slice(0, 4));
   return { titles: [...new Set(names)], year: Number.isSafeInteger(year) ? year : null };
 }
+
+/** Dizinin IMDb ID'si ve yayın durumu: yayındaki dizide veri hızlı bayatladığı için tazelik kuralı buna bağlıdır. */
+export async function getTvIdentity(tmdbId: number) {
+  const data = await tmdbFetch<{ status?: string; external_ids?: { imdb_id?: string | null } }>(`/tv/${tmdbId}`, {
+    append_to_response: "external_ids",
+  });
+  const airing = data.status !== "Ended" && data.status !== "Canceled";
+  return { imdbId: data.external_ids?.imdb_id ?? null, airing };
+}
