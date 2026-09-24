@@ -91,6 +91,16 @@ class _SearchSheetState extends State<SearchSheet> {
           ),
         );
       }
+    } catch (exception) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Eklenemedi: ${exception.toString().replaceFirst('Exception: ', '')}',
+            ),
+          ),
+        );
+      }
     } finally {
       if (mounted) setState(() => busyId = null);
     }

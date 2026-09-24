@@ -46,13 +46,16 @@ service cloud.firestore {
         && request.resource.data.isPublic is bool
         && request.resource.data.snapshot is map
         && request.resource.data.snapshot.keys().hasOnly([
-          "title", "originalTitle", "year", "posterPath", "genres"
+          "title", "originalTitle", "year", "posterPath", "genres",
+          "imdbRating", "imdbVotes"
         ])
         && request.resource.data.snapshot.title is string
         && request.resource.data.snapshot.originalTitle is string
         && (request.resource.data.snapshot.year == null || request.resource.data.snapshot.year is int)
         && (request.resource.data.snapshot.posterPath == null || request.resource.data.snapshot.posterPath is string)
-        && request.resource.data.snapshot.genres is list;
+        && request.resource.data.snapshot.genres is list
+        && (!("imdbRating" in request.resource.data.snapshot) || request.resource.data.snapshot.imdbRating == null || request.resource.data.snapshot.imdbRating is number)
+        && (!("imdbVotes" in request.resource.data.snapshot) || request.resource.data.snapshot.imdbVotes == null || request.resource.data.snapshot.imdbVotes is number);
     }
 
     match /users/{uid}/library/{mediaId} {
