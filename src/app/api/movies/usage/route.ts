@@ -20,7 +20,7 @@ export async function GET(request: Request) {
           used,
           limit: DDD_MONTHLY_LIMIT,
           remaining: Math.max(0, DDD_MONTHLY_LIMIT - used),
-          note: "Yalnızca bu uygulamanın sunucusunun yaptığı istekler sayılır.",
+          note: "Yalnızca bu uygulamanın sunucusunun yaptığı istekler sayılır; önbellekten dönenler de sayılabildiği için gerçek kullanım bundan düşük olabilir.",
         },
       },
       { headers: { "Cache-Control": "private, no-store" } },

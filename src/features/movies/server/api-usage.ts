@@ -24,7 +24,7 @@ function documentPath(month: string) {
 export async function recordDddRequest() {
   if (!projectId() || !apiKey()) return;
   try {
-    await fetch(
+    const response = await fetch(
       `https://firestore.googleapis.com/v1/projects/${projectId()}/databases/(default)/documents:commit?key=${apiKey()}`,
       {
         method: "POST",
@@ -43,6 +43,7 @@ export async function recordDddRequest() {
         signal: AbortSignal.timeout(4000),
       },
     );
+    if (!response.ok) console.warn(`DoesTheDogDie kullanım sayacı yazılamadı (${response.status}).`);
   } catch (error) {
     console.warn("DoesTheDogDie kullanım sayacı güncellenemedi", error);
   }
