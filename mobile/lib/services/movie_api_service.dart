@@ -48,6 +48,7 @@ class MovieApiService {
               Uri.parse(
                 '${AppConfig.apiBaseUrl}/api/movies/tv/$tmdbId/episodes',
               ),
+              headers: await _optionalAuthHeaders(),
             )
             .timeout(
               const Duration(seconds: 90),
@@ -83,6 +84,7 @@ class MovieApiService {
               Uri.parse(
                 '${AppConfig.apiBaseUrl}/api/movies/parents-guide/$mediaType/$tmdbId',
               ),
+              headers: await _optionalAuthHeaders(),
             )
             .timeout(
               const Duration(seconds: 60),
@@ -141,6 +143,7 @@ class MovieApiService {
               Uri.parse(
                 '${AppConfig.apiBaseUrl}/api/movies/parents-guide/$mediaType/$tmdbId/translate?topic=$topicId',
               ),
+              headers: await _optionalAuthHeaders(),
             )
             .timeout(const Duration(seconds: 40));
         final decoded = jsonDecode(response.body) as Map<String, dynamic>;
@@ -239,6 +242,16 @@ class MovieApiService {
             : TmdbSearchItem.fromJson(media as Map<String, dynamic>),
       );
     }).toList();
+  }
+
+  /// Oturum varsa token gönderir (arşiv dışı yapımların önizlemesi için); yoksa boş başlık.
+  Future<Map<String, String>> _optionalAuthHeaders() async {
+    try {
+      final token = await FirebaseAuth.instance.currentUser?.getIdToken();
+      return token == null ? const {} : {'authorization': 'Bearer $token'};
+    } catch (_) {
+      return const {};
+    }
   }
 
   Future<Map<String, String>> _authHeaders() async {

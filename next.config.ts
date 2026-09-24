@@ -23,6 +23,30 @@ const nextConfig: NextConfig = {
     },
   },
   
+  // Güvenlik başlıkları. CSP'de bilerek yalnızca güvenli direktifler var (frame-ancestors: clickjacking,
+  // object-src/base-uri/form-action): Firebase Auth popup'ı, reCAPTCHA ve YouTube gömmelerini bozmamak için
+  // script-src kısıtlanmadı.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()",
+          },
+          {
+            key: "Content-Security-Policy",
+            value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'",
+          },
+        ],
+      },
+    ];
+  },
+
   // Caching and loading optimizations
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,

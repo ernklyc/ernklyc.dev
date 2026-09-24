@@ -51,13 +51,13 @@ export type ParentsGuide =
 
 type DddSearchItem = { id: number; name: string; tmdbid: number | null; ItemTypeId: number };
 type DddComment = { comment?: string; voteSum?: number };
-type DddTopicStat = {
+export type DddTopicStat = {
   yesSum: number;
   noSum: number;
   comments?: DddComment[];
   topic: { id: number; name: string; isSpoiler?: boolean; TopicCategoryId: number };
 };
-type DddMedia = {
+export type DddMedia = {
   item: { id: number; numRatings: number };
   topicItemStats: DddTopicStat[];
 };
@@ -251,7 +251,7 @@ const FEAR_EXCLUDED_TOPICS = new Set([
 ]);
 const SPOILER_CATEGORY_ID = 13;
 
-function categoryOf(topic: DddTopicStat["topic"]): GuideCategoryId | null {
+export function categoryOf(topic: DddTopicStat["topic"]): GuideCategoryId | null {
   if (topic.isSpoiler || topic.TopicCategoryId === SPOILER_CATEGORY_ID) return null;
   const name = topic.name.toLowerCase();
   if (SEX_TOPICS.has(name)) return "sex";
@@ -265,7 +265,7 @@ function categoryOf(topic: DddTopicStat["topic"]): GuideCategoryId | null {
 }
 
 /** Topluluk "evet" diyorsa konuyu doğrulanmış sayarız: en az 3 evet ve evet oranı ≥ %60. */
-function isConfirmed(stat: DddTopicStat) {
+export function isConfirmed(stat: DddTopicStat) {
   const total = stat.yesSum + stat.noSum;
   return stat.yesSum >= 3 && total > 0 && stat.yesSum / total >= 0.6;
 }
@@ -284,7 +284,7 @@ function cleanNotes(comments: DddComment[] | undefined) {
     }));
 }
 
-function buildGuide(media: DddMedia): ParentsGuide {
+export function buildGuide(media: DddMedia): ParentsGuide {
   const totalVotes = media.topicItemStats.reduce((sum, stat) => sum + stat.yesSum + stat.noSum, 0);
   const enoughData = media.item.numRatings >= MIN_TOTAL_VOTES && totalVotes >= MIN_TOTAL_VOTES * 3;
   const grouped = new Map<GuideCategoryId, GuideTopic[]>();

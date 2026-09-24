@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { checkMediaAccess } from "@/features/movies/server/archive-access";
 import { getParentsGuide, ParentsGuideConfigurationError, ParentsGuideRateLimitError } from "@/features/movies/server/parents-guide";
 import { TmdbConfigurationError, type TmdbMediaType } from "@/features/movies/server/tmdb";
 import { translateToTurkish } from "@/features/movies/server/translate";
@@ -24,6 +25,9 @@ export async function GET(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Geçersiz istek." }, { status: 400 });
   }
 
+  const access = await checkMediaAccess(request, mediaType as TmdbMediaType, numericTmdbId);
+  if (!access.allowed) return access.response;
+
   try {
     const guide = await getParentsGuide(mediaType as TmdbMediaType, numericTmdbId);
     // Yalnızca rehberdeki gerçek notlar çevrilir; keyfi metin çevirtilemez (kota koruması).
@@ -38,7 +42,15 @@ export async function GET(request: Request, context: RouteContext) {
     const complete = translations.every((value) => value !== null);
     return NextResponse.json(
       { translations },
-      { headers: { "Cache-Control": complete ? "public, s-maxage=2592000, stale-while-revalidate=2592000" : "no-store" } },
+      {
+        headers: {
+          "Cache-Control": !complete
+            ? "no-store"
+            : access.publicArchive
+              ? "public, s-maxage=2592000, stale-while-revalidate=2592000"
+              : "private, max-age=3600",
+        },
+      },
     );
   } catch (error) {
     if (error instanceof ParentsGuideConfigurationError || error instanceof TmdbConfigurationError) {

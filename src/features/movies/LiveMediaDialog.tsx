@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { FiExternalLink, FiHeart, FiLoader, FiPlay, FiTrash2, FiX } from "react-icons/fi";
 import type { MediaType } from "./models";
+import { auth } from "@/lib/firebase";
 import type { GuideCategory, ParentsGuide } from "@/features/movies/server/parents-guide";
 
 export type MediaDetailTarget = {
@@ -179,7 +180,8 @@ export default function LiveMediaDialog({
       return;
     }
     setEpisodesLoading(true);
-    fetch(`/api/movies/tv/${item.id}/episodes`)
+    optionalAuthHeaders()
+      .then((headers) => fetch(`/api/movies/tv/${item.id}/episodes`, { headers }))
       .then(async (response) => {
         const body = (await response.json().catch(() => ({}))) as { episodes?: EpisodeRating[]; error?: string };
         if (!response.ok) throw new Error(body.error ?? "IMDb bölüm puanları alınamadı.");
@@ -598,7 +600,8 @@ function ParentsGuideSection({ mediaType, id }: { mediaType: MediaType; id: numb
     }
     setError("");
     setLoading(true);
-    fetch(`/api/movies/parents-guide/${mediaType}/${id}`)
+    optionalAuthHeaders()
+      .then((headers) => fetch(`/api/movies/parents-guide/${mediaType}/${id}`, { headers }))
       .then(async (response) => {
         const body = (await response.json().catch(() => ({}))) as ParentsGuide & { error?: string };
         if (!response.ok) throw new Error(body.error ?? "Ebeveyn rehberi alınamadı.");
@@ -646,7 +649,8 @@ function GuideTopicNotes({ topic, mediaType, id }: { topic: GuideCategory["topic
   function load() {
     if (requested) return;
     setRequested(true);
-    fetch(`/api/movies/parents-guide/${mediaType}/${id}/translate?topic=${topic.id}`)
+    optionalAuthHeaders()
+      .then((headers) => fetch(`/api/movies/parents-guide/${mediaType}/${id}/translate?topic=${topic.id}`, { headers }))
       .then(async (response) => {
         if (!response.ok) throw new Error("çeviri alınamadı");
         const body = (await response.json()) as { translations?: (string | null)[] };
@@ -902,5 +906,15 @@ function writeTimedCache<T>(key: string, value: T) {
     window.localStorage.setItem(key, JSON.stringify({ cachedAt: Date.now(), value }));
   } catch {
     // Storage can be full/blocked; live data still renders.
+  }
+}
+
+/** Oturum varsa Bearer token gönderir (arşiv dışı yapımlar için sahibin önizlemesi). */
+async function optionalAuthHeaders(): Promise<HeadersInit> {
+  try {
+    const token = await auth.currentUser?.getIdToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  } catch {
+    return {};
   }
 }

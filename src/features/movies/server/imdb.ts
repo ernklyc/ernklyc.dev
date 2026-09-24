@@ -38,7 +38,7 @@ function isImdbTitleId(value: string) {
  * (zaman aşımı, ağ kopması) `pipeline` ile gunzip'e iletilir ve `for await` içinde fırlatılır; böylece
  * yakalanmamış istisna olup süreci düşürmez. Erken çıkışta akışlar temizlenir.
  */
-async function scanGzipLines(url: string, visit: (line: string) => boolean | void) {
+export async function scanGzipLines(url: string, visit: (line: string) => boolean | void) {
   const response = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(DATASET_TIMEOUT_MS) });
   if (!response.ok || !response.body) {
     throw new Error(`IMDb veri seti alınamadı (${response.status}).`);
