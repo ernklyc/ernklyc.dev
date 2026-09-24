@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { FiExternalLink, FiHeart, FiLoader, FiPlay, FiX } from "react-icons/fi";
+import { FiExternalLink, FiHeart, FiLoader, FiPlay, FiTrash2, FiX } from "react-icons/fi";
 import type { MediaType } from "./models";
 import type { GuideCategory, ParentsGuide } from "@/features/movies/server/parents-guide";
 
@@ -128,10 +128,12 @@ export default function LiveMediaDialog({
   item,
   onClose,
   onFavorite,
+  onRemove,
 }: {
   item: MediaDetailTarget;
   onClose: () => void;
   onFavorite?: (item: MediaDetailTarget) => void;
+  onRemove?: (item: MediaDetailTarget) => void | Promise<void>;
 }) {
   const [mounted, setMounted] = useState(false);
   const [details, setDetails] = useState<LiveDetails | null>(null);
@@ -241,7 +243,7 @@ export default function LiveMediaDialog({
           </div>
         )}
 
-        {details && <DetailContent item={item} details={details} episodes={episodes} episodesLoading={episodesLoading} episodesError={episodesError} onLoadEpisodes={loadEpisodes} onFavorite={onFavorite} />}
+        {details && <DetailContent item={item} details={details} episodes={episodes} episodesLoading={episodesLoading} episodesError={episodesError} onLoadEpisodes={loadEpisodes} onFavorite={onFavorite} onRemove={onRemove} />}
       </div>
     </div>,
     document.body,
@@ -293,6 +295,7 @@ function DetailContent({
   episodesError,
   onLoadEpisodes,
   onFavorite,
+  onRemove,
 }: {
   item: MediaDetailTarget;
   details: LiveDetails;
@@ -301,6 +304,7 @@ function DetailContent({
   episodesError: string;
   onLoadEpisodes: () => void;
   onFavorite?: (item: MediaDetailTarget) => void;
+  onRemove?: (item: MediaDetailTarget) => void | Promise<void>;
 }) {
   const metadata = details.metadata;
   const title = metadata.title ?? metadata.name ?? item.title;
@@ -395,6 +399,14 @@ function DetailContent({
               >
                 <FiHeart className={item.favorite ? "fill-current" : ""} />
                 {item.favorite ? "Favorilerimde" : "Favoriye ekle"}
+              </button>}
+              {onRemove && <button
+                type="button"
+                onClick={() => { if (window.confirm(`${item.title} arşivden kaldırılsın mı?`)) void onRemove(item); }}
+                className="inline-flex h-11 items-center gap-2 rounded-xl border border-rose-300/25 px-4 text-rose-300 hover:bg-rose-500/15"
+              >
+                <FiTrash2 />
+                Arşivden kaldır
               </button>}
             </div>
           </div>

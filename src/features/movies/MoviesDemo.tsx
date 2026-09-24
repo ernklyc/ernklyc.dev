@@ -166,7 +166,7 @@ export default function MoviesDemo() {
         </>
         : <EmptyState title={isOwner ? "Arşivin henüz boş" : "Henüz yapım yok"} description={isOwner ? "TMDB’de arayıp izlediğin ilk filmi veya diziyi ekle." : "Eren arşive yapım eklediğinde burada görünecek."} />}
 
-      {selectedItem && <LiveMediaDialog item={libraryToDetailTarget(selectedItem)} onClose={() => setSelectedId(null)} onFavorite={isOwner ? () => toggleFavorite(selectedItem) : undefined} />}
+      {selectedItem && <LiveMediaDialog item={libraryToDetailTarget(selectedItem)} onClose={() => setSelectedId(null)} onFavorite={isOwner ? () => toggleFavorite(selectedItem) : undefined} onRemove={isOwner ? async () => { await handleRemove(selectedItem); setSelectedId(null); } : undefined} />}
       {searchOpen && user && <SearchDialog uid={user.uid} existingIds={existingIds} onClose={() => setSearchOpen(false)} onNotice={setNotice} />}
     </div>
   );
@@ -226,7 +226,7 @@ const LibraryCard = memo(function LibraryCard({ item, imdbRating, isOwner, onOpe
     {item.snapshot.posterPath ? <Image src={`https://image.tmdb.org/t/p/w342${item.snapshot.posterPath}`} alt={`${item.snapshot.title} posteri`} fill sizes="(max-width:640px) 50vw, 25vw" className="object-cover" /> : <div className="grid h-full place-items-center text-4xl text-white/15"><FiFilm /></div>}<div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20" /><span className="absolute left-3 top-3 rounded-lg border border-white/15 bg-black/55 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/80">{item.mediaType === "movie" ? "Film" : "Dizi"}</span>
     {imdbRating >= 0 && <span className="absolute bottom-3 left-3 rounded-lg bg-[#f5c518] px-2.5 py-1 text-xs font-extrabold text-black">★ {imdbRating.toFixed(1)}</span>}
     <button onClick={(event) => { event.stopPropagation(); onFavorite(item); }} disabled={!isOwner} className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border backdrop-blur-md ${item.favorite ? "border-rose-300/30 bg-rose-500/85 text-white" : "border-white/15 bg-black/45 text-white/70"}`} aria-label="Favori"><FiHeart className={item.favorite ? "fill-current" : ""} /></button>
-    {isOwner && <div className="absolute bottom-3 left-3 right-3 flex justify-end gap-2 opacity-0 transition group-hover:opacity-100"><button onClick={(event) => { event.stopPropagation(); if (window.confirm(`${item.snapshot.title} arşivden kaldırılsın mı?`)) onRemove(item); }} className="grid h-9 w-9 place-items-center rounded-full border border-rose-300/20 bg-black/70 text-rose-300" title="Arşivden kaldır"><FiTrash2 /></button></div>}
+    {isOwner && <div className="absolute bottom-3 right-3 flex justify-end gap-2"><button onClick={(event) => { event.stopPropagation(); if (window.confirm(`${item.snapshot.title} arşivden kaldırılsın mı?`)) onRemove(item); }} className="grid h-9 w-9 place-items-center rounded-full border border-rose-300/30 bg-black/70 text-rose-300 backdrop-blur-md hover:bg-rose-500/30" title="Arşivden kaldır" aria-label="Arşivden kaldır"><FiTrash2 /></button></div>}
   </div><div className="px-1 pt-3"><h3 className="truncate font-medium text-white/90">{item.snapshot.title}</h3><p className="mt-1 flex items-center gap-2 text-xs text-white/35"><span>{item.snapshot.year ?? "—"}</span></p></div></article>;
 });
 
