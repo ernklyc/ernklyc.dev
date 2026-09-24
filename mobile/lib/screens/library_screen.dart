@@ -11,6 +11,7 @@ import '../services/movie_api_service.dart';
 import '../services/share_intent_service.dart';
 import '../widgets/media_card.dart';
 import '../widgets/search_sheet.dart';
+import '../widgets/usage_sheet.dart';
 import 'media_detail_screen.dart';
 
 enum LibraryFilter { all, movie, tv, favorites }
@@ -254,6 +255,15 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.upload_file),
+            ),
+            IconButton(
+              onPressed: () => showModalBottomSheet<void>(
+                context: context,
+                backgroundColor: const Color(0xFF0B0E12),
+                builder: (_) => const UsageSheet(),
+              ),
+              tooltip: 'API kullanımı',
+              icon: const Icon(Icons.data_usage_rounded),
             ),
             IconButton(
               onPressed: FirebaseAuth.instance.signOut,

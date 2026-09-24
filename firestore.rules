@@ -58,6 +58,17 @@ service cloud.firestore {
         && (!("imdbVotes" in request.resource.data.snapshot) || request.resource.data.snapshot.imdbVotes == null || request.resource.data.snapshot.imdbVotes is number);
     }
 
+    // Harici API kullanım sayaçları (ör. DoesTheDogDie aylık kotası). Sunucu yalnızca
+    // sayacı +1 artırabilir; başka alan yazamaz. Okuma yalnızca sahibe açıktır.
+    match /apiUsage/{month} {
+      allow read: if request.auth != null
+        && request.auth.uid == "zYIbbfB5YpfCG6KHLJMpVlhT3B62";
+      allow create: if request.resource.data.keys().hasOnly(["ddd"])
+        && request.resource.data.ddd == 1;
+      allow update: if request.resource.data.keys().hasOnly(["ddd"])
+        && request.resource.data.ddd == resource.data.ddd + 1;
+    }
+
     match /users/{uid}/library/{mediaId} {
       allow get, list: if isMovieLibraryOwner(uid) || resource.data.isPublic == true;
       allow create, update: if isMovieLibraryOwner(uid) && validLibraryItem();

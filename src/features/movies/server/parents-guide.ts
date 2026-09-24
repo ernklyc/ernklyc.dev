@@ -1,3 +1,4 @@
+import { recordDddRequest } from "@/features/movies/server/api-usage";
 import { EXTRA_TOPIC_LABELS_TR } from "@/features/movies/server/parents-guide-labels";
 import { getSearchTitles, type TmdbMediaType } from "@/features/movies/server/tmdb";
 
@@ -325,6 +326,7 @@ async function dddFetch<T>(path: string): Promise<T> {
   const apiKey = process.env.DDD_API_KEY;
   if (!apiKey) throw new ParentsGuideConfigurationError("DDD_API_KEY tanımlı değil.");
 
+  await recordDddRequest();
   const response = await fetch(`${DDD_BASE_URL}${path}`, {
     headers: { accept: "application/json", "X-API-KEY": apiKey },
     next: { revalidate: 60 * 60 * 24 * 30 },

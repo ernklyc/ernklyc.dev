@@ -105,6 +105,26 @@ class MovieApiService {
     );
   }
 
+  /// Harici API'lerin bu ayki kalan kotası (yalnızca arşiv sahibi görebilir).
+  Future<Map<String, dynamic>> usage() async {
+    final response = await http
+        .get(
+          Uri.parse('${AppConfig.apiBaseUrl}/api/movies/usage'),
+          headers: await _authHeaders(),
+        )
+        .timeout(const Duration(seconds: 20));
+    Map<String, dynamic> body;
+    try {
+      body = jsonDecode(response.body) as Map<String, dynamic>;
+    } catch (_) {
+      throw Exception('Kullanım bilgisi alınamadı (${response.statusCode}).');
+    }
+    if (response.statusCode != 200) {
+      throw Exception(body['error'] ?? 'Kullanım bilgisi alınamadı.');
+    }
+    return body;
+  }
+
   Future<List<TmdbSearchItem>> search(String query) async {
     final normalizedQuery = query.trim().toLowerCase();
     final body = await _cachedJsonMap(

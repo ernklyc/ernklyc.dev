@@ -441,6 +441,7 @@ class _Panel extends StatelessWidget {
       onExpansionChanged: onExpansionChanged,
       tilePadding: const EdgeInsets.symmetric(horizontal: 16),
       childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      expandedAlignment: Alignment.centerLeft,
       expandedCrossAxisAlignment: CrossAxisAlignment.start,
       collapsedBackgroundColor: Colors.white.withValues(alpha: .03),
       backgroundColor: Colors.white.withValues(alpha: .04),
@@ -674,6 +675,8 @@ class _GuideCategory extends StatelessWidget {
                 ),
               )
             : ExpansionTile(
+                expandedAlignment: Alignment.centerLeft,
+                expandedCrossAxisAlignment: CrossAxisAlignment.start,
                 tilePadding: const EdgeInsets.symmetric(horizontal: 14),
                 childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
                 collapsedBackgroundColor: Colors.white.withValues(alpha: .03),
@@ -721,7 +724,19 @@ class _GuideTopic extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
         child: Row(
           children: [
-            Expanded(child: label),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  label,
+                  const SizedBox(height: 2),
+                  const Text(
+                    'Açıklama girilmemiş',
+                    style: TextStyle(fontSize: 11, color: Colors.white24),
+                  ),
+                ],
+              ),
+            ),
             votes,
           ],
         ),
@@ -733,6 +748,10 @@ class _GuideTopic extends StatelessWidget {
         tilePadding: const EdgeInsets.symmetric(horizontal: 8),
         childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
         title: label,
+        subtitle: Text(
+          '${notes.length} topluluk notu · dokun',
+          style: const TextStyle(fontSize: 11, color: Colors.white38),
+        ),
         trailing: votes,
         expandedAlignment: Alignment.centerLeft,
         expandedCrossAxisAlignment: CrossAxisAlignment.start,
@@ -861,6 +880,8 @@ class _SeasonRatings extends StatelessWidget {
     child: Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
+        expandedAlignment: Alignment.centerLeft,
+        expandedCrossAxisAlignment: CrossAxisAlignment.start,
         initiallyExpanded: season == 1,
         tilePadding: const EdgeInsets.symmetric(horizontal: 12),
         childrenPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),

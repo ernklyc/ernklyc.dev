@@ -652,7 +652,10 @@ function GuideCategoryRow({ category }: { category: GuideCategory }) {
               {topic.notes.length ? (
                 <details className="rounded-lg border border-white/5 bg-white/[0.025] px-3 py-2">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm text-white/75">
-                    <span>{topic.label}</span>
+                    <span>
+                      {topic.label}
+                      <span className="mt-0.5 block text-[11px] text-white/35">{topic.notes.length} topluluk notu · dokun</span>
+                    </span>
                     <span className="shrink-0 text-xs text-white/35">{topic.yes} evet · {topic.no} hayır</span>
                   </summary>
                   <ul className="mt-2 space-y-2 border-t border-white/5 pt-2">
@@ -661,7 +664,10 @@ function GuideCategoryRow({ category }: { category: GuideCategory }) {
                 </details>
               ) : (
                 <div className="flex items-center justify-between gap-3 rounded-lg border border-white/5 bg-white/[0.025] px-3 py-2 text-sm text-white/75">
-                  <span>{topic.label}</span>
+                  <span>
+                    {topic.label}
+                    <span className="mt-0.5 block text-[11px] text-white/25">Açıklama girilmemiş</span>
+                  </span>
                   <span className="shrink-0 text-xs text-white/35">{topic.yes} evet · {topic.no} hayır</span>
                 </div>
               )}

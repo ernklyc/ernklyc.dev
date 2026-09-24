@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { getAllPostsAdmin, deletePost, type AdminPost } from "@/lib/adminPosts";
 import GlassCard from "@/components/ui/GlassCard";
+import ApiUsageCard from "@/features/movies/ApiUsageCard";
 import { darkChip } from "@/lib/theme";
 import { cn } from "@/lib/utils";
 
@@ -58,6 +59,8 @@ export default function AdminDashboardPage() {
         <span>Film arşivini yönet (film / dizi ekle, IMDb CSV içe aktar)</span>
         <span aria-hidden="true">→</span>
       </Link>
+
+      <ApiUsageCard />
 
       {posts === null && <p className="text-gray-400 text-sm">Yükleniyor...</p>}
 
