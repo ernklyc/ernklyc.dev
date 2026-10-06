@@ -20,6 +20,9 @@ const TECHNOLOGIES = [
 ];
 
 const LEGAL_LINKS = [
+  { href: "/klyc-box", label: "KLYC-Box" },
+  { href: "/klyc-box/database", label: "KLYC-Box Database" },
+  { href: "/klyc-box/anti-cheat", label: "KLYC-Box Anti-Cheat" },
   { href: "/privacy-policy", label: "HP Character Wiki Privacy" },
   { href: "/movie-face-ai-privacy", label: "Movie Face AI Privacy" },
   { href: "/link-manager-privacy", label: "Link Manager Privacy" },
