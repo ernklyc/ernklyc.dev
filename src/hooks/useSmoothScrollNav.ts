@@ -20,7 +20,6 @@ export const navMenuItems: NavMenuItem[] = [
   { labelKey: "nav.projects", href: "#projects" },
   { labelKey: "nav.movies", href: "/movies", isRoute: true },
   { labelKey: "nav.blog", href: "#blog" },
-  { labelKey: "nav.klycbox", href: "/klyc-box", isRoute: true },
   { labelKey: "nav.contact", href: "#contact" },
 ];
 
