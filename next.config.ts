@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
   // Güvenlik başlıkları. CSP'de bilerek yalnızca güvenli direktifler var (frame-ancestors: clickjacking,
   // object-src/base-uri/form-action): Firebase Auth popup'ı, reCAPTCHA ve YouTube gömmelerini bozmamak için
   // script-src kısıtlanmadı.
+  // KLYC-Box'ın kendi sitesi var: eski /klyc-box/* adresleri oraya yönlenir.
+  async redirects() {
+    return [{ source: '/klyc-box/:path*', destination: 'https://klycbox.ernklyc.dev/', permanent: true }];
+  },
+
   async headers() {
     return [
       {
