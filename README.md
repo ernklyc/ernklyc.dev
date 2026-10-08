@@ -17,6 +17,7 @@ panelinden yönetilir.
 - **Şifre korumalı admin paneli** — Firebase Authentication ile tek kullanıcı (site sahibi)
   girişi, Firestore Security Rules ile UID bazlı yazma yetkisi.
 - **Bot koruması** — Firebase App Check (reCAPTCHA v3).
+- **Öne çıkan projeler** — `src/data/featuredProjects.ts` dizisinden beslenen, "Google Play Uygulamalarım"ın üstündeki bölüm (solda görsel, sağda anlatım, Siteyi aç / İndir / GitHub bağlantıları). Şu an KLYC-Box; yeni proje eklemek için diziye bir kayıt ve `public/` altına görsel yeter (başlık metinleri `translations.ts` içinde, tr/en).
 - **GitHub & Google Play entegrasyonu** — profildeki açık kaynak repoları ve yayınlanan mobil
   uygulamaları otomatik listeler.
 - **Akıcı scroll** — Lenis ile GPU destekli, momentum'lu kaydırma.
