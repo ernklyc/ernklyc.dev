@@ -4,6 +4,7 @@ import { getPublicRepos } from "@/lib/github";
 import { getPlayStoreAppsWithIcons } from "@/lib/playstore";
 import Repositories from "@/components/Repositories";
 import PlayStoreApps from "@/components/PlayStoreApps";
+import FeaturedProjects from "@/components/FeaturedProjects";
 import BlurHashLoading from "@/components/BlurHashLoading";
 import HashScrollHandler from "@/components/HashScrollHandler";
 import BlogPreview from "@/components/BlogPreview";
@@ -52,6 +53,7 @@ export default async function Home() {
         <Experience />
       </section>
       <section id="projects" className="scroll-mt-20">
+        <FeaturedProjects />
         <PlayStoreApps apps={playStoreApps} />
         <Repositories repos={repos} />
       </section>
